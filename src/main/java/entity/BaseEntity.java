@@ -1,22 +1,23 @@
 package entity;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Version;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 @MappedSuperclass
 public abstract class BaseEntity {
     @Id
     @GeneratedValue
-    private Integer id;
-
+    private Long id;
     @Version
-    private Integer version;
+    private int version;
+    private Timestamp createdAt;
 
-    protected Timestamp createdAt;
-    protected String createdFrom;
-    protected Timestamp updatedAt;
-    protected String updatedFrom;
+    public Long getId() {
+        return id;
+    }
+
+    @PrePersist
+    public void setCreatedAt() {
+        createdAt = new Timestamp(System.currentTimeMillis());
+    }
 }
