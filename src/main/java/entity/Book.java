@@ -24,9 +24,9 @@ import java.math.BigDecimal;
         })
 public class Book extends BaseEntity {
 
-    private final static String GET_BY_ISBN = "Book.findByISBN";
+    public final static String GET_BY_ISBN = "Book.findByISBN";
 
-    private final static String FIND_BY_KEYWORD = "Book.findByKeyword";
+    public final static String FIND_BY_KEYWORD = "Book.findByKeyword";
 
     private String isbn;
 
