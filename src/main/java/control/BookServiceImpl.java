@@ -5,9 +5,7 @@ import entity.Book;
 import java.util.List;
 
 public class BookServiceImpl implements BookService {
-    public void addBook(Book book) {
-
-    }
+    public void addBook(Book book) { }
 
     public Book get(String isbn) {
         return null;
@@ -17,9 +15,7 @@ public class BookServiceImpl implements BookService {
         return null;
     }
 
-    public void removeBook(Book book) {
-
-    }
+    public void removeBook(Book book) {  }
 
     public void updateBook(Book book) {
 

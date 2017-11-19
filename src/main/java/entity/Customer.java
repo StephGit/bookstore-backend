@@ -1,12 +1,22 @@
 package entity;
 
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import dto.CustomerInfo;
+
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@SqlResultSetMapping(name = "CustomerInfo",
+        classes = {
+                @ConstructorResult(targetClass = CustomerInfo.class,
+                        columns = {
+                                @ColumnResult(name = "nr"),
+                                @ColumnResult(name = "firstName"),
+                                @ColumnResult(name = "lsatName"),
+                                @ColumnResult(name = "email")}
+                )
+        })
 public class Customer extends BaseEntity{
 
   private String firstName;

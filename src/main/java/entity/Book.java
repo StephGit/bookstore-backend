@@ -1,23 +1,52 @@
 package entity;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import dto.BookInfo;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(name = Book.GET_BY_ISBN,
+                query = "select b from Book b where b.isbn = :isbn"),
+        @NamedQuery(name = Book.FIND_BY_KEYWORD, query = "select b from Book b where (b.title in :keywords) or (b.authors in :keywords) or (b.publisher in :keywords)")
+})
+//TODO muss id zusätzlich in DTO?¨Oder evtl. isbn auf column="nr" mappen
+@SqlResultSetMapping(name = "BookInfo",
+        classes = {
+                @ConstructorResult(targetClass = BookInfo.class,
+                        columns = {
+                                @ColumnResult(name = "isbn"),
+                                @ColumnResult(name = "authors"),
+                                @ColumnResult(name = "title"),
+                                @ColumnResult(name = "price")}
+                )
+        })
 public class Book extends BaseEntity {
 
+    private final static String GET_BY_ISBN = "Book.findByISBN";
+
+    private final static String FIND_BY_KEYWORD = "Book.findByKeyword";
+
     private String isbn;
+
     private String authors;
+
     private String title;
+
     private BigDecimal price;
+
     private String publisher;
+
     private Integer publicationYear;
+
     @Enumerated(EnumType.STRING)
     private BookBinding binding;
+
     private Integer numberOfPages;
+
     private String description;
+
     private String imageUrl;
 
     public Book() {}

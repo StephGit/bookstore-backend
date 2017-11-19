@@ -1,5 +1,7 @@
 package entity;
 
+import dto.OrderInfo;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -9,6 +11,16 @@ import java.util.Set;
 
 @Entity
 @Table(name = "T_ORDER")
+@SqlResultSetMapping(name = "OrderInfo",
+        classes = {
+                @ConstructorResult(targetClass = OrderInfo.class,
+                        columns = {
+                                @ColumnResult(name = "nr"),
+                                @ColumnResult(name = "date"),
+                                @ColumnResult(name = "amount"),
+                                @ColumnResult(name = "status")}
+                )
+        })
 public class Order extends BaseEntity implements Serializable {
 //TODO achtung order ist ein oracle keyword
 
@@ -22,6 +34,9 @@ public class Order extends BaseEntity implements Serializable {
     private Date date;
 
     private BigDecimal amount;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
     @OneToMany(mappedBy = "order")
     private Set<OrderItem> orderItems = new HashSet<>();
