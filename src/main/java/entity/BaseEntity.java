@@ -14,15 +14,13 @@ public abstract class BaseEntity {
     @Version
     private int version;
 
-    @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private  Timestamp createdAt;
 
     private String createdBy;
 
-    @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
-    protected Timestamp updatedAt;
+    private Timestamp updatedAt;
 
     protected String updatedBy;
 
@@ -62,9 +60,6 @@ public abstract class BaseEntity {
             return false;
 
         BaseEntity other = (BaseEntity) object;
-        if (this.getNr() != other.getNr() && (this.getNr() == null || !this.nr.equals(other.nr))) {
-            return false;
-        }
-        return true;
+        return this.getNr() == other.getNr() || (this.getNr() != null && this.nr.equals(other.nr));
     }
 }
