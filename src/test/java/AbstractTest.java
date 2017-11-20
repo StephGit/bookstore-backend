@@ -1,5 +1,7 @@
-import entity.Order;
-import entity.OrderItem;
+package ch.bfh.eadj.control;
+
+import ch.bfh.eadj.entity.Order;
+import ch.bfh.eadj.entity.OrderItem;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -45,7 +47,7 @@ public abstract class AbstractTest {
         try {
             transaction.begin();
 
-            entity.Order ord = new Order();
+            ch.bfh.eadj.entity.Order ord = new Order();
             ord.setAmount(BigDecimal.TEN);
             em.persist(ord);
 
@@ -75,7 +77,7 @@ public abstract class AbstractTest {
         try {
             transaction.begin();
 
-            entity.OrderItem orderItem = em.find(OrderItem.class, orderItemId);
+            ch.bfh.eadj.entity.OrderItem orderItem = em.find(OrderItem.class, orderItemId);
             em.remove(orderItem);
 
             Order order = em.find(Order.class, orderId);

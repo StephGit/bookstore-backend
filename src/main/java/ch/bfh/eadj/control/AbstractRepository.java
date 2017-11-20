@@ -1,4 +1,4 @@
-package control;
+package ch.bfh.eadj.control;
 
 import javax.persistence.EntityManager;
 import java.util.List;

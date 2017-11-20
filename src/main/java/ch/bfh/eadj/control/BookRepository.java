@@ -1,7 +1,7 @@
-package control;
+package ch.bfh.eadj.control;
 
-import dto.BookInfo;
-import entity.Book;
+import ch.bfh.eadj.dto.BookInfo;
+import ch.bfh.eadj.entity.Book;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;

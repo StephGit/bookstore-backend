@@ -1,7 +1,7 @@
-package control;
+package ch.bfh.eadj.control;
 
-import dto.CustomerInfo;
-import entity.Customer;
+import ch.bfh.eadj.dto.CustomerInfo;
+import ch.bfh.eadj.entity.Customer;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;

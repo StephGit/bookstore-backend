@@ -1,4 +1,4 @@
-package entity;
+package ch.bfh.eadj.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,20 +19,20 @@ public class Order extends BaseEntity implements Serializable {
 
     public static class FIND_BY_NR_QUERY {
         public static final String QUERY_NAME = "Order.findById";
-        public static final String QUERY_STRING = "select new dto.OrderInfo(o.nr, o.date, o.amount, o.status) from Order o where o.nr = :nr";
+        public static final String QUERY_STRING = "select new ch.bfh.eadj.dto.OrderInfo(o.nr, o.date, o.amount, o.status) from ch.bfh.eadj.entity.Order o where o.nr = :nr";
     }
 
     public static class FIND_BY_CUSTOMER_AND_YEAR_QUERY {
         public static final String QUERY_NAME = "Order.findByCustomerAndYear";
-        public static final String QUERY_STRING = "select new dto.OrderInfo(o.nr, o.date, o.amount, o.status) from Order o" +
+        public static final String QUERY_STRING = "select new ch.bfh.eadj.dto.OrderInfo(o.nr, o.date, o.amount, o.status) from ch.bfh.eadj.entity.Order o" +
                 " join o.customer c where c.nr = :nr and extract(YEAR from o.date) = :year";
     }
 
     public static class STATISTIC_BY_YEAR_QUERY {
         public static final String QUERY_NAME = "Order.statisticByYear";
-        public static final String QUERY_STRING = "select new dto.OrderStatistic(count(oi), sum(o.amount), " +
+        public static final String QUERY_STRING = "select new ch.bfh.eadj.dto.OrderStatistic(count(oi), sum(o.amount), " +
                 "avg(o.amount))" +
-                "from entity.Order o join o.customer c join o.orderItems oi where EXTRACT(YEAR from o.date) = :year group by c";
+                "from ch.bfh.eadj.entity.Order o join o.customer c join o.orderItems oi where EXTRACT(YEAR from o.date) = :year group by c";
     }
 
     private static final long serialVersionUID = 1L;

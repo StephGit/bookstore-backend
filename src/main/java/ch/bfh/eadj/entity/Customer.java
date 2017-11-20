@@ -1,10 +1,6 @@
-package entity;
+package ch.bfh.eadj.entity;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.List;
 
 @Table(name = "T_CUSTOMER")
 @Entity
@@ -15,7 +11,7 @@ public class Customer extends BaseEntity {
 
     public static class FIND_BY_NAME_QUERY {
         public static final String QUERY_NAME = "Customer.findByName";
-        public static final String QUERY_STRING = "select new dto.CustomerInfo(c.nr, c.firstName, c.lastName, c.email) " +
+        public static final String QUERY_STRING = "select new ch.bfh.eadj.dto.CustomerInfo(c.nr, c.firstName, c.lastName, c.email) " +
                 "from Customer c where c.firstName in :name or c.lastName in :name";
     }
 

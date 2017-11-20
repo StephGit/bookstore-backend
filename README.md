@@ -25,6 +25,10 @@ JEE Book Store Project
 alles begründen
 
 
+- packages erstellen ch.bfh.blabla...
+- tests in packages strukturieren
+
+
 
 ## Create statement
 
