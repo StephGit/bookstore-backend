@@ -49,9 +49,13 @@ public class Order extends BaseEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    @OneToMany
+    /*
+    OrderItems sind Komposition zu Order. Klassischerweise wird für Kompositionen CascadeType.ALL verwendet (eine Entity kann nicht ohne ein anderes bestehen)
+    Weisenkinder sollen deshalb gelöscht werden sobald die Beziehung entfernt wird.
+     */
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "ORDER_NR") //OrderItem besitzt ORDER_ID FK Column
-//    @OrderBy("createdAt DESC") //TODO sinnvolle ordering
+    //    @OrderBy("createdAt DESC") //TODO sinnvolle ordering
     private List<OrderItem> orderItems = new ArrayList<>();
 
     @ManyToOne(cascade = CascadeType.PERSIST)
