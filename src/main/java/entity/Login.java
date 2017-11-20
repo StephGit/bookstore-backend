@@ -12,6 +12,7 @@ public class Login extends BaseEntity {
         public static final String QUERY_STRING = "select l from Login l where l.name = :name";
     }
 
+    @Column(name = "USER_NAME")
     private String name;
     private String password;
 
@@ -21,7 +22,7 @@ public class Login extends BaseEntity {
    Eine bessere Lösung ist das Speichern des Namens als String anstelle des ordinalen Wertes.
     */
     @Enumerated(EnumType.STRING)
-    @Column(name = "usergroup")
+    @Column(name = "USER_GROUP")
     private UserGroup group;
 
 

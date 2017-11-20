@@ -1,7 +1,5 @@
 package entity;
 
-import com.sun.xml.internal.bind.v2.TODO;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -39,6 +37,7 @@ public class Order extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @Column(name = "ORDER_DATE")
     private Date date;
 
     private BigDecimal amount;

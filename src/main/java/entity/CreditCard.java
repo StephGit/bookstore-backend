@@ -1,5 +1,6 @@
 package entity;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -13,20 +14,21 @@ public class CreditCard {
     Eine bessere Lösung ist das Speichern des Namens als String anstelle des ordinalen Wertes.
      */
     @Enumerated(EnumType.STRING)
-    private CreditCardType creditCardType;
+    @Column(name = "CC_TYPE")
+    private CreditCardType type;
 
-
+    @Column(name = "CC_NUMBER")
     private String number;
     private Integer expirationMonth;
     private Integer expirationYear;
 
 
-    public CreditCardType getCreditCardType() {
-        return creditCardType;
+    public CreditCardType getType() {
+        return type;
     }
 
-    public void setCreditCardType(CreditCardType creditCardType) {
-        this.creditCardType = creditCardType;
+    public void setType(CreditCardType type) {
+        this.type = type;
     }
 
     public String getNumber() {
