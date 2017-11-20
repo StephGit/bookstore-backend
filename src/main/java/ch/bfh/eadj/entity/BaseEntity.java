@@ -1,15 +1,17 @@
 package ch.bfh.eadj.entity;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
-import java.util.Date;
 
 @MappedSuperclass
 public abstract class BaseEntity {
 
-    //TODO warum diese strategy?
+
+    /*
+    GenerationType.IDENTITY verwendet separate primary key indentity column
+    AUTO sollte nur für Entwicklung und Prototyping verwendet werden weil der Provider seine eigene Strategie wählt.1
+     */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long nr;
 
     @Version

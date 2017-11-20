@@ -50,14 +50,22 @@ public class Order extends BaseEntity implements Serializable {
     private OrderStatus status;
 
     /*
+    Kaskadierung:
     OrderItems sind Komposition zu Order. Klassischerweise wird für Kompositionen CascadeType.ALL verwendet (eine Entity kann nicht ohne ein anderes bestehen)
-    Weisenkinder sollen deshalb gelöscht werden sobald die Beziehung entfernt wird.
+    Weisenkinder sollen deshalb gelöscht werden sobald die Beziehung entfernt wird. Referenzielle Integrität wird so eingehalten.
+
+    Beziehung:
+    Unidirektionale OneToMany Beziehung benötigt das Angeben der JoinColumn (lebt auf OrderItem als owining Seite)
+    Lässt man das weg entsteht eine Zwischentabelle welche Performanceeinbussen zur Folge hat
      */
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "ORDER_NR") //OrderItem besitzt ORDER_ID FK Column
     //    @OrderBy("createdAt DESC") //TODO sinnvolle ordering
     private List<OrderItem> orderItems = new ArrayList<>();
 
+    /*
+    Wird ein Order mit einem Customer zusammen angelegt soll kaskadiert persisiert werden.
+     */
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Customer customer;
 

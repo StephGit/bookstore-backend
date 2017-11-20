@@ -29,6 +29,16 @@ public abstract class AbstractRepository<T> {
         return getEntityManager().find(entityClass, id);
     }
 
+    /**
+     * Liefert Proxy Referenz des Entities zurück
+     * Verwenden wenn z.b nur PK auf FK gesetzt werden muss um eine Beziehung zu erstellen
+     * @param id
+     * @return
+     */
+    public T getReference(Object id) {
+        return getEntityManager().getReference(entityClass, id);
+    }
+
     public List<T> getAll() {
         javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
         cq.select(cq.from(entityClass));
