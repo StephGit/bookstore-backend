@@ -20,9 +20,12 @@ public class Customer extends BaseEntity {
     private String lastName;
     private String email;
 
-    @OneToMany(mappedBy = "customer")
-    //Todo warum Set?
-    private Set<Order> order = new HashSet<>(); // Collections immer initialisieren
+  /*
+  Wir möchten die Order nach Datum absteigend sortiert. Deshalb ist hier eine List die bevorzugte Collection-Wahl.
+   */
+  @OneToMany(mappedBy = "customer")
+  @OrderBy("createdAt DESC")
+  private List<Order> order = new ArrayList<>(); // Collections immer initialisieren
 
     @Embedded
     private Address address;

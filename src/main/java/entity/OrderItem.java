@@ -2,6 +2,7 @@ package entity;
 
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
@@ -10,10 +11,10 @@ public class OrderItem extends  BaseEntity {
 
     private Integer quantity;
 
-    @OneToOne
-    private Book book;
-
-    @ManyToOne
+    /*
+    Dieser Navigationsweg ist eher selten. Deshalb kann der Order zum OrderItem Lazy geladen werden.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
 
     public Book getBook() { return book; }
