@@ -17,6 +17,9 @@ public class OrderItem extends  BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
 
+    @OneToOne
+    private Book book;
+
     public Book getBook() { return book; }
 
     public Integer getQuantity() {
