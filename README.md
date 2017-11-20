@@ -25,10 +25,16 @@ JEE Book Store Project
 alles begründen
 
 
-- packages erstellen ch.bfh.blabla...
-- tests in packages strukturieren
+- Ist order zu customer wirklich ManyToOne? Laut Diagramm nicht
+
+- Order nach BookOrder umbenennen
+
+- Ist buch zu orderitem OneToOne?
 
 
+- Statistik Query richti machen
+
+- Tests die Statistik und Queries testen
 
 ## Create statement
 

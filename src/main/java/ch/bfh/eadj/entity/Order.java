@@ -30,10 +30,10 @@ public class Order extends BaseEntity implements Serializable {
 
     public static class STATISTIC_BY_YEAR_QUERY {
         public static final String QUERY_NAME = "Order.statisticByYear";
-        public static final String QUERY_STRING = "select new ch.bfh.eadj.dto.OrderStatistic(count(oi), sum(o.amount), " +
+        public static final String QUERY_STRING = "select new ch.bfh.eadj.dto.OrderStatistic((sum(o.amount)/count(oi)), sum(o.amount), " +
                 "avg(o.amount))" +
                 "from ch.bfh.eadj.entity.Order o join o.customer c join o.orderItems oi where EXTRACT(YEAR from o.date) = :year group by c";
-    }
+    } //TODO (summe/anzahl orderitems)
 
     private static final long serialVersionUID = 1L;
 
@@ -48,12 +48,16 @@ public class Order extends BaseEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    @OneToMany
-    @JoinColumn(name = "ORDER_NR") //OrderItem besitzt ORDER_ID FK Column
+    /*
+    OrderItems sind Komposition zu Order. Alleine können sie nicht überleben
+    Weisenkinder sollen deshalb gelöscht werden sobald die Beziehung entfernt wird.
+     */
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "ORDER_ID") //OrderItem besitzt ORDER_ID FK Column
     @OrderBy("createdAt DESC")
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Customer customer;
 
     @Embedded

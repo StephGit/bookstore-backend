@@ -1,8 +1,6 @@
 package ch.bfh.eadj.entity;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
-import java.util.Date;
 
 @MappedSuperclass
 public abstract class BaseEntity {
@@ -15,16 +13,6 @@ public abstract class BaseEntity {
     @Version
     private int version;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
-
-    private String createdBy;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date updatedAt;
-
-    protected String updatedBy;
-
     public Long getNr() {
         return nr;
     }
@@ -33,14 +21,5 @@ public abstract class BaseEntity {
         return version;
     }
 
-    @PrePersist
-    public void setCreatedAt() {
-        createdAt = new Timestamp(System.currentTimeMillis());
-    }
-
-    @PreUpdate
-    public void setUpdatedAt() {
-        updatedAt = new Timestamp(System.currentTimeMillis());
-    }
 
 }
