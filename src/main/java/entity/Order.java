@@ -33,7 +33,7 @@ public class Order extends BaseEntity implements Serializable {
     public static class SUM_BY_YEAR_QUERY {
         public static final String QUERY_NAME = "Order.sumByYear";
         public static final String QUERY_STRING = "select sum(o.amount), count(o.orderItems), " +
-                "(sum(o.amount)/count(o.orderItems)) as average), " +
+                "avg(o.amount) as average), " +
                 "new dto.CustomerInfo(c.id, c.firstName, c.lastName, c.email) " +
                 "from Order o join o.customer c where extract(year, o.date) = :year group by c";
     }
