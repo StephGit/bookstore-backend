@@ -8,18 +8,15 @@ public abstract class BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, columnDefinition = "BIGINT UNSIGNED")
     private Long id;
 
     @Version
     private int version;
 
-    @Temporal(TemporalType.TIMESTAMP)
     private  Timestamp createdAt;
 
     private String createdBy;
 
-    @Temporal(TemporalType.TIMESTAMP)
     private Timestamp updatedAt;
 
     protected String updatedBy;

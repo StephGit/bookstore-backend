@@ -2,6 +2,7 @@ package entity;
 
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 
 @Entity
@@ -9,7 +10,10 @@ public class OrderItem extends  BaseEntity{
 
     private Integer quantity;
 
-    @ManyToOne
+    /*
+    Dieser Navigationsweg ist eher selten. Deshalb kann der Order zum OrderItem Lazy geladen werden.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
 
     public Integer getQuantity() {

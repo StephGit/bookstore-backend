@@ -2,14 +2,32 @@ package control;
 
 import entity.Book;
 
-import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
-public interface BookService {
+public class BookService extends AbstractService<Book>{
 
-    public void addBook(Book book);
-    public Book get(String isbn);
-    public List<Book> find(String ...keyword);
-    public void removeBook(Book book);
-    public void updateBook(Book book);
+    @PersistenceContext
+    EntityManager entityManager;
+
+
+    public BookService() {
+        super(Book.class);
+    }
+
+
+    public void create(Book book) {
+        entityManager.persist(book);
+    }
+
+
+
+
+
+
+    @Override
+    protected EntityManager getEntityManager() {
+        return entityManager;
+    }
 
 }

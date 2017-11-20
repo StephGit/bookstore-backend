@@ -3,8 +3,9 @@ package entity;
 import dto.CustomerInfo;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import javax.persistence.OrderBy;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @SqlResultSetMapping(name = "CustomerInfo",
@@ -23,9 +24,12 @@ public class Customer extends BaseEntity{
   private String lastName;
   private String email;
 
+  /*
+  Wir möchten die Order nach Datum absteigend sortiert. Deshalb ist hier eine List die bevorzugte Collection-Wahl.
+   */
   @OneToMany(mappedBy = "customer")
-  //Todo warum Set?
-  private Set<Order> order = new HashSet<>(); // Collections immer initialisieren
+  @OrderBy("createdAt DESC")
+  private List<Order> order = new ArrayList<>(); // Collections immer initialisieren
 
   @Embedded
   private Address address;
@@ -56,6 +60,13 @@ public class Customer extends BaseEntity{
     public void setEmail(String email) {
         this.email = email;
     }
+
+
+    /*
+    Equals mit Id nicht so ideal. Id kann sicher verändern (zuerst keine, danach eine);
+     */
+
+
 
     @Override
     public boolean equals(Object o) {

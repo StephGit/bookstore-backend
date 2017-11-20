@@ -25,7 +25,7 @@ public abstract class AbstractTest {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        emf = Persistence.createEntityManagerFactory("bookstorePU");
+        emf = Persistence.createEntityManagerFactory("bookstoreTestPU");
         em = emf.createEntityManager();
     }
 
@@ -55,8 +55,8 @@ public abstract class AbstractTest {
             em.persist(orderItem);
             transaction.commit();
 
-            orderItemId = orderItem.getNr();
-            orderId = ord.getNr();
+            orderItemId = orderItem.getId();
+            orderId = ord.getId();
 
             em.clear();
             emf.getCache().evictAll();
