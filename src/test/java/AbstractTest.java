@@ -55,8 +55,8 @@ public abstract class AbstractTest {
             em.persist(orderItem);
             transaction.commit();
 
-            orderItemId = orderItem.getNr();
-            orderId = ord.getNr();
+            orderItemId = orderItem.getId();
+            orderId = ord.getId();
 
             em.clear();
             emf.getCache().evictAll();
