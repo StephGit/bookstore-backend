@@ -1,32 +1,25 @@
 package entity;
 
-import dto.BookInfo;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
 @NamedQueries({
-        @NamedQuery(name = Book.GET_BY_ISBN,
-                query = "select b from Book b where b.isbn = :isbn"),
-        @NamedQuery(name = Book.FIND_BY_KEYWORD, query = "select b from Book b where (b.title in :keywords) or (b.authors in :keywords) or (b.publisher in :keywords)")
+        @NamedQuery(name = Book.FIND_BY_ISBN_QUERY.QUERY_NAME, query = Book.FIND_BY_ISBN_QUERY.QUERY_STRING),
+        @NamedQuery(name = Book.FIND_BY_KEYWORD_QUERY.QUERY_NAME, query = Book.FIND_BY_KEYWORD_QUERY.QUERY_STRING)
 })
-//TODO muss id zusätzlich in DTO?¨Oder evtl. isbn auf column="nr" mappen
-@SqlResultSetMapping(name = "BookInfo",
-        classes = {
-                @ConstructorResult(targetClass = BookInfo.class,
-                        columns = {
-                                @ColumnResult(name = "isbn"),
-                                @ColumnResult(name = "authors"),
-                                @ColumnResult(name = "title"),
-                                @ColumnResult(name = "price")}
-                )
-        })
 public class Book extends BaseEntity {
 
-    public final static String GET_BY_ISBN = "Book.findByISBN";
+    public static class FIND_BY_ISBN_QUERY {
+        public static final String QUERY_NAME = "Book.findByISBN";
+        public static final String QUERY_STRING = "select new dto.BookInfo(b.isbn, b.authors, b.title, b.price) from Book b where b.isbn = :isbn";
+    }
 
-    public final static String FIND_BY_KEYWORD = "Book.findByKeyword";
+    public static class FIND_BY_KEYWORD_QUERY {
+        public static final String QUERY_NAME = "Book.findByKeyword";
+        public static final String QUERY_STRING = "select new dto.BookInfo(b.isbn, b.authors, b.title, b.price) from Book b " +
+                "where (b.title in :keywords) or (b.authors in :keywords) or (b.publisher in :keywords) order by b.title desc"; //TODO ordering?
+    }
 
     private String isbn;
 

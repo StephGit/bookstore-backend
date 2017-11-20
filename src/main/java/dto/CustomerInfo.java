@@ -4,24 +4,24 @@ import java.io.Serializable;
 
 public class CustomerInfo implements Serializable {
 
-    private Long nr;
+    private Long id;
     private String firstName;
     private String lastName;
     private String email;
 
-    public CustomerInfo(Long nr, String firstName, String lastName, String email) {
-        this.nr = nr;
+    public CustomerInfo(Long id, String firstName, String lastName, String email) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
     }
 
-    public Long getNr() {
-        return nr;
+    public Long getId() {
+        return id;
     }
 
-    public void setNr(Long nr) {
-        this.nr = nr;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFirstName() {

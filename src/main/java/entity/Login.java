@@ -1,11 +1,15 @@
 package entity;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.*;
 
 @Entity
+@NamedQuery(name = Login.FIND_BY_NAME_QUERY.QUERY_NAME, query = Login.FIND_BY_NAME_QUERY.QUERY_STRING)
 public class Login extends BaseEntity {
+
+    public static class FIND_BY_NAME_QUERY {
+        public static final String QUERY_NAME = "Login.findByName";
+        public static final String QUERY_STRING = "select l from Login l where l.name = :name";
+    }
 
     private String name;
     private String password;
@@ -16,6 +20,7 @@ public class Login extends BaseEntity {
    Eine bessere Lösung ist das Speichern des Namens als String anstelle des ordinalen Wertes.
     */
     @Enumerated(EnumType.STRING)
+    @Column(name = "usergroup")
     private UserGroup group;
 
 

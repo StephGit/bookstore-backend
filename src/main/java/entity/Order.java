@@ -11,22 +11,31 @@ import java.util.Set;
 
 @Entity
 @Table(name = "T_ORDER")
-@SqlResultSetMapping(name = "OrderInfo",
-        classes = {
-                @ConstructorResult(targetClass = OrderInfo.class,
-                        columns = {
-                                @ColumnResult(name = "nr"),
-                                @ColumnResult(name = "date"),
-                                @ColumnResult(name = "amount"),
-                                @ColumnResult(name = "status")}
-                )
-        })
+@NamedQueries({
+        @NamedQuery(name = Order.FIND_BY_ID_QUERY.QUERY_NAME, query = Order.FIND_BY_ID_QUERY.QUERY_STRING),
+        @NamedQuery(name = Order.FIND_BY_CUSTOMER_AND_YEAR_QUERY.QUERY_NAME, query = Order.FIND_BY_CUSTOMER_AND_YEAR_QUERY.QUERY_STRING),
+        @NamedQuery(name = Order.SUM_BY_YEAR_QUERY.QUERY_NAME, query = Order.SUM_BY_YEAR_QUERY.QUERY_STRING)
+})
 public class Order extends BaseEntity implements Serializable {
 //TODO achtung order ist ein oracle keyword
 
     public static class FIND_BY_ID_QUERY {
-        public static final String QUERY_NAME = "findbyId";
-        public static final String QUERY_STRING = "findbyId";
+        public static final String QUERY_NAME = "Order.findById";
+        public static final String QUERY_STRING = "select new dto.OrderInfo(o.id, o.date, o.amount, o.status) from Order o where o.id = :id";
+    }
+
+    public static class FIND_BY_CUSTOMER_AND_YEAR_QUERY {
+        public static final String QUERY_NAME = "Order.findByCustomerAndYear";
+        public static final String QUERY_STRING = "select new dto.OrderInfo(o.id, o.date, o.amount, o.status) from Order o" +
+                " join o.customer c where c.id = :id and extract(year, o.date) = :year";
+    }
+
+    public static class SUM_BY_YEAR_QUERY {
+        public static final String QUERY_NAME = "Order.sumByYear";
+        public static final String QUERY_STRING = "select sum(o.amount), count(o.orderItems), " +
+                "(sum(o.amount)/count(o.orderItems)) as average), " +
+                "new dto.CustomerInfo(c.id, c.firstName, c.lastName, c.email) " +
+                "from Order o join o.customer c where extract(year, o.date) = :year group by c";
     }
 
     private static final long serialVersionUID = 1L;

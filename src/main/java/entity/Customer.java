@@ -1,37 +1,34 @@
 package entity;
 
-import dto.CustomerInfo;
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@SqlResultSetMapping(name = "CustomerInfo",
-        classes = {
-                @ConstructorResult(targetClass = CustomerInfo.class,
-                        columns = {
-                                @ColumnResult(name = "nr"),
-                                @ColumnResult(name = "firstName"),
-                                @ColumnResult(name = "lsatName"),
-                                @ColumnResult(name = "email")}
-                )
-        })
-public class Customer extends BaseEntity{
+@NamedQueries({
+        @NamedQuery(name = Customer.FIND_BY_NAME_QUERY.QUERY_NAME, query = Customer.FIND_BY_NAME_QUERY.QUERY_STRING)
+})
+public class Customer extends BaseEntity {
 
-  private String firstName;
-  private String lastName;
-  private String email;
+    public static class FIND_BY_NAME_QUERY {
+        public static final String QUERY_NAME = "Customer.findByName";
+        public static final String QUERY_STRING = "select new dto.CustomerInfo(c.id, c.firstName, c.lastName, c.email) " +
+                "from Customer c where c.fistName in :name or c.lastName in :name";
+    }
 
-  @OneToMany(mappedBy = "customer")
-  //Todo warum Set?
-  private Set<Order> order = new HashSet<>(); // Collections immer initialisieren
+    private String firstName;
+    private String lastName;
+    private String email;
 
-  @Embedded
-  private Address address;
+    @OneToMany(mappedBy = "customer")
+    //Todo warum Set?
+    private Set<Order> order = new HashSet<>(); // Collections immer initialisieren
 
-  @Embedded
-  private CreditCard creditCard;
+    @Embedded
+    private Address address;
+
+    @Embedded
+    private CreditCard creditCard;
 
     public String getFirstName() {
         return firstName;
