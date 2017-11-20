@@ -3,8 +3,8 @@ package ch.bfh.eadj.entity;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -30,10 +30,10 @@ public class Order extends BaseEntity implements Serializable {
 
     public static class STATISTIC_BY_YEAR_QUERY {
         public static final String QUERY_NAME = "Order.statisticByYear";
-        public static final String QUERY_STRING = "select new ch.bfh.eadj.dto.OrderStatistic(count(oi), sum(o.amount), " +
+        public static final String QUERY_STRING = "select new ch.bfh.eadj.dto.OrderStatistic((sum(o.amount)/count(oi)), sum(o.amount), " +
                 "avg(o.amount))" +
                 "from ch.bfh.eadj.entity.Order o join o.customer c join o.orderItems oi where EXTRACT(YEAR from o.date) = :year group by c";
-    }
+    } //TODO (summe/anzahl orderitems)
 
     private static final long serialVersionUID = 1L;
 
@@ -54,7 +54,7 @@ public class Order extends BaseEntity implements Serializable {
 //    @OrderBy("createdAt DESC") //TODO sinnvolle ordering
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Customer customer;
 
     @Embedded
