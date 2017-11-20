@@ -33,13 +33,14 @@ public class Order extends BaseEntity implements Serializable {
     public static class SUM_BY_YEAR_QUERY {
         public static final String QUERY_NAME = "Order.sumByYear";
         public static final String QUERY_STRING = "select sum(o.amount), count(o.orderItems), " +
-                "avg(o.amount) as average), " +
+                "avg(o.amount) as average, " +
                 "new dto.CustomerInfo(c.id, c.firstName, c.lastName, c.email) " +
                 "from Order o join o.customer c where extract(year, o.date) = :year group by c";
     }
 
     private static final long serialVersionUID = 1L;
 
+    @Column(name = "ORDER_DATE")
     private Date date;
 
     private BigDecimal amount;
@@ -47,7 +48,6 @@ public class Order extends BaseEntity implements Serializable {
     /*
     Wenn ein Order persistiert wird sollen auch alle dazugehörigen OrderItems kaskadierend persisitert werden
      */
-    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
