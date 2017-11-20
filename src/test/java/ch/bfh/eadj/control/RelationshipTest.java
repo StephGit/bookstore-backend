@@ -1,13 +1,14 @@
-import entity.Order;
+package ch.bfh.eadj.control;
+
+import ch.bfh.eadj.entity.Order;
 import org.junit.Test;
 
 import javax.persistence.TypedQuery;
-
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
-public class RelationshipTest extends AbstractTest {
+public class RelationshipTest extends ch.bfh.eadj.control.AbstractTest {
 
     @Test
     public void findOrder() {

@@ -1,4 +1,4 @@
-package entity;
+package ch.bfh.eadj.entity;
 
 public enum Country {
 

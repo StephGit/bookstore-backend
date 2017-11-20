@@ -1,4 +1,4 @@
-package dto;
+package ch.bfh.eadj.dto;
 
 import java.io.Serializable;
 

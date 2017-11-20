@@ -1,6 +1,6 @@
-package dto;
+package ch.bfh.eadj.dto;
 
-import entity.OrderStatus;
+import ch.bfh.eadj.entity.OrderStatus;
 
 import java.math.BigDecimal;
 import java.util.Date;

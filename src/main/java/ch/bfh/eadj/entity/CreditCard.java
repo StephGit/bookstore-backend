@@ -1,4 +1,4 @@
-package entity;
+package ch.bfh.eadj.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

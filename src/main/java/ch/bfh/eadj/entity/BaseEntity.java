@@ -1,4 +1,4 @@
-package entity;
+package ch.bfh.eadj.entity;
 
 import javax.persistence.*;
 import java.sql.Timestamp;

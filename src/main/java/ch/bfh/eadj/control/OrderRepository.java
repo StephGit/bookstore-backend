@@ -1,8 +1,8 @@
-package control;
+package ch.bfh.eadj.control;
 
-import dto.OrderInfo;
-import dto.OrderStatistic;
-import entity.Order;
+import ch.bfh.eadj.dto.OrderInfo;
+import ch.bfh.eadj.dto.OrderStatistic;
+import ch.bfh.eadj.entity.Order;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
