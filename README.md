@@ -16,12 +16,17 @@ JEE Book Store Project
  - Überlegungen machen bzw. begründen, OrderItem eager laden, 
  Kaskadierung Order-Customer sicher unterschiedlich gegenüber Order-OrderItem
 
-8. Jahr extracten und als String übergeben?
-- als INt
 
-9. Keyword Suche mit zusammengsetztem String und dann LIKE? Oder Loop über keywords?
-- mit criteria query
+#TODO
+- Kaskadierungen
+- FetchTypes
+- Collections
 
+alles begründen
+
+
+
+## Create statement
 
 
 -CREATE TABLE T_ORDER (ID BIGINT IDENTITY NOT NULL, AMOUNT NUMERIC(38), CREATEDAT TIMESTAMP, CREATEDBY VARCHAR, DATE DATE, STATUS VARCHAR, UPDATEDAT TIMESTAMP, UPDATEDBY VARCHAR, VERSION INTEGER, CITY VARCHAR, COUNTRY VARCHAR, POSTALCODE VARCHAR, STREET VARCHAR, CREDITCARDTYPE VARCHAR, EXPIRATIONMONTH INTEGER, EXPIRATIONYEAR INTEGER, NUMBER VARCHAR, CUSTOMER_ID BIGINT, PRIMARY KEY (ID))

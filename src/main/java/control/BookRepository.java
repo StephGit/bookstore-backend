@@ -15,13 +15,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Stateless
-public class BookService extends AbstractService<Book> {
+public class BookRepository extends AbstractRepository<Book> {
 
     @PersistenceContext
     EntityManager em;
 
 
-    public BookService() {
+    public BookRepository() {
         super(Book.class);
     }
 

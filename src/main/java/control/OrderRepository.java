@@ -9,12 +9,12 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
-public class OrderService extends AbstractService {
+public class OrderRepository extends AbstractRepository {
 
     @PersistenceContext
     EntityManager em;
 
-    public OrderService() {
+    public OrderRepository() {
         super(Order.class);
     }
 

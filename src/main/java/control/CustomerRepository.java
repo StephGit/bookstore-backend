@@ -10,12 +10,12 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 
 @Stateless
-public class CustomerService extends AbstractService<Customer> {
+public class CustomerRepository extends AbstractRepository<Customer> {
 
     @PersistenceContext
     EntityManager em;
 
-    public CustomerService() {
+    public CustomerRepository() {
         super(Customer.class);
     }
 
