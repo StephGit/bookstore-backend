@@ -51,7 +51,7 @@ public abstract class AbstractTest {
 
             OrderItem orderItem = new OrderItem();
             orderItem.setQuantity(10);
-            orderItem.setOrder(ord);
+            ord.addOrderItem(orderItem);
             em.persist(orderItem);
             transaction.commit();
 
@@ -76,7 +76,6 @@ public abstract class AbstractTest {
             transaction.begin();
 
             entity.OrderItem orderItem = em.find(OrderItem.class, orderItemId);
-            orderItem.setOrder(null);
             em.remove(orderItem);
 
             Order order = em.find(Order.class, orderId);

@@ -1,13 +1,13 @@
 package entity;
 
+import com.sun.xml.internal.bind.v2.TODO;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "T_ORDER")
@@ -27,15 +27,14 @@ public class Order extends BaseEntity implements Serializable {
     public static class FIND_BY_CUSTOMER_AND_YEAR_QUERY {
         public static final String QUERY_NAME = "Order.findByCustomerAndYear";
         public static final String QUERY_STRING = "select new dto.OrderInfo(o.id, o.date, o.amount, o.status) from Order o" +
-                " join o.customer c where c.id = :id and extract(year, o.date) = :year";
+                " join o.customer c where c.id = :id and extract(YEAR from o.date) = :year";
     }
 
     public static class SUM_BY_YEAR_QUERY {
         public static final String QUERY_NAME = "Order.sumByYear";
-        public static final String QUERY_STRING = "select sum(o.amount), count(o.orderItems), " +
-                "avg(o.amount) as average), " +
-                "new dto.CustomerInfo(c.id, c.firstName, c.lastName, c.email) " +
-                "from Order o join o.customer c where extract(year, o.date) = :year group by c";
+        public static final String QUERY_STRING = "select new dto.OrderStatistic(count(oi), sum(o.amount), " +
+                "avg(o.amount))" +
+                "from entity.Order o join o.customer c join o.orderItems oi where EXTRACT(YEAR from o.date) = :year group by c";
     }
 
     private static final long serialVersionUID = 1L;
@@ -51,6 +50,7 @@ public class Order extends BaseEntity implements Serializable {
     private OrderStatus status;
 
     @OneToMany
+    @JoinColumn(name = "ORDER_ID") //OrderItem besitzt ORDER_ID FK Column
     @OrderBy("createdAt DESC")
     private List<OrderItem> orderItems = new ArrayList<>();
 
@@ -67,6 +67,10 @@ public class Order extends BaseEntity implements Serializable {
     public void addOrderItem(OrderItem item) {
         orderItems.add(item);
 
+    }
+
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
     }
 
     public Date getDate() {
