@@ -7,6 +7,11 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.LinkedList;
 import java.util.List;
 
 @Stateless
@@ -28,10 +33,23 @@ public class BookService extends AbstractService<Book> {
         return result;
     }
 
-    public List<BookInfo> findBooksbyKeywords(Book book) {
-        TypedQuery<BookInfo> query = em.createNamedQuery(Book.FIND_BY_KEYWORD_QUERY.QUERY_NAME, BookInfo.class);
-        List<BookInfo> resultList = query.getResultList();
-        return resultList;
+    public List<BookInfo> findBooksByKeywords(List<String> keywords){
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<BookInfo> query = builder.createQuery(BookInfo.class);
+        Root<BookInfo> root = query.from(BookInfo.class);
+
+        List<Predicate> predicates = new LinkedList<>();
+        for (String keyword : keywords) {
+            predicates.add(builder.like(root.<String>get("keywords"), "%" + keyword + "%"));
+        }
+
+        return em.createQuery(
+                query.select(root).where(
+                        builder.or(
+                                predicates.toArray(new Predicate[predicates.size()])
+                        )
+                ))
+                .getResultList();
     }
 
 

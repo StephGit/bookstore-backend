@@ -6,20 +6,13 @@ import java.math.BigDecimal;
 @Table(name = "T_BOOK")
 @Entity
 @NamedQueries({
-        @NamedQuery(name = Book.FIND_BY_ISBN_QUERY.QUERY_NAME, query = Book.FIND_BY_ISBN_QUERY.QUERY_STRING),
-        @NamedQuery(name = Book.FIND_BY_KEYWORD_QUERY.QUERY_NAME, query = Book.FIND_BY_KEYWORD_QUERY.QUERY_STRING)
+        @NamedQuery(name = Book.FIND_BY_ISBN_QUERY.QUERY_NAME, query = Book.FIND_BY_ISBN_QUERY.QUERY_STRING)
 })
 public class Book extends BaseEntity {
 
     public static class FIND_BY_ISBN_QUERY {
         public static final String QUERY_NAME = "Book.findByISBN";
         public static final String QUERY_STRING = "select new dto.BookInfo(b.isbn, b.authors, b.title, b.price) from Book b where b.isbn = :isbn";
-    }
-
-    public static class FIND_BY_KEYWORD_QUERY {
-        public static final String QUERY_NAME = "Book.findByKeyword";
-        public static final String QUERY_STRING = "select new dto.BookInfo(b.isbn, b.authors, b.title, b.price) from Book b " +
-                "where (b.title in :keywords) or (b.authors in :keywords) or (b.publisher in :keywords) order by b.title desc"; //TODO ordering?
     }
 
     private String isbn;

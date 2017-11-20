@@ -6,9 +6,10 @@ import java.sql.Timestamp;
 @MappedSuperclass
 public abstract class BaseEntity {
 
+    //TODO warum diese strategy?
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long nr;
 
     @Version
     private int version;
@@ -21,8 +22,8 @@ public abstract class BaseEntity {
 
     protected String updatedBy;
 
-    public Long getId() {
-        return id;
+    public Long getNr() {
+        return nr;
     }
 
     public int getVersion() {
@@ -39,29 +40,4 @@ public abstract class BaseEntity {
         updatedAt = new Timestamp(System.currentTimeMillis());
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        BaseEntity that = (BaseEntity) o;
-
-        if (version != that.version) return false;
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (createdAt != null ? !createdAt.equals(that.createdAt) : that.createdAt != null) return false;
-        if (createdBy != null ? !createdBy.equals(that.createdBy) : that.createdBy != null) return false;
-        if (updatedAt != null ? !updatedAt.equals(that.updatedAt) : that.updatedAt != null) return false;
-        return updatedBy != null ? updatedBy.equals(that.updatedBy) : that.updatedBy == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + version;
-        result = 31 * result + (createdAt != null ? createdAt.hashCode() : 0);
-        result = 31 * result + (createdBy != null ? createdBy.hashCode() : 0);
-        result = 31 * result + (updatedAt != null ? updatedAt.hashCode() : 0);
-        result = 31 * result + (updatedBy != null ? updatedBy.hashCode() : 0);
-        return result;
-    }
 }

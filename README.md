@@ -16,10 +16,11 @@ JEE Book Store Project
  - Überlegungen machen bzw. begründen, OrderItem eager laden, 
  Kaskadierung Order-Customer sicher unterschiedlich gegenüber Order-OrderItem
 
+8. Jahr extracten und als String übergeben?
+- als INt
 
-
-
-
+9. Keyword Suche mit zusammengsetztem String und dann LIKE? Oder Loop über keywords?
+- mit criteria query
 
 
 
