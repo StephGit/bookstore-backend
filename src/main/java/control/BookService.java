@@ -1,14 +1,19 @@
 package control;
 
+import dto.BookInfo;
 import entity.Book;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import java.util.List;
 
-public class BookService extends AbstractService<Book>{
+@Stateless
+public class BookService extends AbstractService<Book> {
 
     @PersistenceContext
-    EntityManager entityManager;
+    EntityManager em;
 
 
     public BookService() {
@@ -16,18 +21,23 @@ public class BookService extends AbstractService<Book>{
     }
 
 
-    public void create(Book book) {
-        entityManager.persist(book);
+    public BookInfo findBookByIsbn(String isbn) {
+        TypedQuery<BookInfo> query = em.createNamedQuery(Book.FIND_BY_ISBN_QUERY.QUERY_NAME, BookInfo.class);
+        query.setParameter("isbn",isbn);
+        BookInfo result = query.getSingleResult();
+        return result;
     }
 
-
-
-
+    public List<BookInfo> findBooksbyKeywords(Book book) {
+        TypedQuery<BookInfo> query = em.createNamedQuery(Book.FIND_BY_KEYWORD_QUERY.QUERY_NAME, BookInfo.class);
+        List<BookInfo> resultList = query.getResultList();
+        return resultList;
+    }
 
 
     @Override
     protected EntityManager getEntityManager() {
-        return entityManager;
+        return em;
     }
 
 }

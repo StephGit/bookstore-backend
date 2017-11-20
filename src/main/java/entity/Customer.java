@@ -2,9 +2,9 @@ package entity;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @NamedQueries({
@@ -21,13 +21,6 @@ public class Customer extends BaseEntity {
     private String firstName;
     private String lastName;
     private String email;
-
-  /*
-  Wir möchten die Order nach Datum absteigend sortiert. Deshalb ist hier eine List die bevorzugte Collection-Wahl.
-   */
-  @OneToMany(mappedBy = "customer")
-  @OrderBy("createdAt DESC")
-  private List<Order> order = new ArrayList<>(); // Collections immer initialisieren
 
     @Embedded
     private Address address;

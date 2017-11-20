@@ -1,12 +1,12 @@
 package entity;
 
-import dto.OrderInfo;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -51,8 +51,9 @@ public class Order extends BaseEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    @OneToMany(mappedBy = "order")
-    private Set<OrderItem> orderItems = new HashSet<>();
+    @OneToMany
+    @OrderBy("createdAt DESC")
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     @ManyToOne
     private Customer customer;
@@ -83,10 +84,6 @@ public class Order extends BaseEntity implements Serializable {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
-    }
-
-    public Set<OrderItem> getOrderItems() {
-        return orderItems;
     }
 
     public Customer getCustomer() {
