@@ -12,7 +12,7 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(name = Order.FIND_BY_ID_QUERY.QUERY_NAME, query = Order.FIND_BY_ID_QUERY.QUERY_STRING),
         @NamedQuery(name = Order.FIND_BY_CUSTOMER_AND_YEAR_QUERY.QUERY_NAME, query = Order.FIND_BY_CUSTOMER_AND_YEAR_QUERY.QUERY_STRING),
-        @NamedQuery(name = Order.SUM_BY_YEAR_QUERY.QUERY_NAME, query = Order.SUM_BY_YEAR_QUERY.QUERY_STRING)
+        @NamedQuery(name = Order.STATISTIC_BY_YEAR_QUERY.QUERY_NAME, query = Order.STATISTIC_BY_YEAR_QUERY.QUERY_STRING)
 })
 public class Order extends BaseEntity implements Serializable {
 //TODO achtung order ist ein oracle keyword
@@ -28,8 +28,8 @@ public class Order extends BaseEntity implements Serializable {
                 " join o.customer c where c.id = :id and extract(YEAR from o.date) = :year";
     }
 
-    public static class SUM_BY_YEAR_QUERY {
-        public static final String QUERY_NAME = "Order.sumByYear";
+    public static class STATISTIC_BY_YEAR_QUERY {
+        public static final String QUERY_NAME = "Order.statisticByYear";
         public static final String QUERY_STRING = "select new dto.OrderStatistic(count(oi), sum(o.amount), " +
                 "avg(o.amount))" +
                 "from entity.Order o join o.customer c join o.orderItems oi where EXTRACT(YEAR from o.date) = :year group by c";

@@ -3,11 +3,11 @@ package control;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-public abstract class AbstractService<T> {
+public abstract class AbstractRepository<T> {
 
     private final Class<T> entityClass;
 
-    public AbstractService(Class<T> entityClass) {
+    public AbstractRepository(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
 

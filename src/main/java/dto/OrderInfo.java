@@ -7,24 +7,24 @@ import java.util.Date;
 
 public class OrderInfo {
 
-    private Long id;
+    private Long nr;
     private Date date;
     private BigDecimal amount;
     private OrderStatus status;
 
-    public OrderInfo(Long id, Date date, BigDecimal amount, OrderStatus status) {
-        this.id = id;
+    public OrderInfo(Long nr, Date date, BigDecimal amount, OrderStatus status) {
+        this.nr = nr;
         this.date = date;
         this.amount = amount;
         this.status = status;
     }
 
-    public Long getId() {
-        return id;
+    public Long getNr() {
+        return nr;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setNr(Long nr) {
+        this.nr = nr;
     }
 
     public Date getDate() {
