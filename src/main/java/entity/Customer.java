@@ -15,7 +15,7 @@ public class Customer extends BaseEntity {
 
     public static class FIND_BY_NAME_QUERY {
         public static final String QUERY_NAME = "Customer.findByName";
-        public static final String QUERY_STRING = "select new dto.CustomerInfo(c.id, c.firstName, c.lastName, c.email) " +
+        public static final String QUERY_STRING = "select new dto.CustomerInfo(c.nr, c.firstName, c.lastName, c.email) " +
                 "from Customer c where c.firstName in :name or c.lastName in :name";
     }
 

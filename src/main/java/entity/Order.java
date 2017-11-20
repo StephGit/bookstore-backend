@@ -10,22 +10,22 @@ import java.util.List;
 @Entity
 @Table(name = "T_ORDER")
 @NamedQueries({
-        @NamedQuery(name = Order.FIND_BY_ID_QUERY.QUERY_NAME, query = Order.FIND_BY_ID_QUERY.QUERY_STRING),
+        @NamedQuery(name = Order.FIND_BY_NR_QUERY.QUERY_NAME, query = Order.FIND_BY_NR_QUERY.QUERY_STRING),
         @NamedQuery(name = Order.FIND_BY_CUSTOMER_AND_YEAR_QUERY.QUERY_NAME, query = Order.FIND_BY_CUSTOMER_AND_YEAR_QUERY.QUERY_STRING),
         @NamedQuery(name = Order.STATISTIC_BY_YEAR_QUERY.QUERY_NAME, query = Order.STATISTIC_BY_YEAR_QUERY.QUERY_STRING)
 })
 public class Order extends BaseEntity implements Serializable {
 //TODO achtung order ist ein oracle keyword
 
-    public static class FIND_BY_ID_QUERY {
+    public static class FIND_BY_NR_QUERY {
         public static final String QUERY_NAME = "Order.findById";
-        public static final String QUERY_STRING = "select new dto.OrderInfo(o.id, o.date, o.amount, o.status) from Order o where o.id = :id";
+        public static final String QUERY_STRING = "select new dto.OrderInfo(o.nr, o.date, o.amount, o.status) from Order o where o.nr = :nr";
     }
 
     public static class FIND_BY_CUSTOMER_AND_YEAR_QUERY {
         public static final String QUERY_NAME = "Order.findByCustomerAndYear";
-        public static final String QUERY_STRING = "select new dto.OrderInfo(o.id, o.date, o.amount, o.status) from Order o" +
-                " join o.customer c where c.id = :id and extract(YEAR from o.date) = :year";
+        public static final String QUERY_STRING = "select new dto.OrderInfo(o.nr, o.date, o.amount, o.status) from Order o" +
+                " join o.customer c where c.nr = :nr and extract(YEAR from o.date) = :year";
     }
 
     public static class STATISTIC_BY_YEAR_QUERY {

@@ -1,4 +1,3 @@
-import com.sun.org.apache.xpath.internal.operations.Or;
 import entity.Order;
 import org.junit.Test;
 
@@ -19,7 +18,7 @@ public class RelationshipTest extends AbstractTest {
 
     @Test
     public void shouldFindOrderOfCustomer() {
-        TypedQuery<Order> q = em.createQuery("select o from Order o join o.customer c where c.id = 26", Order.class);
+        TypedQuery<Order> q = em.createQuery("select o from Order o join o.customer c where c.nr = 26", Order.class);
         List<Order> list = q.getResultList();
         assertTrue(!list.isEmpty());
     }
