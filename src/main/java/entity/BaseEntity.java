@@ -2,6 +2,7 @@ package entity;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Date;
 
 @MappedSuperclass
 public abstract class BaseEntity {
@@ -14,11 +15,13 @@ public abstract class BaseEntity {
     @Version
     private int version;
 
-    private  Timestamp createdAt;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
 
     private String createdBy;
 
-    private Timestamp updatedAt;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
 
     protected String updatedBy;
 

@@ -49,7 +49,7 @@ public class Order extends BaseEntity implements Serializable {
     private OrderStatus status;
 
     @OneToMany
-    @JoinColumn(name = "ORDER_ID") //OrderItem besitzt ORDER_ID FK Column
+    @JoinColumn(name = "ORDER_NR") //OrderItem besitzt ORDER_ID FK Column
     @OrderBy("createdAt DESC")
     private List<OrderItem> orderItems = new ArrayList<>();
 
