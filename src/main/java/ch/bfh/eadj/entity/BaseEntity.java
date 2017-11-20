@@ -15,16 +15,6 @@ public abstract class BaseEntity {
     @Version
     private int version;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
-
-    private String createdBy;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date updatedAt;
-
-    protected String updatedBy;
-
     public Long getNr() {
         return nr;
     }
@@ -32,15 +22,4 @@ public abstract class BaseEntity {
     public int getVersion() {
         return version;
     }
-
-    @PrePersist
-    public void setCreatedAt() {
-        createdAt = new Timestamp(System.currentTimeMillis());
-    }
-
-    @PreUpdate
-    public void setUpdatedAt() {
-        updatedAt = new Timestamp(System.currentTimeMillis());
-    }
-
 }

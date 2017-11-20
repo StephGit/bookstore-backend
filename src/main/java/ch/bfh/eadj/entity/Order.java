@@ -3,8 +3,8 @@ package ch.bfh.eadj.entity;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -38,6 +38,7 @@ public class Order extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Column(name = "ORDER_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date date;
 
     private BigDecimal amount;
@@ -50,7 +51,7 @@ public class Order extends BaseEntity implements Serializable {
 
     @OneToMany
     @JoinColumn(name = "ORDER_NR") //OrderItem besitzt ORDER_ID FK Column
-    @OrderBy("createdAt DESC")
+//    @OrderBy("createdAt DESC") //TODO sinnvolle ordering
     private List<OrderItem> orderItems = new ArrayList<>();
 
     @ManyToOne

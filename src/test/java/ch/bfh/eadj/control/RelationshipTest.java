@@ -24,4 +24,5 @@ public class RelationshipTest extends ch.bfh.eadj.control.AbstractTest {
         assertTrue(!list.isEmpty());
     }
 
+
 }
