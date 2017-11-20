@@ -3,7 +3,9 @@ package entity;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
+@Table(name = "T_ORDERITEM")
 @Entity
 public class OrderItem extends  BaseEntity {
 

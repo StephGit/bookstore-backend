@@ -3,6 +3,7 @@ package entity;
 import javax.persistence.*;
 import java.math.BigDecimal;
 
+@Table(name = "T_BOOK")
 @Entity
 @NamedQueries({
         @NamedQuery(name = Book.FIND_BY_ISBN_QUERY.QUERY_NAME, query = Book.FIND_BY_ISBN_QUERY.QUERY_STRING),

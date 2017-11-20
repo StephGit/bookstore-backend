@@ -47,7 +47,6 @@ public class Order extends BaseEntity implements Serializable {
     /*
     Wenn ein Order persistiert wird sollen auch alle dazugehörigen OrderItems kaskadierend persisitert werden
      */
-    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 

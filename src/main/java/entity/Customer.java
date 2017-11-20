@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.List;
 
+@Table(name = "T_CUSTOMER")
 @Entity
 @NamedQueries({
         @NamedQuery(name = Customer.FIND_BY_NAME_QUERY.QUERY_NAME, query = Customer.FIND_BY_NAME_QUERY.QUERY_STRING)

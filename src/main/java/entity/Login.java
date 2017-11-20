@@ -2,6 +2,7 @@ package entity;
 
 import javax.persistence.*;
 
+@Table(name = "T_LOGIN")
 @Entity
 @NamedQuery(name = Login.FIND_BY_NAME_QUERY.QUERY_NAME, query = Login.FIND_BY_NAME_QUERY.QUERY_STRING)
 public class Login extends BaseEntity {
