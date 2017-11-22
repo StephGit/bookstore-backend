@@ -11,7 +11,7 @@ public abstract class BaseEntity {
     AUTO sollte nur für Entwicklung und Prototyping verwendet werden weil der Provider seine eigene Strategie wählt.1
      */
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long nr;
 
     @Version

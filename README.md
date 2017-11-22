@@ -18,21 +18,17 @@ JEE Book Store Project
 
 
 #TODO
-- Kaskadierungen
-- FetchTypes
-- Collections
+@Adu
+Obere 4 Queries
+
+
+@Schiro
+Untere 3 Queries
+Statistik + DTO
+
 
 alles begründen
 
-
-- Ist order zu customer wirklich ManyToOne? Laut Diagramm nicht
-
-- Order nach BookOrder umbenennen
-
-- Ist buch zu orderitem OneToOne?
-
-
-- Statistik Query richti machen
 
 - Tests die Statistik und Queries testen
 

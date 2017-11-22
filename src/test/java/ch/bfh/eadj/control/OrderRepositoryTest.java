@@ -1,5 +1,6 @@
 package ch.bfh.eadj.control;
 
+import ch.bfh.eadj.AbstractTest;
 import ch.bfh.eadj.dto.OrderInfo;
 import ch.bfh.eadj.entity.OrderStatus;
 import org.junit.Before;
@@ -10,7 +11,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-public class OrderRepositoryTest extends ch.bfh.eadj.control.AbstractTest {
+public class OrderRepositoryTest extends AbstractTest {
     private OrderRepository orderRepository;
 
     @Before

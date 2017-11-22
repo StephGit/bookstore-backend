@@ -15,8 +15,13 @@ public class Customer extends BaseEntity {
                 "from Customer c where c.firstName in :name or c.lastName in :name";
     }
 
+    @Column(nullable = false)
     private String firstName;
+
+    @Column(nullable = false)
     private String lastName;
+
+    @Column(nullable = false)
     private String email;
 
     @Embedded

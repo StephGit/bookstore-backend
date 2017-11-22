@@ -1,0 +1,132 @@
+package ch.bfh.eadj.entity;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.*;
+
+@Entity
+@Table(name = "T_BOOKORDER")
+@NamedQueries({
+        @NamedQuery(name = BookOrder.FIND_BY_NR_QUERY.QUERY_NAME, query = BookOrder.FIND_BY_NR_QUERY.QUERY_STRING),
+        @NamedQuery(name = BookOrder.FIND_BY_CUSTOMER_AND_YEAR_QUERY.QUERY_NAME, query = BookOrder.FIND_BY_CUSTOMER_AND_YEAR_QUERY.QUERY_STRING),
+        @NamedQuery(name = BookOrder.STATISTIC_BY_YEAR_QUERY.QUERY_NAME, query = BookOrder.STATISTIC_BY_YEAR_QUERY.QUERY_STRING)
+})
+public class BookOrder extends BaseEntity implements Serializable {
+//TODO achtung order ist ein oracle keyword
+
+    public static class FIND_BY_NR_QUERY {
+        public static final String QUERY_NAME = "BookOrder.findById";
+        public static final String QUERY_STRING = "select new ch.bfh.eadj.dto.OrderInfo(o.nr, o.date, o.amount, o.status) from BookOrder o where o.nr = :nr";
+    }
+
+    public static class FIND_BY_CUSTOMER_AND_YEAR_QUERY {
+        public static final String QUERY_NAME = "BookOrder.findByCustomerAndYear";
+        public static final String QUERY_STRING = "select new ch.bfh.eadj.dto.OrderInfo(o.nr, o.date, o.amount, o.status) from BookOrder o" +
+                " join o.customer c where c.nr = :nr and extract(YEAR from o.date) = :year";
+    }
+
+    public static class STATISTIC_BY_YEAR_QUERY {
+        public static final String QUERY_NAME = "BookOrder.statisticByYear";// TODO gemäss DTO -> Test Grouping
+        public static final String QUERY_STRING = "select new ch.bfh.eadj.dto.OrderStatistic(count(oi), (sum(o.amount)/count(oi)), sum(o.amount)) " +
+                "from BookOrder o join o.customer c join o.orderItems oi where EXTRACT(YEAR from o.date) = :year group by c";
+    }
+
+    private static final long serialVersionUID = 1L;
+
+    @Column(name = "ORDER_DATE", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date date;
+
+    @Column(nullable = false)
+    private BigDecimal amount;
+
+    /*
+    Wenn ein BookOrder persistiert wird sollen auch alle dazugehörigen OrderItems kaskadierend persisitert werden
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private OrderStatus status;
+
+    /*
+    Kaskadierung:
+    OrderItems sind Komposition zu BookOrder. Klassischerweise wird für Kompositionen CascadeType.ALL verwendet (eine Entity kann nicht ohne ein anderes bestehen)
+    Weisenkinder sollen deshalb gelöscht werden sobald die Beziehung entfernt wird. Referenzielle Integrität wird so eingehalten.
+
+    Beziehung:
+    Unidirektionale OneToMany Beziehung benötigt das Angeben der JoinColumn (lebt auf OrderItem als owining Seite)
+    Lässt man das weg entsteht eine Zwischentabelle welche Performanceeinbussen zur Folge hat
+
+    Fetch-Typ:
+    Eager nicht zwingend, da evtl. nur Orderinfos von Interesse sind ohne einzelne Positionen.
+     */
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "ORDER_NR") //OrderItem besitzt ORDER_ID FK Column
+    private Set<OrderItem> orderItems = new HashSet<>();
+
+    /*
+    Kaskadierung:
+    Wird ein BookOrder mit einem Customer zusammen angelegt soll kaskadiert persisiert werden.
+
+    Fetch-Typ:
+    Lazy, da die Adresse bereits auf dem BookOrder vorhanden ist und sonstige Kundeninfos nicht immer benötigt werden.
+     */
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.REFRESH }, fetch = FetchType.LAZY)
+    private Customer customer;
+
+    @Embedded
+    private Address address;
+
+    @Embedded
+    private CreditCard creditCard;
+
+
+    public void addOrderItem(OrderItem item) {
+        orderItems.add(item);
+
+    }
+
+    public Set<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public CreditCard getCreditCard() {
+        return creditCard;
+    }
+
+    public void setCreditCard(CreditCard creditCard) {
+        this.creditCard = creditCard;
+    }
+}

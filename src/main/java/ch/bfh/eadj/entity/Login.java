@@ -1,6 +1,7 @@
 package ch.bfh.eadj.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Table(name = "T_LOGIN")
 @Entity
@@ -12,8 +13,10 @@ public class Login extends BaseEntity {
         public static final String QUERY_STRING = "select l from Login l where l.name = :name";
     }
 
-    @Column(name = "USER_NAME")
+    @Column(name = "USER_NAME", nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private String password;
 
     /*
@@ -22,7 +25,7 @@ public class Login extends BaseEntity {
    Eine bessere Lösung ist das Speichern des Namens als String anstelle des ordinalen Wertes.
     */
     @Enumerated(EnumType.STRING)
-    @Column(name = "USER_GROUP")
+    @Column(name = "USER_GROUP", nullable = false)
     private UserGroup group;
 
 

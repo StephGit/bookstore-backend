@@ -9,6 +9,7 @@ public class OrderStatistic {
     private BigDecimal averageAmount;
 
 
+// TODO Year & customerinfo, id, name prename
     public OrderStatistic(Integer positionsCount, BigDecimal totalAmount, BigDecimal averageAmount) {
         this.positionsCount = positionsCount;
         this.totalAmount = totalAmount;

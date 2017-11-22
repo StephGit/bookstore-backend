@@ -14,12 +14,16 @@ public class CreditCard {
     Eine bessere Lösung ist das Speichern des Namens als String anstelle des ordinalen Wertes.
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "CC_TYPE")
+    @Column(name = "CC_TYPE", nullable = false)
     private CreditCardType type;
 
-    @Column(name = "CC_NUMBER")
+    @Column(name = "CC_NUMBER", nullable = false)
     private String number;
+
+    @Column(nullable = false)
     private Integer expirationMonth;
+    
+    @Column(nullable = false)
     private Integer expirationYear;
 
 

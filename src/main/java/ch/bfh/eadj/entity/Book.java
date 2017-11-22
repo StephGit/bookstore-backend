@@ -15,12 +15,15 @@ public class Book extends BaseEntity {
         public static final String QUERY_STRING = "select new ch.bfh.eadj.dto.BookInfo(b.isbn, b.authors, b.title, b.price) from Book b where b.isbn = :isbn";
     }
 
+    @Column(nullable = false)
     private String isbn;
 
     private String authors;
 
+    @Column(nullable = false)
     private String title;
 
+    @Column(nullable = false)
     private BigDecimal price;
 
     private String publisher;
