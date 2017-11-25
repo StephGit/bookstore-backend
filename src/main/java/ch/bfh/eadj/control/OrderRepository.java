@@ -19,10 +19,10 @@ public class OrderRepository extends AbstractRepository<BookOrder> {
     }
 
 
-    public List<OrderInfo> findByNameAndYear(String name, Integer year) {
+    public List<OrderInfo> findByCustomerAndYear(Integer nr, Integer year) {
         TypedQuery<OrderInfo> query = em.createNamedQuery(BookOrder.FIND_BY_CUSTOMER_AND_YEAR_QUERY.QUERY_NAME, OrderInfo.class);
         query.setParameter("year", year);
-        query.setParameter("name", name);
+        query.setParameter("nr", nr); //TODO constants
         List<OrderInfo> resultList = query.getResultList();
         return resultList;
     }

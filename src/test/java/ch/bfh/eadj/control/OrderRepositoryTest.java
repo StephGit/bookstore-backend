@@ -24,7 +24,7 @@ public class OrderRepositoryTest extends AbstractTest {
     public void findByNameAndYear() throws Exception {
 
         //when
-        List<OrderInfo> result = orderRepository.findByNameAndYear("Smith", 2017);
+        List<OrderInfo> result = orderRepository.findByCustomerAndYear(6, 2017);
 
 
         //then

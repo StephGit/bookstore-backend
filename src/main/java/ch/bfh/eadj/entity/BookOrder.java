@@ -38,7 +38,7 @@ public class BookOrder extends BaseEntity implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 8, scale = 2)
     private BigDecimal amount;
 
     /*

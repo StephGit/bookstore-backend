@@ -1,17 +1,11 @@
 package ch.bfh.eadj;
 
-import ch.bfh.eadj.entity.BookOrder;
-import ch.bfh.eadj.entity.OrderItem;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import java.math.BigDecimal;
 import java.util.logging.Logger;
 
 public abstract class AbstractTest {
@@ -20,10 +14,6 @@ public abstract class AbstractTest {
 
     protected static EntityManagerFactory emf;
     protected static EntityManager em;
-    private EntityTransaction transaction;
-
-    protected Long orderId;
-    protected Long orderItemId;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
