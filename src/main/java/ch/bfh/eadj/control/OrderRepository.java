@@ -1,7 +1,7 @@
 package ch.bfh.eadj.control;
 
 import ch.bfh.eadj.dto.OrderInfo;
-import ch.bfh.eadj.dto.OrderStatistic;
+import ch.bfh.eadj.dto.OrderStatisticInfo;
 import ch.bfh.eadj.entity.BookOrder;
 
 import javax.persistence.EntityManager;
@@ -27,18 +27,18 @@ public class OrderRepository extends AbstractRepository<BookOrder> {
         return resultList;
     }
 
-    public BookOrder findByNr(Long nr) {
-        TypedQuery<BookOrder> query = em.createNamedQuery(BookOrder.FIND_BY_NR_QUERY.QUERY_NAME, BookOrder.class);
+    public OrderInfo findByNr(Long nr) {
+        TypedQuery<OrderInfo> query = em.createNamedQuery(BookOrder.FIND_BY_NR_QUERY.QUERY_NAME, OrderInfo.class);
         query.setParameter("nr", nr);
-        BookOrder result = query.getSingleResult();
+        OrderInfo result = query.getSingleResult();
         return result;
     }
 
-    public OrderStatistic getStatisticByYear(Integer year) {
-        TypedQuery<OrderStatistic> query = em.createNamedQuery(BookOrder.STATISTIC_BY_YEAR_QUERY.QUERY_NAME, OrderStatistic.class);
+    public List<OrderStatisticInfo> getStatisticByYear(Integer year) {
+        TypedQuery<OrderStatisticInfo> query = em.createNamedQuery(BookOrder.STATISTIC_BY_YEAR_QUERY.QUERY_NAME, OrderStatisticInfo.class);
         query.setParameter("year", year);
-        OrderStatistic singleResult = query.getSingleResult();
-        return singleResult;
+        List<OrderStatisticInfo> resultList = query.getResultList();
+        return resultList;
     }
 
 

@@ -24,11 +24,13 @@ public class BookOrder extends BaseEntity implements Serializable {
         public static final String QUERY_STRING = "select new ch.bfh.eadj.dto.OrderInfo(o.nr, o.date, o.amount, o.status) from BookOrder o" +
                 " join o.customer c where c.nr = :nr and extract(YEAR from o.date) = :year";
     }
-
+    /*
+    //TODO evtl. nur Bestellungen berücksichtigen, welche nicht den Status.CANCELED haben. Ansonsten ist Statistik nicht aussagekräftig. and o.status not like ('CANCELED')
+     */
     public static class STATISTIC_BY_YEAR_QUERY {
         public static final String QUERY_NAME = "BookOrder.statisticByYear";
-        public static final String QUERY_STRING = "select new ch.bfh.eadj.dto.OrderStatistic(sum(o.amount), count(oi), (sum(o.amount)/count(oi)), c.nr, c.firstName, c.lastName ) " +
-                "from BookOrder o join o.customer c join o.orderItems oi where EXTRACT(YEAR from o.date) = :year group by c";
+        public static final String QUERY_STRING = "select new ch.bfh.eadj.dto.OrderStatisticInfo(sum(o.amount), count(oi), (sum(o.amount)/count(oi)), c.nr, c.firstName, c.lastName ) " +
+                "from BookOrder o join o.customer c join o.orderItems oi where EXTRACT(YEAR from o.date) = :year  group by c.nr";
     }
 
     private static final long serialVersionUID = 1L;
