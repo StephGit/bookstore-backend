@@ -2,14 +2,18 @@ package ch.bfh.eadj.control;
 
 import ch.bfh.eadj.AbstractTest;
 import ch.bfh.eadj.dto.BookInfo;
+import ch.bfh.eadj.entity.Book;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertTrue;
 
 public class BookRepositoryTest extends AbstractTest {
     private BookRepository bookRepo;
@@ -37,7 +41,50 @@ public class BookRepositoryTest extends AbstractTest {
     }
 
     @Test
-    public void findBooksByKeywords() throws Exception {
+    public void findBooksByTitleKeywords() throws Exception {
+
+        //given
+        List<String> keywords = Arrays.asList("Far Side", "Moon", "the");
+
+        //when
+        List<Book> booksByKeywords = bookRepo.findBooksByKeywords(keywords);
+
+        //then
+        assertThat(booksByKeywords.size(),is(1));
+        Book foundBook = booksByKeywords.get(0);
+        assertTrue(foundBook.getTitle().contains(keywords.get(0)));
+        assertTrue(foundBook.getTitle().contains(keywords.get(1)));
+        assertTrue(foundBook.getTitle().contains(keywords.get(2)));
+    }
+
+    @Test
+    public void findBooksByAuthorKeywords() throws Exception {
+
+        //given
+        List<String> keywords = Arrays.asList("Hana");
+
+        //when
+        List<Book> booksByKeywords = bookRepo.findBooksByKeywords(keywords);
+
+        //then
+        assertThat(booksByKeywords.size(),is(2));
+        Book foundBook = booksByKeywords.get(0);
+        assertTrue(foundBook.getAuthors().contains(keywords.get(0)));
+    }
+
+    @Test
+    public void findBooksByPublisherKeywords() throws Exception {
+
+        //given
+        List<String> keywords = Arrays.asList("Babblestorm");
+
+        //when
+        List<Book> booksByKeywords = bookRepo.findBooksByKeywords(keywords);
+
+        //then
+        assertThat(booksByKeywords.size(),is(2));
+        Book foundBook = booksByKeywords.get(0);
+        assertTrue(foundBook.getPublisher().contains(keywords.get(0)));
     }
 
 }

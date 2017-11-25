@@ -28,25 +28,37 @@ public class BookRepository extends AbstractRepository<Book> {
 
     public BookInfo findBookByIsbn(String isbn) {
         TypedQuery<BookInfo> query = em.createNamedQuery(Book.FIND_BY_ISBN_QUERY.QUERY_NAME, BookInfo.class);
-        query.setParameter("isbn",isbn);
+        query.setParameter("isbn", isbn);
         BookInfo result = query.getSingleResult();
         return result;
     }
 
-    public List<BookInfo> findBooksByKeywords(List<String> keywords){
+    public List<Book> findBooksByKeywords(List<String> keywords) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<BookInfo> query = builder.createQuery(BookInfo.class);
-        Root<BookInfo> root = query.from(BookInfo.class);
+        CriteriaQuery<Book> query = builder.createQuery(Book.class);
+        Root<Book> root = query.from(Book.class);
 
-        List<Predicate> predicates = new LinkedList<>();
+        List<Predicate> titlePredicates = new LinkedList<>();
+        List<Predicate> authorPredicates = new LinkedList<>();
+        List<Predicate> publisherPredicates = new LinkedList<>();
+
+
         for (String keyword : keywords) {
-            predicates.add(builder.like(root.<String>get("keywords"), "%" + keyword + "%"));
+            titlePredicates.add(builder.like(root.<String>get("title"), "%" + keyword + "%"));
+            authorPredicates.add(builder.like(root.<String>get("authors"), "%" + keyword + "%"));
+            publisherPredicates.add(builder.like(root.<String>get("publisher"), "%" + keyword + "%"));
         }
+
+
+        Predicate title = builder.and((titlePredicates.toArray(new Predicate[titlePredicates.size()])));
+        Predicate author = builder.and((authorPredicates.toArray(new Predicate[authorPredicates.size()])));
+        Predicate publisher = builder.and((publisherPredicates.toArray(new Predicate[publisherPredicates.size()])));
 
         return em.createQuery(
                 query.select(root).where(
                         builder.or(
-                                predicates.toArray(new Predicate[predicates.size()])
+                                title, author, publisher
+
                         )
                 ))
                 .getResultList();
