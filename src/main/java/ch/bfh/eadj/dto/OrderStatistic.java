@@ -7,13 +7,17 @@ public class OrderStatistic {
     private Integer positionsCount;
     private BigDecimal totalAmount;
     private BigDecimal averageAmount;
+    private Long nr;
+    private String lastName;
+    private String firstName;
 
-
-// TODO Year & customerinfo, id, name prename
-    public OrderStatistic(Integer positionsCount, BigDecimal totalAmount, BigDecimal averageAmount) {
+    public OrderStatistic(BigDecimal totalAmount, Integer positionsCount, BigDecimal averageAmount, Integer year, Long nr, String lastName, String firstName) {
         this.positionsCount = positionsCount;
         this.totalAmount = totalAmount;
         this.averageAmount = averageAmount;
+        this.nr = nr;
+        this.lastName = lastName;
+        this.firstName = firstName;
     }
 
 
@@ -28,4 +32,11 @@ public class OrderStatistic {
     public BigDecimal getAverageAmount() {
         return averageAmount;
     }
+
+    public Long getNr() { return nr; }
+
+    public String getLastName() { return lastName; }
+
+    public String getFirstName() { return firstName; }
+
 }

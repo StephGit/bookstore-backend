@@ -13,7 +13,6 @@ import java.util.*;
         @NamedQuery(name = BookOrder.STATISTIC_BY_YEAR_QUERY.QUERY_NAME, query = BookOrder.STATISTIC_BY_YEAR_QUERY.QUERY_STRING)
 })
 public class BookOrder extends BaseEntity implements Serializable {
-//TODO achtung order ist ein oracle keyword
 
     public static class FIND_BY_NR_QUERY {
         public static final String QUERY_NAME = "BookOrder.findById";
@@ -27,8 +26,8 @@ public class BookOrder extends BaseEntity implements Serializable {
     }
 
     public static class STATISTIC_BY_YEAR_QUERY {
-        public static final String QUERY_NAME = "BookOrder.statisticByYear";// TODO gemäss DTO -> Test Grouping
-        public static final String QUERY_STRING = "select new ch.bfh.eadj.dto.OrderStatistic(count(oi), (sum(o.amount)/count(oi)), sum(o.amount)) " +
+        public static final String QUERY_NAME = "BookOrder.statisticByYear";
+        public static final String QUERY_STRING = "select new ch.bfh.eadj.dto.OrderStatistic(sum(o.amount), count(oi), (sum(o.amount)/count(oi)), c.nr, c.firstName, c.lastName ) " +
                 "from BookOrder o join o.customer c join o.orderItems oi where EXTRACT(YEAR from o.date) = :year group by c";
     }
 

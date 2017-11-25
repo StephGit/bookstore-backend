@@ -64,7 +64,6 @@ public class BookRepository extends AbstractRepository<Book> {
                 .getResultList();
     }
 
-
     @Override
     protected EntityManager getEntityManager() {
         return em;

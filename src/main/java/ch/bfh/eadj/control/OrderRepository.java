@@ -27,6 +27,13 @@ public class OrderRepository extends AbstractRepository<BookOrder> {
         return resultList;
     }
 
+    public BookOrder findByNr(Long nr) {
+        TypedQuery<BookOrder> query = em.createNamedQuery(BookOrder.FIND_BY_NR_QUERY.QUERY_NAME, BookOrder.class);
+        query.setParameter("nr", nr);
+        BookOrder result = query.getSingleResult();
+        return result;
+    }
+
     public OrderStatistic getStatisticByYear(Integer year) {
         TypedQuery<OrderStatistic> query = em.createNamedQuery(BookOrder.STATISTIC_BY_YEAR_QUERY.QUERY_NAME, OrderStatistic.class);
         query.setParameter("year", year);
