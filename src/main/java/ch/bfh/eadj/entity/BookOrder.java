@@ -74,7 +74,7 @@ public class BookOrder extends BaseEntity implements Serializable {
     Wird ein BookOrder mit einem Customer zusammen angelegt soll kaskadiert persisiert werden.
 
     Fetch-Typ:
-    Lazy, da die Adresse bereits auf dem BookOrder vorhanden ist und sonstige Kundeninfos nicht immer benötigt werden.
+    Lazy, da die Adresse und Kreditkarte bereits auf dem BookOrder vorhanden ist und sonstige Kundeninfos nicht immer benötigt werden.
      */
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.REFRESH }, fetch = FetchType.LAZY)
     private Customer customer;
