@@ -64,6 +64,9 @@ public class BookOrder extends BaseEntity implements Serializable {
 
     Fetch-Typ:
     Eager nicht zwingend, da evtl. nur Orderinfos von Interesse sind ohne einzelne Positionen.
+
+    Collection:
+    Set weil wir keine Duplikate möchten und keine sortierung notwendig ist
      */
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "ORDER_NR") //OrderItem besitzt ORDER_ID FK Column
@@ -133,6 +136,18 @@ public class BookOrder extends BaseEntity implements Serializable {
     public void addOrderItem(OrderItem item) {
         orderItems.add(item);
 
+    }
+
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
+    }
+
+    public void setOrderItems(Set<OrderItem> orderItems) {
+        this.orderItems = orderItems;
     }
 
     public void removeOrderItem(OrderItem item) {
