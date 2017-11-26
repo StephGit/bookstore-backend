@@ -31,23 +31,11 @@ public class OrderInfo {
         return date;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
     public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
     public OrderStatus getStatus() {
         return status;
-    }
-
-    public void setStatus(OrderStatus status) {
-        this.status = status;
     }
 }

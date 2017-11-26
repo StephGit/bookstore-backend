@@ -3,12 +3,10 @@ package ch.bfh.eadj.control;
 import ch.bfh.eadj.AbstractTest;
 import ch.bfh.eadj.dto.OrderInfo;
 import ch.bfh.eadj.dto.OrderStatisticInfo;
-import ch.bfh.eadj.entity.BookOrder;
 import ch.bfh.eadj.entity.OrderStatus;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -17,6 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 public class OrderRepositoryTest extends AbstractTest {
+
     private OrderRepository orderRepository;
 
     @Before
@@ -27,34 +26,41 @@ public class OrderRepositoryTest extends AbstractTest {
 
     @Test
     public void shouldFindByNr() throws Exception {
+        //given
+        Long orderNr = 11L;
+        Double totalAmount = 45.24;
 
         //when
-        OrderInfo result = orderRepository.findByNr(11L);
+        OrderInfo result = orderRepository.findByNr(orderNr);
 
         //then
         assertNotNull(result);
-        assertThat(result.getAmount(), is(BigDecimal.valueOf(45.24)));
+        assertThat(result.getAmount(), is(BigDecimal.valueOf(totalAmount)));
     }
 
     @Test
-    public void shouldFindByNameAndYear() throws Exception {
+    public void shouldFindByCustomerAndYear() throws Exception {
+        //given
+        Long customerNr = 4L;
+        Integer year = 2017;
 
         //when
-        List<OrderInfo> result = orderRepository.findByCustomerAndYear(4, 2017);
-
+        List<OrderInfo> result = orderRepository.findByCustomerAndYear(customerNr, year);
 
         //then
         assertThat(result.size(),is(1));
         OrderInfo orderInfo = result.get(0);
-
         assertThat(orderInfo.getStatus(), is(OrderStatus.ACCEPTED));
     }
 
     @Test
-    public void shouldNotFindByNamAndYear() throws Exception {
+    public void shouldNotFindByCustomerAndYear() throws Exception {
+        //given
+        Long customerNr = 1L;
+        Integer year = 1950;
 
         //when
-        List<OrderInfo> result = orderRepository.findByCustomerAndYear(1, 1950);
+        List<OrderInfo> result = orderRepository.findByCustomerAndYear(customerNr, year);
 
         //then
         assertThat(result.isEmpty(),is(true));
@@ -62,26 +68,28 @@ public class OrderRepositoryTest extends AbstractTest {
 
        @Test
     public void shouldGetStatisticForYear() throws Exception {
+        //given
+        Integer year = 2017;
+
         //when
-        List<OrderStatisticInfo> result = orderRepository.getStatisticByYear(2017);
+        List<OrderStatisticInfo> result = orderRepository.getStatisticByYear(year);
 
         //then
         assertNotNull(result);
         assertThat(result.isEmpty(), is(false));
-        assertThat(result.size(), is(7));
+        assertThat(result.size(), is(8));
         long averageAmount = result.get(4).getAverageAmount().longValue();
         long totalAmount = result.get(4).getTotalAmount().longValue();
         assertThat(averageAmount, is(totalAmount/result.get(4).getPositionsCount()));
-        // TODO remove when test is ok
-        for (OrderStatisticInfo r: result) {
-            System.out.println(r.getNr() + ", " + r.getFirstName() + ", " + r.getLastName() + ", " + r.getTotalAmount() + ", " + r.getAverageAmount() + ", " + r.getPositionsCount() );
-        }
     }
 
     @Test
     public void shouldNotGetStatisticForYear() throws Exception {
+        //given
+        Integer year = 2010;
+
         //when
-        List<OrderStatisticInfo> result = orderRepository.getStatisticByYear(1900);
+        List<OrderStatisticInfo> result = orderRepository.getStatisticByYear(year);
 
         //then
         assertNotNull(result);

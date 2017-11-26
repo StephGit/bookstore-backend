@@ -25,12 +25,12 @@ public class BookOrder extends BaseEntity implements Serializable {
                 " join o.customer c where c.nr = :nr and extract(YEAR from o.date) = :year";
     }
     /*
-    //TODO evtl. nur Bestellungen berücksichtigen, welche nicht den Status.CANCELED haben. Ansonsten ist Statistik nicht aussagekräftig. and o.status not like ('CANCELED')
+    Es werden nur Bestellungen berücksichtigen, welche nicht den Status.CANCELED haben. Ansonsten ist Statistik nicht aussagekräftig.
      */
     public static class STATISTIC_BY_YEAR_QUERY {
         public static final String QUERY_NAME = "BookOrder.statisticByYear";
         public static final String QUERY_STRING = "select new ch.bfh.eadj.dto.OrderStatisticInfo(sum(o.amount), count(oi), (sum(o.amount)/count(oi)), c.nr, c.firstName, c.lastName ) " +
-                "from BookOrder o join o.customer c join o.orderItems oi where EXTRACT(YEAR from o.date) = :year  group by c.nr";
+                "from BookOrder o join o.customer c join o.orderItems oi where EXTRACT(YEAR from o.date) = :year and o.status not like ('CANCELED')  group by c.nr";
     }
 
     private static final long serialVersionUID = 1L;
@@ -82,11 +82,6 @@ public class BookOrder extends BaseEntity implements Serializable {
     private CreditCard creditCard;
 
 
-    public void addOrderItem(OrderItem item) {
-        orderItems.add(item);
-
-    }
-
     public Set<OrderItem> getOrderItems() {
         return orderItems;
     }
@@ -129,5 +124,15 @@ public class BookOrder extends BaseEntity implements Serializable {
 
     public void setCreditCard(CreditCard creditCard) {
         this.creditCard = creditCard;
+    }
+
+    public void addOrderItem(OrderItem item) {
+        orderItems.add(item);
+
+    }
+
+    public void removeOrderItem(OrderItem item) {
+        orderItems.remove(item);
+
     }
 }

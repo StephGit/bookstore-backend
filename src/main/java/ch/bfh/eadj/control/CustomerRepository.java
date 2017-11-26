@@ -22,8 +22,7 @@ public class CustomerRepository extends AbstractRepository<Customer> {
     public List<CustomerInfo> findCustomerByName(String name) {
         TypedQuery<CustomerInfo> query = em.createNamedQuery(Customer.FIND_BY_NAME_QUERY.QUERY_NAME, CustomerInfo.class);
         query.setParameter("name", name);
-        List<CustomerInfo> resultList = query.getResultList();
-        return resultList;
+        return query.getResultList();
     }
 
 

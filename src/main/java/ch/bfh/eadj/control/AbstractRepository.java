@@ -3,11 +3,11 @@ package ch.bfh.eadj.control;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-public abstract class AbstractRepository<T> {
+abstract class AbstractRepository<T> {
 
     private final Class<T> entityClass;
 
-    public AbstractRepository(Class<T> entityClass) {
+    AbstractRepository(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
 

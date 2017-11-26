@@ -29,8 +29,7 @@ public class BookRepository extends AbstractRepository<Book> {
     public BookInfo findBookByIsbn(String isbn) {
         TypedQuery<BookInfo> query = em.createNamedQuery(Book.FIND_BY_ISBN_QUERY.QUERY_NAME, BookInfo.class);
         query.setParameter("isbn", isbn);
-        BookInfo result = query.getSingleResult();
-        return result;
+        return query.getSingleResult();
     }
 
     public List<Book> findBooksByKeywords(List<String> keywords) {

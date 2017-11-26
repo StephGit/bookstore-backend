@@ -20,7 +20,7 @@ public class RelationshipTest extends AbstractTest {
         List<Customer> listCustomer = q.getResultList();
         assertTrue(!listCustomer.isEmpty());
 
-        TypedQuery<BookOrder> q2 = em.createQuery("select o from BookOrder o join o.customer c where c.nr =" + listCustomer.get(0).getNr() , BookOrder.class);
+        TypedQuery<BookOrder> q2 = em.createQuery("select o from BookOrder o join o.customer c where c.nr = " + listCustomer.get(0).getNr() , BookOrder.class);
         List<BookOrder> listOrder = q2.getResultList();
         assertTrue(!listOrder.isEmpty());
     }

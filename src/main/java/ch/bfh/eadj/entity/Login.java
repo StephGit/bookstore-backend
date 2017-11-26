@@ -1,20 +1,21 @@
 package ch.bfh.eadj.entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Table(name = "T_LOGIN")
 @Entity
-@NamedQuery(name = Login.FIND_BY_NAME_QUERY.QUERY_NAME, query = Login.FIND_BY_NAME_QUERY.QUERY_STRING)
+@NamedQueries({
+        @NamedQuery(name = Login.FIND_BY_USERNAME_QUERY.QUERY_NAME, query = Login.FIND_BY_USERNAME_QUERY.QUERY_STRING)
+})
 public class Login extends BaseEntity {
 
-    public static class FIND_BY_NAME_QUERY {
-        public static final String QUERY_NAME = "Login.findByName";
-        public static final String QUERY_STRING = "select l from Login l where l.name = :name";
+    public static class FIND_BY_USERNAME_QUERY {
+        public static final String QUERY_NAME = "Login.findByUserName";
+        public static final String QUERY_STRING = "select new ch.bfh.eadj.dto.LoginInfo(l.nr, l.userName, l.group) from Login l where l.userName = :userName";
     }
 
     @Column(name = "USER_NAME", nullable = false)
-    private String name;
+    private String userName;
 
     @Column(nullable = false)
     private String password;
@@ -29,12 +30,12 @@ public class Login extends BaseEntity {
     private UserGroup group;
 
 
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPassword() {
