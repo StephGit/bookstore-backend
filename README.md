@@ -22,11 +22,6 @@ JEE Book Store Project
 Obere 4 Queries
 
 
-@Schiro
-Untere 3 Queries
-Statistik + DTO
-
-
 alles begründen
 
 
