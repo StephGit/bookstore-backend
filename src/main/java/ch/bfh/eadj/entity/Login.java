@@ -11,6 +11,7 @@ public class Login extends BaseEntity {
 
     public static class FIND_BY_USERNAME_QUERY {
         public static final String QUERY_NAME = "Login.findByUserName";
+        public static final String PARAM_USERNAME = "userName";
         public static final String QUERY_STRING = "select new ch.bfh.eadj.dto.LoginInfo(l.nr, l.userName, l.group) from Login l where l.userName = :userName";
     }
 

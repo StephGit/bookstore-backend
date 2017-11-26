@@ -26,7 +26,7 @@ public class BookRepositoryTest extends AbstractTest {
     }
 
     @Test
-    public void findBookByIsbn() throws Exception {
+    public void souldFindBookByIsbn() throws Exception {
         //given
         String isbn = "417998182-3";
 
@@ -41,7 +41,7 @@ public class BookRepositoryTest extends AbstractTest {
     }
 
     @Test
-    public void findBooksByTitleKeywords() throws Exception {
+    public void shouldFindBooksByTitleKeywords() throws Exception {
 
         //given
         List<String> keywords = Arrays.asList("Far Side", "Moon", "the");
@@ -58,7 +58,7 @@ public class BookRepositoryTest extends AbstractTest {
     }
 
     @Test
-    public void findBooksByAuthorKeywords() throws Exception {
+    public void shouldFindBooksByAuthorKeywords() throws Exception {
 
         //given
         List<String> keywords = Arrays.asList("Hana");
@@ -73,7 +73,7 @@ public class BookRepositoryTest extends AbstractTest {
     }
 
     @Test
-    public void findBooksByPublisherKeywords() throws Exception {
+    public void shouldFindBooksByPublisherKeywords() throws Exception {
 
         //given
         List<String> keywords = Arrays.asList("Babblestorm");

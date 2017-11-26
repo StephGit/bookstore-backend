@@ -14,6 +14,10 @@ import java.util.*;
 })
 public class BookOrder extends BaseEntity implements Serializable {
 
+
+    public static final String PARAM_NR = "nr";
+    public static final String PARAM_YEAR = "year";
+
     public static class FIND_BY_NR_QUERY {
         public static final String QUERY_NAME = "BookOrder.findById";
         public static final String QUERY_STRING = "select new ch.bfh.eadj.dto.OrderInfo(o.nr, o.date, o.amount, o.status) from BookOrder o where o.nr = :nr";

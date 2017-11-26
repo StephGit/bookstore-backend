@@ -58,6 +58,5 @@ public class CreditCard {
     public void setExpirationYear(Integer expirationYear) {
         this.expirationYear = expirationYear;
     }
-
-    //TODO equals and hashcode?
+    
 }

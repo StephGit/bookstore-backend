@@ -14,6 +14,8 @@ import javax.persistence.criteria.Root;
 import java.util.LinkedList;
 import java.util.List;
 
+import static ch.bfh.eadj.entity.Book.FIND_BY_ISBN_QUERY.PARAM_ISBN;
+
 @Stateless
 public class BookRepository extends AbstractRepository<Book> {
 
@@ -28,7 +30,7 @@ public class BookRepository extends AbstractRepository<Book> {
 
     public BookInfo findBookByIsbn(String isbn) {
         TypedQuery<BookInfo> query = em.createNamedQuery(Book.FIND_BY_ISBN_QUERY.QUERY_NAME, BookInfo.class);
-        query.setParameter("isbn", isbn);
+        query.setParameter(PARAM_ISBN, isbn);
         return query.getSingleResult();
     }
 

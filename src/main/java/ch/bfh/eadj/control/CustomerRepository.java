@@ -9,6 +9,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
+import static ch.bfh.eadj.entity.Customer.FIND_BY_NAME_QUERY.PARAM_NAME;
+
 @Stateless
 public class CustomerRepository extends AbstractRepository<Customer> {
 
@@ -21,7 +23,7 @@ public class CustomerRepository extends AbstractRepository<Customer> {
 
     public List<CustomerInfo> findCustomerByName(String name) {
         TypedQuery<CustomerInfo> query = em.createNamedQuery(Customer.FIND_BY_NAME_QUERY.QUERY_NAME, CustomerInfo.class);
-        query.setParameter("name", name);
+        query.setParameter(PARAM_NAME, name);
         return query.getResultList();
     }
 

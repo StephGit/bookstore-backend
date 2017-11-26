@@ -22,7 +22,7 @@ public class CustomerRepositoryTest extends AbstractTest {
     }
 
     @Test
-    public void findCustomerByLastName() throws Exception {
+    public void shouldFindCustomerByLastName() throws Exception {
 
         //given
         String lastName = "McKenny";
@@ -39,7 +39,7 @@ public class CustomerRepositoryTest extends AbstractTest {
     }
 
     @Test
-    public void findCustomerByFirstName() throws Exception {
+    public void shouldFindCustomerByFirstName() throws Exception {
 
         //given
         String lastName = "McKenny";
