@@ -1,6 +1,7 @@
 package ch.bfh.eadj.control;
 
 import ch.bfh.eadj.AbstractTest;
+import ch.bfh.eadj.control.customer.CustomerRepository;
 import ch.bfh.eadj.dto.CustomerInfo;
 import org.junit.Before;
 import org.junit.Test;

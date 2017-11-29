@@ -9,11 +9,13 @@ public class LoginInfo implements Serializable {
     private Long nr;
     private String userName;
     private UserGroup userGroup;
+    private String password;
 
-    public LoginInfo(Long nr, String userName, UserGroup userGroup) {
+    public LoginInfo(Long nr, String userName, UserGroup userGroup, String password) {
         this.nr = nr;
         this.userName = userName;
         this.userGroup = userGroup;
+        this.password = password;
     }
 
     public Long getNr() {
@@ -27,4 +29,6 @@ public class LoginInfo implements Serializable {
     public UserGroup getUserGroup() {
         return userGroup;
     }
+
+    public String getPassword() { return password; }
 }

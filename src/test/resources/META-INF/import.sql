@@ -23,7 +23,7 @@ insert into T_LOGIN (nr, user_group, user_name, password, version) values (19, '
 insert into T_LOGIN (nr, user_group, user_name, password, version) values (20, 'CUSTOMER', 'gowlneri', 'p5TTT67Go', 14);
 
 
---Customer--
+--customer--
 insert into T_CUSTOMER (nr, email, firstname, lastname, version, city, country, postalcode, street, cc_type, expirationmonth, expirationyear, cc_number) values (1, 'amclaughlan0@miibeian.gov.cn', 'Mélodie', 'McLaughlan', 100, null, null, null, 'Golf Course', 'MASTERCARD', 9, 2020, '4913565205278450');
 insert into T_CUSTOMER (nr, email, firstname, lastname, version, city, country, postalcode, street, cc_type, expirationmonth, expirationyear, cc_number) values (2, 'zrichardes1@elpais.com', 'Loïc', 'Richardes', 53, null, null, null, 'Nova', 'VISA', 9, 2021, '374622026660836');
 insert into T_CUSTOMER (nr, email, firstname, lastname, version, city, country, postalcode, street, cc_type, expirationmonth, expirationyear, cc_number) values (3, 'amckenny2@ftc.gov', 'Cléa', 'McKenny', 69, null, null, null, 'Basil', 'MASTERCARD', 6, 2022, '5100171443052318');

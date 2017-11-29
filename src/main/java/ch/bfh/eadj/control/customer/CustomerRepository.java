@@ -1,5 +1,6 @@
-package ch.bfh.eadj.control;
+package ch.bfh.eadj.control.customer;
 
+import ch.bfh.eadj.control.AbstractRepository;
 import ch.bfh.eadj.dto.CustomerInfo;
 import ch.bfh.eadj.entity.Customer;
 

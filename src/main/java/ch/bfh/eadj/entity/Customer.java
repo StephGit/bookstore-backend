@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class Customer extends BaseEntity {
 
     public static class FIND_BY_NAME_QUERY {
-        public static final String QUERY_NAME = "Customer.findByName";
+        public static final String QUERY_NAME = "customer.findByName";
         public static final String PARAM_NAME = "name";
         public static final String QUERY_STRING = "select new ch.bfh.eadj.dto.CustomerInfo(c.nr, c.firstName, c.lastName, c.email) " +
                 "from Customer c where c.firstName like :name or c.lastName like :name";

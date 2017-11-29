@@ -7,6 +7,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import java.util.*;
+
 import static ch.bfh.eadj.entity.Login.FIND_BY_USERNAME_QUERY.PARAM_USERNAME;
 
 public class LoginRepository extends AbstractRepository<Login>{
@@ -18,10 +20,10 @@ public class LoginRepository extends AbstractRepository<Login>{
         super(Login.class);
     }
 
-    public LoginInfo findLoginByUserName( String userName ) {
+    public Set<LoginInfo> findLoginByUserName(String userName ) {
         TypedQuery<LoginInfo> query = em.createNamedQuery(Login.FIND_BY_USERNAME_QUERY.QUERY_NAME, LoginInfo.class);
         query.setParameter(PARAM_USERNAME, userName);
-        return query.getSingleResult();
+        return new HashSet<>(query.getResultList());
     }
 
 
