@@ -6,7 +6,8 @@ import ch.bfh.eadj.entity.UserGroup;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.persistence.NoResultException;
+import java.util.Iterator;
+import java.util.Set;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -17,35 +18,42 @@ public class LoginRepositoryTest extends AbstractTest {
 
 
     @Before
-    public void setUpRepo() throws Exception {
+    public void setUpRepo()  {
         loginRepository = new LoginRepository();
         loginRepository.em = em;
     }
 
     @Test
-    public void shouldFindLoginByUserName() throws Exception {
+    public void shouldFindLoginByUserName()  {
         //given
         String userName = "crasch3";
 
         //when
-        LoginInfo loginInfo = loginRepository.findLoginByUserName(userName);
+        Set<LoginInfo> loginInfoSet = loginRepository.findLoginByUserName(userName);
 
         //then
-        assertThat(loginInfo.getNr(), is(5L));
-        assertThat(loginInfo.getUserGroup(), is(UserGroup.EMPLOYEE));
+        assertFalse(loginInfoSet.isEmpty());
+        assertTrue(loginInfoSet.size()==1);
+        for (Iterator<LoginInfo> it = loginInfoSet.iterator(); it.hasNext(); ) {
+            LoginInfo loginInfo = it.next();
+
+            assertThat(loginInfo.getNr(), is(5L));
+            assertThat(loginInfo.getUserGroup(), is(UserGroup.EMPLOYEE));
+        }
+
 
     }
 
-    @Test(expected = NoResultException.class)
-    public void shouldNotFindLoginByUserName() throws Exception {
+    @Test
+    public void shouldNotFindLoginByUserName() {
         //given
         String userName = "Admin123";
 
         //when
-        LoginInfo loginInfo = loginRepository.findLoginByUserName(userName);
+        Set<LoginInfo> loginInfo = loginRepository.findLoginByUserName(userName);
 
         //then
-        assertNull(loginInfo.getNr());
+        assertThat(loginInfo.isEmpty(), is(true));
     }
 
 }

@@ -1,4 +1,4 @@
-package ch.bfh.eadj.control;
+package ch.bfh.eadj.control.customer;
 
 import ch.bfh.eadj.AbstractTest;
 import ch.bfh.eadj.control.customer.CustomerRepository;
