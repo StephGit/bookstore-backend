@@ -1,6 +1,7 @@
 package ch.bfh.eadj.control.customer;
 
 
+import ch.bfh.eadj.AbstractTest;
 import ch.bfh.eadj.control.exception.EmailAlreadyUsedException;
 import ch.bfh.eadj.entity.Customer;
 import org.testng.annotations.BeforeClass;
@@ -11,7 +12,7 @@ import javax.naming.InitialContext;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.fail;
 
-public class CustomerServiceTest {
+public class CustomerServiceTest extends AbstractTest {
 
     private static final String CUSTOMER_SERVICE_NAME = "java:global/bookstore-1.0-SNAPSHOT/CustomerService";
 

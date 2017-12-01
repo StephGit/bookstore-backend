@@ -3,6 +3,8 @@ package ch.bfh.eadj.control;
 import ch.bfh.eadj.dto.LoginInfo;
 import ch.bfh.eadj.entity.Login;
 
+import javax.ejb.Singleton;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -11,6 +13,7 @@ import java.util.*;
 
 import static ch.bfh.eadj.entity.Login.FIND_BY_USERNAME_QUERY.PARAM_USERNAME;
 
+@Stateless
 public class LoginRepository extends AbstractRepository<Login>{
 
     @PersistenceContext

@@ -10,6 +10,7 @@ import ch.bfh.eadj.entity.Customer;
 import ch.bfh.eadj.entity.Login;
 import ch.bfh.eadj.entity.UserGroup;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Iterator;
@@ -20,10 +21,10 @@ import java.util.Set;
 public class CustomerService implements CustomerServiceRemote {
 
     @Inject
-    CustomerRepository customerRepository;
+    private CustomerRepository customerRepository;
 
     @Inject
-    LoginRepository loginRepository;
+    private LoginRepository loginRepository;
 
     @Override
     public Long registerCustomer(Customer customer, String password) throws EmailAlreadyUsedException {
