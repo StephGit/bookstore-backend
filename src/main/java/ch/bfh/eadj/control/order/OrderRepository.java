@@ -1,5 +1,6 @@
-package ch.bfh.eadj.control;
+package ch.bfh.eadj.control.order;
 
+import ch.bfh.eadj.control.AbstractRepository;
 import ch.bfh.eadj.dto.OrderInfo;
 import ch.bfh.eadj.dto.OrderStatisticInfo;
 import ch.bfh.eadj.entity.BookOrder;
@@ -40,7 +41,6 @@ public class OrderRepository extends AbstractRepository<BookOrder> {
         query.setParameter(PARAM_YEAR, year);
         return query.getResultList();
     }
-
 
     @Override
     protected EntityManager getEntityManager() {

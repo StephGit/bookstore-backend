@@ -1,6 +1,7 @@
-package ch.bfh.eadj.control;
+package ch.bfh.eadj.control.order;
 
 import ch.bfh.eadj.AbstractTest;
+import ch.bfh.eadj.control.order.OrderRepository;
 import ch.bfh.eadj.dto.OrderInfo;
 import ch.bfh.eadj.dto.OrderStatisticInfo;
 import ch.bfh.eadj.entity.OrderStatus;
