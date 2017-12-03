@@ -1,6 +1,5 @@
 package ch.bfh.eadj.control;
 
-import ch.bfh.eadj.control.AbstractRepository;
 import ch.bfh.eadj.dto.BookInfo;
 import ch.bfh.eadj.entity.Book;
 
@@ -57,7 +56,7 @@ public class BookRepository extends AbstractRepository<Book> {
         Predicate publisher = builder.and((publisherPredicates.toArray(new Predicate[publisherPredicates.size()])));
 
         return em.createQuery(
-                query.select(builder.construct(BookInfo.class, root.get("isbn"), root.get("title"), root.get("authors"), root.get("price"))).where(
+                query.select(builder.construct(BookInfo.class, root.get("isbn"), root.get("authors"), root.get("title"), root.get("price"))).where(
                         builder.or(
                                 title, author, publisher
 
