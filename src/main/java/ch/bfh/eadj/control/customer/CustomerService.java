@@ -13,6 +13,7 @@ import ch.bfh.eadj.entity.UserGroup;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -88,7 +89,7 @@ public class CustomerService implements CustomerServiceRemote {
         if (!customerInfoList.isEmpty()) {
             return customerInfoList;
         } else {
-            return null;
+            return Collections.emptyList();
         }
     }
 

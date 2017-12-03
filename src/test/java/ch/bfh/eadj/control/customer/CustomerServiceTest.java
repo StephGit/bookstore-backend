@@ -2,15 +2,24 @@ package ch.bfh.eadj.control.customer;
 
 
 import ch.bfh.eadj.AbstractTest;
+import ch.bfh.eadj.control.exception.CustomerNotFoundException;
 import ch.bfh.eadj.control.exception.EmailAlreadyUsedException;
+import ch.bfh.eadj.control.exception.InvalidPasswordException;
+import ch.bfh.eadj.dto.CustomerInfo;
 import ch.bfh.eadj.entity.Customer;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.validation.constraints.Email;
 
+import java.util.List;
+
+import static com.sun.org.apache.xerces.internal.util.PropertyState.is;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.fail;
+import static org.testng.AssertJUnit.assertEquals;
 
 public class CustomerServiceTest extends AbstractTest {
 
@@ -24,8 +33,8 @@ public class CustomerServiceTest extends AbstractTest {
 
     @BeforeClass
     public void setUp() throws Exception {
-
-        customerService = (CustomerServiceRemote) new InitialContext().lookup(CUSTOMER_SERVICE_NAME);
+        Context jndiContect = new InitialContext();
+        customerService = (CustomerServiceRemote) jndiContect.lookup(CUSTOMER_SERVICE_NAME);
 
         customer = new Customer();
         customer.setEmail("hans@dampf.ch");
@@ -34,27 +43,77 @@ public class CustomerServiceTest extends AbstractTest {
     }
 
     @Test
-    public void registerCustomer() throws Exception {
+    public void shouldRegisterCustomer() throws EmailAlreadyUsedException {
+        //when
         userId = customerService.registerCustomer(customer, password);
+
+        //then
         assertNotNull(userId);
         try {
             customerService.registerCustomer(customer, password);
             fail("EmailAlreadyUsedException exception");
         } catch (EmailAlreadyUsedException e) {
         }
+    }
+
+    @Test(dependsOnMethods = "shouldRegisterCustomer")
+    public void shouldAuthenticateCustomer() throws CustomerNotFoundException, InvalidPasswordException {
+        //when
+        userId = customerService.authenticateCustomer(customer.getEmail(), password);
+
+        //then
+        assertNotNull(userId);
+    }
+
+    @Test(dependsOnMethods = "shouldRegisterCustomer")
+    public void shouldFailAuthenticateCustomer() throws InvalidPasswordException, CustomerNotFoundException {
+        //when
+        try {
+            userId = customerService.authenticateCustomer(customer.getEmail(), "qwer");
+
+            //then
+            fail("InvalidPasswordException exception");
+        } catch (InvalidPasswordException e) {}
+    }
+
+    @Test(dependsOnMethods = "shouldRegisterCustomer")
+    public void shouldFailAuthenticateCustomer2() throws InvalidPasswordException, CustomerNotFoundException {
+        //when
+        try {
+            userId = customerService.authenticateCustomer("asdf@basd.org", "qwer");
+
+            //then
+            fail("CustomerNotFoundException exception");
+        } catch (CustomerNotFoundException e) {}
+    }
+
+    @Test(dependsOnMethods = "registerCustomer")
+    public void shouldFindCustomer() throws CustomerNotFoundException {
+
+        //when
+        Customer foundCustomer = customerService.findCustomer(customer.getNr());
+
+        //then
+        assertEquals(foundCustomer.getLastName(), customer.getLastName());
+        assertEquals(foundCustomer.getEmail(), customer.getEmail());
 
     }
 
     @Test(dependsOnMethods = "registerCustomer")
-    public void authenticateCustomer() throws Exception {
-    }
+    public void shouldFailFindCustomer() throws CustomerNotFoundException {
+        //when
+        try {
+            Customer foundCustomer = customerService.findCustomer(2321L);
 
-    @Test(dependsOnMethods = "registerCustomer")
-    public void findCustomer() throws Exception {
+            //then
+            fail("CustomerNotFoundException exception");
+        } catch (CustomerNotFoundException e) {}
     }
 
     @Test
-    public void searchCustomers() throws Exception {
+    public void shouldSearchCustomers() throws Exception {
+        //when
+        List<CustomerInfo> result = customerService.searchCustomers(customer.getLastName());
     }
 
     @Test
