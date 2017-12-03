@@ -1,5 +1,6 @@
 package ch.bfh.eadj.control;
 
+import ch.bfh.eadj.control.AbstractRepository;
 import ch.bfh.eadj.dto.BookInfo;
 import ch.bfh.eadj.entity.Book;
 
@@ -28,15 +29,15 @@ public class BookRepository extends AbstractRepository<Book> {
     }
 
 
-    public BookInfo findBookByIsbn(String isbn) {
-        TypedQuery<BookInfo> query = em.createNamedQuery(Book.FIND_BY_ISBN_QUERY.QUERY_NAME, BookInfo.class);
+    public List<Book> findBookByIsbn(String isbn) {
+        TypedQuery<Book> query = em.createNamedQuery(Book.FIND_BY_ISBN_QUERY.QUERY_NAME, Book.class);
         query.setParameter(PARAM_ISBN, isbn);
-        return query.getSingleResult();
+        return query.getResultList();
     }
 
-    public List<Book> findBooksByKeywords(List<String> keywords) {
+    public List<BookInfo> findBooksByKeywords(List<String> keywords) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<Book> query = builder.createQuery(Book.class);
+        CriteriaQuery<BookInfo> query = builder.createQuery(BookInfo.class);
         Root<Book> root = query.from(Book.class);
 
         List<Predicate> titlePredicates = new LinkedList<>();
@@ -56,7 +57,7 @@ public class BookRepository extends AbstractRepository<Book> {
         Predicate publisher = builder.and((publisherPredicates.toArray(new Predicate[publisherPredicates.size()])));
 
         return em.createQuery(
-                query.select(root).where(
+                query.select(builder.construct(BookInfo.class, root.get("isbn"), root.get("title"), root.get("authors"), root.get("price"))).where(
                         builder.or(
                                 title, author, publisher
 

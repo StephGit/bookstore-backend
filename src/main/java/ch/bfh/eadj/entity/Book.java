@@ -13,7 +13,7 @@ public class Book extends BaseEntity {
     public static class FIND_BY_ISBN_QUERY {
         public static final String QUERY_NAME = "Book.findByISBN";
         public static final String PARAM_ISBN = "isbn";
-        public static final String QUERY_STRING = "select new ch.bfh.eadj.dto.BookInfo(b.isbn, b.authors, b.title, b.price) from Book b where b.isbn = :isbn";
+        public static final String QUERY_STRING = "select b from Book b where b.isbn = :isbn";
     }
 
     @Column(nullable = false)

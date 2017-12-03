@@ -1,9 +1,10 @@
 package ch.bfh.eadj.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @MappedSuperclass
-public abstract class BaseEntity {
+public abstract class BaseEntity implements Serializable{
 
 
     /*
