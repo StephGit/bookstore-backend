@@ -12,13 +12,12 @@ import org.testng.annotations.Test;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import javax.validation.constraints.Email;
 
 import java.util.List;
 
-import static com.sun.org.apache.xerces.internal.util.PropertyState.is;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
+import static org.testng.Assert.assertNotEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.fail;
 import static org.testng.AssertJUnit.assertEquals;
@@ -79,7 +78,7 @@ public class CustomerServiceTest extends AbstractTest {
     }
 
     @Test(dependsOnMethods = "shouldRegisterCustomer")
-    public void shouldFailAuthenticateCustomer2() throws InvalidPasswordException, CustomerNotFoundException {
+    public void shouldFailAuthenticateUnknownUser() throws InvalidPasswordException, CustomerNotFoundException {
         //when
         try {
             userId = customerService.authenticateCustomer("asdf@basd.org", "qwer");
@@ -89,7 +88,7 @@ public class CustomerServiceTest extends AbstractTest {
         } catch (CustomerNotFoundException e) {}
     }
 
-    @Test(dependsOnMethods = "registerCustomer")
+    @Test(dependsOnMethods = "shouldRegisterCustomer")
     public void shouldFindCustomer() throws CustomerNotFoundException {
 
         //when
@@ -112,7 +111,7 @@ public class CustomerServiceTest extends AbstractTest {
         } catch (CustomerNotFoundException e) {}
     }
 
-    @Test
+    @Test(dependsOnMethods = "shouldRegisterCustomer")
     public void shouldSearchCustomers() {
         //when
         List<CustomerInfo> result = customerService.searchCustomers(customer.getLastName());
@@ -131,16 +130,64 @@ public class CustomerServiceTest extends AbstractTest {
         assertTrue(result.isEmpty());
     }
 
-    @Test
-    public void updateCustomer() throws CustomerNotFoundException, EmailAlreadyUsedException {
+    @Test(dependsOnMethods = "shouldRegisterCustomer")
+    public void shouldUpdateCustomer() throws CustomerNotFoundException, EmailAlreadyUsedException {
+        //given
+        customer.setEmail("new@mail.com");
+        customer.setFirstName("Anton");
+
         //when
+        customerService.updateCustomer(customer);
+        Customer updatedCustomer = customerService.findCustomer(customer.getNr());
 
+        //then
+        assertEquals(updatedCustomer.getNr(), customer.getNr());
+        assertEquals(updatedCustomer.getEmail(), customer.getEmail());
+        assertEquals(updatedCustomer.getFirstName(), customer.getFirstName());
+    }
 
+    @Test(dependsOnMethods = "shouldRegisterCustomer")
+    public void shouldFailUpdateCustomer() throws CustomerNotFoundException, EmailAlreadyUsedException {
+        //given
+        Customer newCustomer = new Customer();
+        newCustomer.setLastName("Neuer");
+        newCustomer.setFirstName("Max");
+        newCustomer.setEmail("some@mail.com");
+        customerService.registerCustomer(newCustomer, password);
+
+        customer.setEmail(newCustomer.getEmail());
+        try {
+            //when
+            customerService.updateCustomer(customer);
+
+            //then
+            fail("EmailAlreadyUsedException exception");
+        } catch (EmailAlreadyUsedException e) {}
 
     }
 
-    @Test
-    public void changePassword() throws Exception {
+    @Test(dependsOnMethods = "shouldRegisterCustomer")
+    public void shouldChangePassword() throws Exception {
+        //given
+        String newPassword = "blab12";
+
+        //when
+        customerService.changePassword(customer.getEmail(), newPassword);
+
+        //then
+        Long newId = customerService.authenticateCustomer(customer.getEmail(), newPassword);
+        assertEquals(customer.getNr(), newId);
+    }
+
+    @Test(dependsOnMethods = "shouldChangePassword")
+    public void shouldFailChangePassword() throws Exception {
+        try {
+            //when
+            customerService.changePassword("new@some.org", password);
+
+            //then
+            fail("CustomerNotFoundException exception");
+        } catch (CustomerNotFoundException e) {}
     }
 
 }
