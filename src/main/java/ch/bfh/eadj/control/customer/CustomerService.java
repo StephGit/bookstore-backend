@@ -10,7 +10,6 @@ import ch.bfh.eadj.entity.Customer;
 import ch.bfh.eadj.entity.Login;
 import ch.bfh.eadj.entity.UserGroup;
 
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Collections;

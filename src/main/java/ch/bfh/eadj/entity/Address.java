@@ -1,9 +1,10 @@
 package ch.bfh.eadj.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Embeddable
-public class Address {
+public class Address implements Serializable {
 
 
     private String street;

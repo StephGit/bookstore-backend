@@ -1,11 +1,12 @@
 package ch.bfh.eadj.control.customer;
 
 
-import ch.bfh.eadj.AbstractTest;
 import ch.bfh.eadj.control.exception.CustomerNotFoundException;
 import ch.bfh.eadj.control.exception.EmailAlreadyUsedException;
 import ch.bfh.eadj.control.exception.InvalidPasswordException;
 import ch.bfh.eadj.dto.CustomerInfo;
+import ch.bfh.eadj.entity.CreditCard;
+import ch.bfh.eadj.entity.CreditCardType;
 import ch.bfh.eadj.entity.Customer;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -15,32 +16,38 @@ import javax.naming.InitialContext;
 
 import java.util.List;
 
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertTrue;
-import static org.testng.Assert.assertNotEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.fail;
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertEquals;
 
-public class CustomerServiceTest extends AbstractTest {
+public class CustomerServiceIT {
 
     private static final String CUSTOMER_SERVICE_NAME = "java:global/bookstore-1.0-SNAPSHOT/CustomerService";
 
     private CustomerServiceRemote customerService;
 
     private Customer customer;
+    private CreditCard creditCard;
     private String password = "1234asdf";
     private Long userId;
 
     @BeforeClass
     public void setUp() throws Exception {
-        Context jndiContect = new InitialContext();
-        customerService = (CustomerServiceRemote) jndiContect.lookup(CUSTOMER_SERVICE_NAME);
+        Context jndiContext = new InitialContext();
+        customerService = (CustomerServiceRemote) jndiContext.lookup(CUSTOMER_SERVICE_NAME);
 
         customer = new Customer();
         customer.setEmail("hans@dampf.ch");
         customer.setFirstName("Hans");
         customer.setLastName("Dampf");
+        creditCard = new CreditCard();
+        creditCard.setExpirationMonth(8);
+        creditCard.setExpirationYear(2019);
+        creditCard.setNumber("232232221231211112");
+        creditCard.setType(CreditCardType.MASTERCARD);
+        customer.setCreditCard(creditCard);
     }
 
     @Test
@@ -100,7 +107,7 @@ public class CustomerServiceTest extends AbstractTest {
 
     }
 
-    @Test(dependsOnMethods = "registerCustomer")
+    @Test(dependsOnMethods = "shouldRegisterCustomer")
     public void shouldFailFindCustomer() throws CustomerNotFoundException {
         //when
         try {
@@ -153,6 +160,7 @@ public class CustomerServiceTest extends AbstractTest {
         newCustomer.setLastName("Neuer");
         newCustomer.setFirstName("Max");
         newCustomer.setEmail("some@mail.com");
+        newCustomer.setCreditCard(creditCard);
         customerService.registerCustomer(newCustomer, password);
 
         customer.setEmail(newCustomer.getEmail());

@@ -1,5 +1,7 @@
 package ch.bfh.eadj.control;
 
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import java.util.List;
 
@@ -15,6 +17,7 @@ public abstract class AbstractRepository<T> {
 
     public void create(T entity) {
         getEntityManager().persist(entity);
+        getEntityManager().flush();
     }
 
     public void edit(T entity) {

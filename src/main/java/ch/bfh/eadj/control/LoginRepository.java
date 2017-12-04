@@ -3,7 +3,6 @@ package ch.bfh.eadj.control;
 import ch.bfh.eadj.dto.LoginInfo;
 import ch.bfh.eadj.entity.Login;
 
-import javax.ejb.Singleton;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
