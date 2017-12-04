@@ -4,9 +4,10 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import java.io.Serializable;
 
 @Embeddable
-public class CreditCard {
+public class CreditCard implements Serializable {
 
     /*
     Wenn Enum (nicht am Ende) hinzugefügt wird gerät die Reihenfolge durcheinander und die

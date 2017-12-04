@@ -5,6 +5,8 @@ import ch.bfh.eadj.control.exception.CustomerNotFoundException;
 import ch.bfh.eadj.control.exception.EmailAlreadyUsedException;
 import ch.bfh.eadj.control.exception.InvalidPasswordException;
 import ch.bfh.eadj.dto.CustomerInfo;
+import ch.bfh.eadj.entity.CreditCard;
+import ch.bfh.eadj.entity.CreditCardType;
 import ch.bfh.eadj.entity.Customer;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -27,6 +29,7 @@ public class CustomerServiceIT {
     private CustomerServiceRemote customerService;
 
     private Customer customer;
+    private CreditCard creditCard;
     private String password = "1234asdf";
     private Long userId;
 
@@ -39,6 +42,12 @@ public class CustomerServiceIT {
         customer.setEmail("hans@dampf.ch");
         customer.setFirstName("Hans");
         customer.setLastName("Dampf");
+        creditCard = new CreditCard();
+        creditCard.setExpirationMonth(8);
+        creditCard.setExpirationYear(2019);
+        creditCard.setNumber("232232221231211112");
+        creditCard.setType(CreditCardType.MASTERCARD);
+        customer.setCreditCard(creditCard);
     }
 
     @Test
@@ -151,6 +160,7 @@ public class CustomerServiceIT {
         newCustomer.setLastName("Neuer");
         newCustomer.setFirstName("Max");
         newCustomer.setEmail("some@mail.com");
+        newCustomer.setCreditCard(creditCard);
         customerService.registerCustomer(newCustomer, password);
 
         customer.setEmail(newCustomer.getEmail());
