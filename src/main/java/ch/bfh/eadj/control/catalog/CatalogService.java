@@ -45,7 +45,8 @@ public class CatalogService implements CatalogServiceRemote{
     @Override
     public void removeBook(Book book) {
         //TODO check if exists
-        bookRepo.remove(book);
+        List<Book> bookByIsbn = bookRepo.findBookByIsbn(book.getIsbn());
+        bookRepo.remove(bookByIsbn.get(0));
     }
 
     @Override
