@@ -15,11 +15,11 @@ import java.util.List;
 @Remote
 public interface CustomerServiceRemote {
 
-    public Long registerCustomer(Customer customer, String password) throws EmailAlreadyUsedException;
+    Long registerCustomer(Customer customer, String password) throws EmailAlreadyUsedException;
 
-    public Long authenticateCustomer(String email, String password) throws CustomerNotFoundException, InvalidPasswordException;
+    Long authenticateCustomer(String email, String password) throws CustomerNotFoundException, InvalidPasswordException;
 
-    public Customer findCustomer(Long nr) throws CustomerNotFoundException;
+    Customer findCustomer(Long nr) throws CustomerNotFoundException;
 
     List<CustomerInfo> searchCustomers(String name);
 

@@ -1,13 +1,14 @@
 package ch.bfh.eadj.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Table(name = "T_CUSTOMER")
 @Entity
 @NamedQueries({
         @NamedQuery(name = Customer.FIND_BY_NAME_QUERY.QUERY_NAME, query = Customer.FIND_BY_NAME_QUERY.QUERY_STRING)
 })
-public class Customer extends BaseEntity {
+public class Customer extends BaseEntity implements Serializable {
 
     public static class FIND_BY_NAME_QUERY {
         public static final String QUERY_NAME = "customer.findByName";

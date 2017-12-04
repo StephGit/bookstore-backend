@@ -1,7 +1,6 @@
 package ch.bfh.eadj.control.customer;
 
 
-import ch.bfh.eadj.AbstractTest;
 import ch.bfh.eadj.control.exception.CustomerNotFoundException;
 import ch.bfh.eadj.control.exception.EmailAlreadyUsedException;
 import ch.bfh.eadj.control.exception.InvalidPasswordException;
@@ -15,14 +14,13 @@ import javax.naming.InitialContext;
 
 import java.util.List;
 
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertTrue;
-import static org.testng.Assert.assertNotEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.fail;
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertEquals;
 
-public class CustomerServiceTest extends AbstractTest {
+public class CustomerServiceIT {
 
     private static final String CUSTOMER_SERVICE_NAME = "java:global/bookstore-1.0-SNAPSHOT/CustomerService";
 
@@ -34,8 +32,8 @@ public class CustomerServiceTest extends AbstractTest {
 
     @BeforeClass
     public void setUp() throws Exception {
-        Context jndiContect = new InitialContext();
-        customerService = (CustomerServiceRemote) jndiContect.lookup(CUSTOMER_SERVICE_NAME);
+        Context jndiContext = new InitialContext();
+        customerService = (CustomerServiceRemote) jndiContext.lookup(CUSTOMER_SERVICE_NAME);
 
         customer = new Customer();
         customer.setEmail("hans@dampf.ch");
@@ -100,7 +98,7 @@ public class CustomerServiceTest extends AbstractTest {
 
     }
 
-    @Test(dependsOnMethods = "registerCustomer")
+    @Test(dependsOnMethods = "shouldRegisterCustomer")
     public void shouldFailFindCustomer() throws CustomerNotFoundException {
         //when
         try {
