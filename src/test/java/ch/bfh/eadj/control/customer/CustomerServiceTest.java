@@ -17,6 +17,8 @@ import javax.validation.constraints.Email;
 import java.util.List;
 
 import static com.sun.org.apache.xerces.internal.util.PropertyState.is;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.fail;
 import static org.testng.AssertJUnit.assertEquals;
@@ -111,13 +113,30 @@ public class CustomerServiceTest extends AbstractTest {
     }
 
     @Test
-    public void shouldSearchCustomers() throws Exception {
+    public void shouldSearchCustomers() {
         //when
         List<CustomerInfo> result = customerService.searchCustomers(customer.getLastName());
+
+        //then
+        assertFalse(result.isEmpty());
+        assertEquals(result.get(0).getEmail(), customer.getEmail());
     }
 
     @Test
-    public void updateCustomer() throws Exception {
+    public void shouldFailSearchCustomers()  {
+        //when
+        List<CustomerInfo> result = customerService.searchCustomers("Meier");
+
+        //then
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void updateCustomer() throws CustomerNotFoundException, EmailAlreadyUsedException {
+        //when
+
+
+
     }
 
     @Test
