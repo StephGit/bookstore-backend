@@ -22,7 +22,8 @@ public abstract class AbstractRepository<T> {
     }
 
     public void remove(T entity) {
-        getEntityManager().remove(getEntityManager().merge(entity));
+        getEntityManager().remove(entity);
+        getEntityManager().flush(); //TODO scheint nicht zu funktionieren trotz flush
     }
 
     public T find(Object id) {

@@ -43,6 +43,12 @@ public class CatalogService implements CatalogServiceRemote{
     }
 
     @Override
+    public void removeBook(Book book) {
+        //TODO check if exists
+        bookRepo.remove(book);
+    }
+
+    @Override
     public List<BookInfo> searchBooks(String keywords) {
         if (keywords != null && keywords.length() > 0) {
             String[] splited = keywords.split("\\s+");
@@ -55,7 +61,7 @@ public class CatalogService implements CatalogServiceRemote{
     @Override
     public void updateBook(Book book) throws BookNotFoundException {
         List<Book> books = bookRepo.findBookByIsbn(book.getIsbn());
-        if (books == null && books.isEmpty()) {
+        if (books == null || books.isEmpty()) {
             throw new BookNotFoundException();
         }
         bookRepo.edit(book);
