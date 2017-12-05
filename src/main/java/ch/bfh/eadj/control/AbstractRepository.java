@@ -1,9 +1,8 @@
 package ch.bfh.eadj.control;
 
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.persistence.EntityManager;
 import java.util.List;
+
+import javax.persistence.EntityManager;
 
 public abstract class AbstractRepository<T> {
 
@@ -25,8 +24,7 @@ public abstract class AbstractRepository<T> {
     }
 
     public void remove(T entity) {
-        getEntityManager().remove(entity);
-        getEntityManager().flush(); //TODO scheint nicht zu funktionieren trotz flush
+        getEntityManager().remove(getEntityManager().merge(entity));
     }
 
     public T find(Object id) {

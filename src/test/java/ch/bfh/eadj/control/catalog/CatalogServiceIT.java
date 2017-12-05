@@ -1,21 +1,23 @@
 package ch.bfh.eadj.control.catalog;
 
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
 import ch.bfh.eadj.control.exception.BookAlreadyExistsException;
 import ch.bfh.eadj.control.exception.BookNotFoundException;
 import ch.bfh.eadj.dto.BookInfo;
 import ch.bfh.eadj.entity.Book;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import java.math.BigDecimal;
-import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
 
 public class CatalogServiceIT  {
 
@@ -110,7 +112,7 @@ public class CatalogServiceIT  {
         book = b;
     }
 
-    private Book createBook() throws BookAlreadyExistsException {
+    private Book createBook() {
         Book b = new Book();
         b.setTitle("test");
         b.setIsbn("12345");
