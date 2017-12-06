@@ -1,6 +1,7 @@
-package ch.bfh.eadj.control.catalog;
+package ch.bfh.eadj.control.order;
 
 
+import ch.bfh.eadj.control.catalog.CatalogServiceRemote;
 import ch.bfh.eadj.control.exception.BookAlreadyExistsException;
 import ch.bfh.eadj.control.exception.BookNotFoundException;
 import ch.bfh.eadj.dto.BookInfo;
@@ -17,26 +18,25 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 
-public class CatalogServiceIT  {
+public class OrderServiceIT {
 
-    private static final String CATALOG_SERVICE_NAME = "java:global/bookstore-1.0-SNAPSHOT/CatalogService";
+    private static final String ORDER_SERVICE_NAME = "java:global/bookstore-1.0-SNAPSHOT/OrderService";
 
-    private CatalogServiceRemote catalogService;
+    private CatalogServiceRemote orderService;
     private Book book;
 
     @BeforeClass
     public void setUp() throws Exception {
         Context jndiContext = new InitialContext();
-        catalogService = (CatalogServiceRemote) jndiContext.lookup(CATALOG_SERVICE_NAME);
+        orderService = (CatalogServiceRemote) jndiContext.lookup(ORDER_SERVICE_NAME);
     }
 
 
     @Test(dependsOnMethods = "shouldCreateBook")
-    public void shouldAddBook() throws BookAlreadyExistsException, BookNotFoundException {
+    public void shouldAddOrder()  {
+        //TODO exceptions
 
-        //then
-        Book bookFromDb = catalogService.findBook(book.getIsbn());
-        assertEquals(book.getIsbn(), bookFromDb.getIsbn());
+
 
     }
 
@@ -44,14 +44,14 @@ public class CatalogServiceIT  {
     public void shouldFailAddBook() throws BookAlreadyExistsException {
         //when
         Book book = createBook();
-        catalogService.addBook(book);
+        orderService.addBook(book);
     }
 
     @Test(dependsOnMethods = "shouldCreateBook")
     public void shouldFindBook() throws BookAlreadyExistsException, BookNotFoundException {
 
         //when
-        Book bookFromDb = catalogService.findBook(book.getIsbn());
+        Book bookFromDb = orderService.findBook(book.getIsbn());
         this.book = bookFromDb;
 
         //then
@@ -63,14 +63,14 @@ public class CatalogServiceIT  {
     @Test(dependsOnMethods = "shouldCreateBook",expectedExceptions  = BookNotFoundException.class)
     public void shouldNotFindBook() throws BookNotFoundException {
         //when
-       catalogService.findBook("999999");// not existent
+       orderService.findBook("999999");// not existent
     }
 
     @Test(dependsOnMethods = "shouldCreateBook")
     public void shouldFindBookByKeywords() throws BookAlreadyExistsException {
 
         //when
-        List<BookInfo> booksFromDb = catalogService.searchBooks("max");
+        List<BookInfo> booksFromDb = orderService.searchBooks("max");
 
         //then
         assertThat(booksFromDb.size(), is(1));
@@ -84,13 +84,13 @@ public class CatalogServiceIT  {
     public void shouldUpdateBook() throws BookAlreadyExistsException, BookNotFoundException {
 
         //when
-        Book bookFromDb = catalogService.findBook(book.getIsbn());
+        Book bookFromDb = orderService.findBook(book.getIsbn());
         bookFromDb.setAuthors("Adrian Krebs");
 
-        catalogService.updateBook(bookFromDb);
+        orderService.updateBook(bookFromDb);
 
         //then
-        Book afterUpdate = catalogService.findBook(book.getIsbn());
+        Book afterUpdate = orderService.findBook(book.getIsbn());
         assertEquals("Adrian Krebs", afterUpdate.getAuthors());
     }
 
@@ -100,14 +100,14 @@ public class CatalogServiceIT  {
         Book book = createBook();
         book.setIsbn("1231231321");
         //when
-        catalogService.updateBook(book);
+        orderService.updateBook(book);
     }
 
 
     @Test
     public void shouldCreateBook() throws BookAlreadyExistsException {
         Book b = createBook();
-        catalogService.addBook(b);
+        orderService.addBook(b);
         book = b;
     }
 
@@ -122,7 +122,7 @@ public class CatalogServiceIT  {
 
     @Test(dependsOnMethods = {"shouldCreateBook", "shouldUpdateBook", "shouldAddBook", "shouldFindBook"})
     public void shouldRemoveBook() throws BookAlreadyExistsException {
-        catalogService.removeBook(book.getNr());
+        orderService.removeBook(book.getNr());
     }
 
 

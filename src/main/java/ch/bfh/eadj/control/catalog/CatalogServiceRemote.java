@@ -17,7 +17,7 @@ public interface CatalogServiceRemote {
     void addBook(Book book)
             throws BookAlreadyExistsException;
 
-    void removeBook(Book book);
+    void removeBook(Long id);
 
     List<BookInfo> searchBooks(String keywords);
 

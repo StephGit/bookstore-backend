@@ -1,9 +1,9 @@
 package ch.bfh.eadj.control.order;
 
 import ch.bfh.eadj.AbstractTest;
-import ch.bfh.eadj.control.order.OrderRepository;
 import ch.bfh.eadj.dto.OrderInfo;
 import ch.bfh.eadj.dto.OrderStatisticInfo;
+import ch.bfh.eadj.entity.Order;
 import ch.bfh.eadj.entity.OrderStatus;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +32,7 @@ public class OrderRepositoryTest extends AbstractTest {
         Double totalAmount = 45.24;
 
         //when
-        OrderInfo result = orderRepository.findByNr(orderNr);
+        Order result = orderRepository.findByNr(orderNr);
 
         //then
         assertNotNull(result);

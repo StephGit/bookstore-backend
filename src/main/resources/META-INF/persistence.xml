@@ -9,6 +9,6 @@
         <properties>
             <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
             <property name="eclipselink.logging.level" value="FINE"/>
-</properties>
-</persistence-unit>
+        </properties>
+    </persistence-unit>
 </persistence>
