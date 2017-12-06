@@ -14,7 +14,7 @@ public class DataConsistencyTest extends AbstractTest {
     @Test
     public void shouldNotFindOrderWithoutItems() {
         //given
-        String queryString = "select o.nr from BookOrder o left join o.orderItems oi where oi.nr is null";
+        String queryString = "select o.nr from Order o left join o.orderItems oi where oi.nr is null";
 
         //when
         Query query = em.createQuery(queryString);

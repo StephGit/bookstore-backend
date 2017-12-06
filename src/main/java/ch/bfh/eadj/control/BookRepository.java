@@ -4,6 +4,8 @@ import ch.bfh.eadj.dto.BookInfo;
 import ch.bfh.eadj.entity.Book;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -28,12 +30,14 @@ public class BookRepository extends AbstractRepository<Book> {
     }
 
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public List<Book> findBookByIsbn(String isbn) {
         TypedQuery<Book> query = em.createNamedQuery(Book.FIND_BY_ISBN_QUERY.QUERY_NAME, Book.class);
         query.setParameter(PARAM_ISBN, isbn);
         return query.getResultList();
     }
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public List<BookInfo> findBooksByKeywords(List<String> keywords) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<BookInfo> query = builder.createQuery(BookInfo.class);

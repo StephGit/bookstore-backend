@@ -124,10 +124,8 @@ public class CustomerService implements CustomerServiceRemote {
             for (Iterator<LoginInfo> it = loginInfoSet.iterator(); it.hasNext(); ) {
                 LoginInfo loginInfo = it.next();
 
-                Login login = new Login();
-                login.setUserName(loginInfo.getUserName());
+                Login login = loginRepository.find(loginInfo.getNr());
                 login.setPassword(password);
-                login.setGroup(loginInfo.getUserGroup());
 
                 loginRepository.edit(login);
 

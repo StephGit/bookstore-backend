@@ -2,7 +2,7 @@ package ch.bfh.eadj.control;
 
 import ch.bfh.eadj.AbstractTest;
 import ch.bfh.eadj.entity.Customer;
-import ch.bfh.eadj.entity.BookOrder;
+import ch.bfh.eadj.entity.Order;
 import org.junit.Test;
 
 import javax.persistence.TypedQuery;
@@ -20,8 +20,8 @@ public class RelationshipTest extends AbstractTest {
         List<Customer> listCustomer = q.getResultList();
         assertTrue(!listCustomer.isEmpty());
 
-        TypedQuery<BookOrder> q2 = em.createQuery("select o from BookOrder o join o.customer c where c.nr = " + listCustomer.get(0).getNr() , BookOrder.class);
-        List<BookOrder> listOrder = q2.getResultList();
+        TypedQuery<Order> q2 = em.createQuery("select o from Order o join o.customer c where c.nr = " + listCustomer.get(0).getNr() , Order.class);
+        List<Order> listOrder = q2.getResultList();
         assertTrue(!listOrder.isEmpty());
     }
 

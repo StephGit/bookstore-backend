@@ -118,7 +118,7 @@ public class CustomerServiceIT {
         } catch (CustomerNotFoundException e) {}
     }
 
-    @Test(dependsOnMethods = "shouldRegisterCustomer")
+    @Test
     public void shouldSearchCustomers() {
         //when
         List<CustomerInfo> result = customerService.searchCustomers(customer.getLastName());
@@ -174,17 +174,18 @@ public class CustomerServiceIT {
 
     }
 
-    @Test(dependsOnMethods = "shouldRegisterCustomer")
+    @Test
     public void shouldChangePassword() throws Exception {
         //given
+        Long loginId = customerService.authenticateCustomer(customer.getEmail(), password);
         String newPassword = "blab12";
 
         //when
         customerService.changePassword(customer.getEmail(), newPassword);
 
         //then
-        Long newId = customerService.authenticateCustomer(customer.getEmail(), newPassword);
-        assertEquals(customer.getNr(), newId);
+        Long resultLoginId = customerService.authenticateCustomer(customer.getEmail(), newPassword);
+        assertEquals(loginId, resultLoginId);
     }
 
     @Test(dependsOnMethods = "shouldChangePassword")
