@@ -20,7 +20,7 @@ public class Order extends BaseEntity implements Serializable {
 
     public static class FIND_BY_NR_QUERY {
         public static final String QUERY_NAME = "Order.findById";
-        public static final String QUERY_STRING = "select new ch.bfh.eadj.dto.OrderInfo(o.nr, o.date, o.amount, o.status) from Order o where o.nr = :nr";
+        public static final String QUERY_STRING = "select o from Order o where o.nr = :nr";
     }
 
     public static class FIND_BY_CUSTOMER_AND_YEAR_QUERY {
