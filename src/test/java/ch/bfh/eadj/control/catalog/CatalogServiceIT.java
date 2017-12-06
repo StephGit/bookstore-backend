@@ -1,21 +1,23 @@
 package ch.bfh.eadj.control.catalog;
 
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
 import ch.bfh.eadj.control.exception.BookAlreadyExistsException;
 import ch.bfh.eadj.control.exception.BookNotFoundException;
 import ch.bfh.eadj.dto.BookInfo;
 import ch.bfh.eadj.entity.Book;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import java.math.BigDecimal;
-import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
 
 public class CatalogServiceIT  {
 
@@ -40,11 +42,11 @@ public class CatalogServiceIT  {
 
     }
 
-    @Test(expectedExceptions  = BookAlreadyExistsException.class)
+    @Test(dependsOnMethods = "shouldCreateBook",expectedExceptions  = BookAlreadyExistsException.class)
     public void shouldFailAddBook() throws BookAlreadyExistsException {
         //when
-//        createBook();
-//        createBook();
+        Book book = createBook();
+        catalogService.addBook(book);
     }
 
     @Test(dependsOnMethods = "shouldCreateBook")
@@ -59,10 +61,10 @@ public class CatalogServiceIT  {
         assertEquals("12345", bookFromDb.getIsbn());
     }
 
-    @Test(expectedExceptions  = BookNotFoundException.class)
+    @Test(dependsOnMethods = "shouldCreateBook",expectedExceptions  = BookNotFoundException.class)
     public void shouldNotFindBook() throws BookNotFoundException {
         //when
-        catalogService.findBook("12345");
+        catalogService.findBook("999999"); // not existent
     }
 
     @Test(dependsOnMethods = "shouldCreateBook")
@@ -93,27 +95,37 @@ public class CatalogServiceIT  {
         assertEquals("Adrian Krebs", afterUpdate.getAuthors());
     }
 
-    @Test(expectedExceptions  = BookNotFoundException.class)
+    @Test(dependsOnMethods = "shouldCreateBook",expectedExceptions  = BookNotFoundException.class)
     public void shouldFailUpdateBook() throws BookAlreadyExistsException, BookNotFoundException {
         //given
-        Book unknown = new Book();
-        unknown.setAuthors("Adrian Krebs");
-
+        Book book = createBook();
+        book.setIsbn("1231231321");
         //when
-        catalogService.updateBook(unknown);
+        catalogService.updateBook(book);
     }
 
 
     @Test
     public void shouldCreateBook() throws BookAlreadyExistsException {
+        Book b = createBook();
+        catalogService.addBook(b);
+        book = b;
+    }
+
+    private Book createBook() {
         Book b = new Book();
         b.setTitle("test");
         b.setIsbn("12345");
         b.setAuthors("max muster");
         b.setPrice(new BigDecimal("10.14"));
-        catalogService.addBook(b);
-        book = b;
+        return b;
     }
+
+    @Test(dependsOnMethods = {"shouldCreateBook", "shouldUpdateBook", "shouldAddBook"})
+    public void shouldRemoveBook() throws BookAlreadyExistsException {
+        catalogService.removeBook(book);
+    }
+
 
 
 }

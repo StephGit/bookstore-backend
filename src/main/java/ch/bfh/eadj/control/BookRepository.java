@@ -1,7 +1,9 @@
 package ch.bfh.eadj.control;
 
-import ch.bfh.eadj.dto.BookInfo;
-import ch.bfh.eadj.entity.Book;
+import static ch.bfh.eadj.entity.Book.FIND_BY_ISBN_QUERY.PARAM_ISBN;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -13,10 +15,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.LinkedList;
-import java.util.List;
 
-import static ch.bfh.eadj.entity.Book.FIND_BY_ISBN_QUERY.PARAM_ISBN;
+import ch.bfh.eadj.dto.BookInfo;
+import ch.bfh.eadj.entity.Book;
 
 @Stateless
 public class BookRepository extends AbstractRepository<Book> {
@@ -67,6 +68,13 @@ public class BookRepository extends AbstractRepository<Book> {
                         )
                 ))
                 .getResultList();
+    }
+
+    public void deleteBook(Long id) {
+        Book book = em.find(Book.class, id);
+        if (book != null){
+            em.remove(book);
+        }
     }
 
     @Override

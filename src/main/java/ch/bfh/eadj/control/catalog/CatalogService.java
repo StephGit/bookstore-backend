@@ -1,17 +1,18 @@
 package ch.bfh.eadj.control.catalog;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Logger;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import ch.bfh.eadj.control.BookRepository;
 import ch.bfh.eadj.control.exception.BookAlreadyExistsException;
 import ch.bfh.eadj.control.exception.BookNotFoundException;
 import ch.bfh.eadj.dto.BookInfo;
 import ch.bfh.eadj.entity.Book;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.logging.Logger;
 
 @Stateless
 public class CatalogService implements CatalogServiceRemote{
@@ -43,6 +44,11 @@ public class CatalogService implements CatalogServiceRemote{
     }
 
     @Override
+    public void removeBook(Book book) {
+        bookRepo.deleteBook(book.getNr());
+    }
+
+    @Override
     public List<BookInfo> searchBooks(String keywords) {
         if (keywords != null && keywords.length() > 0) {
             String[] splited = keywords.split("\\s+");
@@ -55,7 +61,7 @@ public class CatalogService implements CatalogServiceRemote{
     @Override
     public void updateBook(Book book) throws BookNotFoundException {
         List<Book> books = bookRepo.findBookByIsbn(book.getIsbn());
-        if (books == null && books.isEmpty()) {
+        if (books == null || books.isEmpty()) {
             throw new BookNotFoundException();
         }
         bookRepo.edit(book);
