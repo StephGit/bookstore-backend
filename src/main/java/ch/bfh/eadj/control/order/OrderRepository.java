@@ -5,6 +5,7 @@ import ch.bfh.eadj.dto.OrderInfo;
 import ch.bfh.eadj.dto.OrderStatisticInfo;
 import ch.bfh.eadj.entity.Order;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -41,6 +42,18 @@ public class OrderRepository extends AbstractRepository<Order> {
         query.setParameter(PARAM_YEAR, year);
         return query.getResultList();
     }
+
+    public boolean deleteOrder(Long order) {
+        try {
+            Order orderToRemove = em.getReference(Order.class, order);
+            //TODO cascading
+            em.remove(orderToRemove);
+            return true;
+        } catch (EntityExistsException ex ) {
+            return false;
+        }
+    }
+
 
     @Override
     protected EntityManager getEntityManager() {

@@ -42,4 +42,5 @@ public class OrderService implements OrderServiceRemote {
     public List<OrderInfo> searchOrder(Customer customer, Integer year) {
         return orderRepo.findByCustomerAndYear(customer.getNr(), year);
     }
+
 }
