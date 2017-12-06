@@ -1,23 +1,21 @@
 package ch.bfh.eadj.control.catalog;
 
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-
-import java.math.BigDecimal;
-import java.util.List;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
 import ch.bfh.eadj.control.exception.BookAlreadyExistsException;
 import ch.bfh.eadj.control.exception.BookNotFoundException;
 import ch.bfh.eadj.dto.BookInfo;
 import ch.bfh.eadj.entity.Book;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import java.math.BigDecimal;
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
 
 public class CatalogServiceIT  {
 
@@ -54,6 +52,7 @@ public class CatalogServiceIT  {
 
         //when
         Book bookFromDb = catalogService.findBook(book.getIsbn());
+        this.book = bookFromDb;
 
         //then
         assertEquals("test", bookFromDb.getTitle());
@@ -64,7 +63,7 @@ public class CatalogServiceIT  {
     @Test(dependsOnMethods = "shouldCreateBook",expectedExceptions  = BookNotFoundException.class)
     public void shouldNotFindBook() throws BookNotFoundException {
         //when
-        catalogService.findBook("999999"); // not existent
+       catalogService.findBook("999999");// not existent
     }
 
     @Test(dependsOnMethods = "shouldCreateBook")
@@ -121,9 +120,9 @@ public class CatalogServiceIT  {
         return b;
     }
 
-    @Test(dependsOnMethods = {"shouldCreateBook", "shouldUpdateBook", "shouldAddBook"})
+    @Test(dependsOnMethods = {"shouldCreateBook", "shouldUpdateBook", "shouldAddBook", "shouldFindBook"})
     public void shouldRemoveBook() throws BookAlreadyExistsException {
-        catalogService.removeBook(book);
+        catalogService.removeBook(book.getNr());
     }
 
 
