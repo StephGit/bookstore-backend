@@ -38,7 +38,7 @@ public class CustomerService implements CustomerServiceRemote {
             login.setPassword(password);
             login.setUserName(customer.getEmail());
             loginRepository.create(login);
-            return login.getNr();
+            return customer.getNr();
         } else {
             throw new EmailAlreadyUsedException();
         }
@@ -133,6 +133,15 @@ public class CustomerService implements CustomerServiceRemote {
         } else {
             throw new CustomerNotFoundException();
         }
+    }
+
+    @Override
+    public void removeCustomer(Customer customer) throws CustomerNotFoundException {
+
+        Login login = loginRepository.find(customer.getNr());
+        loginRepository.remove(login);
+        customerRepository.remove(customer);
+
     }
 }
 

@@ -1,6 +1,5 @@
 package ch.bfh.eadj.control.customer;
 
-
 import ch.bfh.eadj.control.exception.CustomerNotFoundException;
 import ch.bfh.eadj.control.exception.EmailAlreadyUsedException;
 import ch.bfh.eadj.control.exception.InvalidPasswordException;
@@ -32,6 +31,7 @@ public class CustomerServiceIT {
     private CreditCard creditCard;
     private String password = "1234asdf";
     private Long userId;
+    private Long userId2;
 
     @BeforeClass
     public void setUp() throws Exception {
@@ -99,7 +99,7 @@ public class CustomerServiceIT {
     public void shouldFindCustomer() throws CustomerNotFoundException {
 
         //when
-        Customer foundCustomer = customerService.findCustomer(customer.getNr());
+        Customer foundCustomer = customerService.findCustomer(userId);
 
         //then
         assertEquals(foundCustomer.getLastName(), customer.getLastName());
@@ -109,9 +109,12 @@ public class CustomerServiceIT {
 
     @Test(dependsOnMethods = "shouldRegisterCustomer")
     public void shouldFailFindCustomer() throws CustomerNotFoundException {
+        //given
+        Long unknownId = 2321L;
+
         //when
         try {
-            Customer foundCustomer = customerService.findCustomer(2321L);
+            Customer foundCustomer = customerService.findCustomer(unknownId);
 
             //then
             fail("CustomerNotFoundException exception");
@@ -140,6 +143,7 @@ public class CustomerServiceIT {
     @Test(dependsOnMethods = "shouldRegisterCustomer")
     public void shouldUpdateCustomer() throws CustomerNotFoundException, EmailAlreadyUsedException {
         //given
+        customer = customerService.findCustomer(userId);
         customer.setEmail("new@mail.com");
         customer.setFirstName("Anton");
 
@@ -153,7 +157,7 @@ public class CustomerServiceIT {
         assertEquals(updatedCustomer.getFirstName(), customer.getFirstName());
     }
 
-    @Test(dependsOnMethods = "shouldRegisterCustomer")
+    @Test(dependsOnMethods = {"shouldRegisterCustomer","shouldFindCustomer"})
     public void shouldFailUpdateCustomer() throws CustomerNotFoundException, EmailAlreadyUsedException {
         //given
         Customer newCustomer = new Customer();
@@ -161,8 +165,8 @@ public class CustomerServiceIT {
         newCustomer.setFirstName("Max");
         newCustomer.setEmail("some@mail.com");
         newCustomer.setCreditCard(creditCard);
-        customerService.registerCustomer(newCustomer, password);
-
+        userId2 = customerService.registerCustomer(newCustomer, password);
+        customer = customerService.findCustomer(userId);
         customer.setEmail(newCustomer.getEmail());
         try {
             //when
@@ -174,7 +178,7 @@ public class CustomerServiceIT {
 
     }
 
-    @Test
+    @Test(dependsOnMethods = "shouldRegisterCustomer")
     public void shouldChangePassword() throws Exception {
         //given
         Long loginId = customerService.authenticateCustomer(customer.getEmail(), password);
@@ -197,6 +201,14 @@ public class CustomerServiceIT {
             //then
             fail("CustomerNotFoundException exception");
         } catch (CustomerNotFoundException e) {}
+    }
+
+    @Test(dependsOnMethods = {"shouldRegisterCustomer", "shouldFailUpdateCustomer"})
+    public void shouldRemoveCustomer() throws Exception {
+        customer = customerService.findCustomer(userId);
+        customerService.removeCustomer(customer);
+        customer = customerService.findCustomer(userId2);
+        customerService.removeCustomer(customer);
     }
 
 }

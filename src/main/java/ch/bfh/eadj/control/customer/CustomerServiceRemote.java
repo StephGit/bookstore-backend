@@ -26,4 +26,6 @@ public interface CustomerServiceRemote {
     void updateCustomer(Customer customer) throws CustomerNotFoundException, EmailAlreadyUsedException;
 
     void changePassword(String email, String password) throws CustomerNotFoundException;
+
+    void removeCustomer(Customer customer) throws CustomerNotFoundException;
 }
