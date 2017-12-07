@@ -1,30 +1,41 @@
 package ch.bfh.eadj.control.catalog;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.runner.RunWith;
+import ch.bfh.eadj.control.exception.BookNotFoundException;
+import ch.bfh.eadj.entity.Book;
+import org.jboss.weld.junit4.WeldInitiator;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-@RunWith(Arquillian.class)
-public class CatalogService2IT {
-    @Deployment
-    public static JavaArchive createDeployment() {
-        return ShrinkWrap.create(JavaArchive.class)
-                .addClass(CatalogService.class)
-                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
-    }
+import static org.junit.Assert.assertEquals;
 
-    @PersistenceContext
+public class CatalogService2IT {
+
+    @Rule
+    public WeldInitiator weld = WeldInitiator.of(CatalogService.class);
+
+
+    @PersistenceContext(name = "bookstoreTestPU")
     EntityManager em;
 
     @Inject
     CatalogService catalogService;
+
+    @Before
+    public void setUp() throws Exception {
+    }
+
+    @Test
+    public void testMyBean() throws BookNotFoundException {
+        String isbn = "417998182-3";
+        Book book = catalogService.findBook(isbn);
+
+        assertEquals(isbn, book.getIsbn());
+    }
 
 
 
