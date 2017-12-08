@@ -28,7 +28,6 @@ public class CustomerServiceIT {
     private CustomerServiceRemote customerService;
 
     private Customer customer;
-    private CreditCard creditCard;
     private String password = "1234asdf";
     private Long userId;
     private Long userId2;
@@ -37,17 +36,25 @@ public class CustomerServiceIT {
     public void setUp() throws Exception {
         Context jndiContext = new InitialContext();
         customerService = (CustomerServiceRemote) jndiContext.lookup(CUSTOMER_SERVICE_NAME);
+        customer = createCustomer();
+    }
 
-        customer = new Customer();
-        customer.setEmail("hans@dampf.ch");
-        customer.setFirstName("Hans");
-        customer.setLastName("Dampf");
-        creditCard = new CreditCard();
+    private Customer createCustomer() {
+        Customer cust  = new Customer();
+        cust.setEmail("hans@dampf.ch");
+        cust.setFirstName("Hans");
+        cust.setLastName("Dampf");
+        cust.setCreditCard(createCreditCard());
+        return cust;
+    }
+
+    private CreditCard createCreditCard() {
+        CreditCard creditCard = new CreditCard();
         creditCard.setExpirationMonth(8);
         creditCard.setExpirationYear(2019);
         creditCard.setNumber("232232221231211112");
         creditCard.setType(CreditCardType.MASTERCARD);
-        customer.setCreditCard(creditCard);
+        return creditCard;
     }
 
     @Test
@@ -160,11 +167,10 @@ public class CustomerServiceIT {
     @Test(dependsOnMethods = {"shouldRegisterCustomer","shouldFindCustomer"})
     public void shouldFailUpdateCustomer() throws CustomerNotFoundException, EmailAlreadyUsedException {
         //given
-        Customer newCustomer = new Customer();
+        Customer newCustomer = createCustomer();
         newCustomer.setLastName("Neuer");
         newCustomer.setFirstName("Max");
         newCustomer.setEmail("some@mail.com");
-        newCustomer.setCreditCard(creditCard);
         userId2 = customerService.registerCustomer(newCustomer, password);
         customer = customerService.findCustomer(userId);
         customer.setEmail(newCustomer.getEmail());

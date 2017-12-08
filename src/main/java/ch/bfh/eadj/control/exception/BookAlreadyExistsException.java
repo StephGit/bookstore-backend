@@ -1,4 +1,4 @@
 package ch.bfh.eadj.control.exception;
 
-public class BookAlreadyExistsException extends Exception {
+public class BookAlreadyExistsException extends BookstoreException {
 }
