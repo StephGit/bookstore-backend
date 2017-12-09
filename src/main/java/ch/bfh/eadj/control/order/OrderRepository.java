@@ -31,10 +31,10 @@ public class OrderRepository extends AbstractRepository<Order> {
         return query.getResultList();
     }
 
-    public Order findByNr(Long nr) {
+    public List<Order> findByNr(Long nr) {
         TypedQuery<Order> query = em.createNamedQuery(Order.FIND_BY_NR_QUERY.QUERY_NAME, Order.class);
         query.setParameter(PARAM_NR, nr);
-        return query.getSingleResult(); //TODO dont do that
+        return query.getResultList();
     }
 
     public List<OrderStatisticInfo> getStatisticByYear(Integer year) {

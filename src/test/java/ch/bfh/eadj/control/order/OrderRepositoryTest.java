@@ -32,11 +32,11 @@ public class OrderRepositoryTest extends AbstractTest {
         Double totalAmount = 45.24;
 
         //when
-        Order result = orderRepository.findByNr(orderNr);
+        List<Order> result = orderRepository.findByNr(orderNr);
 
         //then
         assertNotNull(result);
-        assertThat(result.getAmount(), is(BigDecimal.valueOf(totalAmount)));
+        assertThat(result.get(0).getAmount(), is(BigDecimal.valueOf(totalAmount)));
     }
 
     @Test
