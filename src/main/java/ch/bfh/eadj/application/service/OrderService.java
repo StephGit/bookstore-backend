@@ -8,6 +8,7 @@ import ch.bfh.eadj.persistence.entity.*;
 import ch.bfh.eadj.persistence.enumeration.OrderStatus;
 import ch.bfh.eadj.persistence.repository.OrderRepository;
 
+import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.math.BigDecimal;
@@ -23,7 +24,8 @@ public class OrderService implements OrderServiceRemote {
 
     //TODO store config in .properites or xml file and retrieve it from there
     // ejb.jar does not work because we package our application into a war
-    private final static BigDecimal PAYMENT_LIMIT = new BigDecimal("1000");
+    @Resource(name="jndi.properties/withdrawLimit")
+    private BigDecimal PAYMENT_LIMIT;
 
 
     @Override
