@@ -6,13 +6,13 @@
         http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
     <persistence-unit name="bookstoreTestPU" transaction-type="RESOURCE_LOCAL">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-        <class>ch.bfh.eadj.entity.Order</class>
-        <class>ch.bfh.eadj.entity.Customer</class>
-        <class>ch.bfh.eadj.entity.Book</class>
-        <class>ch.bfh.eadj.entity.Country</class>
-        <class>ch.bfh.eadj.entity.Login</class>
-        <class>ch.bfh.eadj.entity.BaseEntity</class>
-        <class>ch.bfh.eadj.entity.OrderItem</class>
+        <class>ch.bfh.eadj.persistence.entity.Order</class>
+        <class>ch.bfh.eadj.persistence.entity.Customer</class>
+        <class>ch.bfh.eadj.persistence.entity.Book</class>
+        <class>ch.bfh.eadj.persistence.enumeration.Country</class>
+        <class>ch.bfh.eadj.persistence.entity.Login</class>
+        <class>ch.bfh.eadj.persistence.entity.BaseEntity</class>
+        <class>ch.bfh.eadj.persistence.entity.OrderItem</class>
         <properties>
             <property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:test"/>
             <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>

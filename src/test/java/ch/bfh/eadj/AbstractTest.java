@@ -12,7 +12,7 @@ public abstract class AbstractTest {
 
     protected final static Logger LOGGER = Logger.getLogger(AbstractTest.class.getName());
 
-    protected static EntityManagerFactory emf;
+    private static EntityManagerFactory emf;
     protected static EntityManager em;
 
     @BeforeClass

@@ -10,6 +10,6 @@ public class CDISetup {
     @Produces
     @BookstorePersistenceUnit
     @PersistenceContext(unitName = "bookstorePU")
-    EntityManager em;
+    static EntityManager em;
 
 }
