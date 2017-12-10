@@ -88,7 +88,7 @@ insert into T_BOOKORDER (nr, amount, order_date, status, version, city, country,
 insert into T_BOOKORDER (nr, amount, order_date, status, version, city, country, postalcode, street, cc_type, expirationmonth, expirationyear, cc_number, customer_nr) values (20, 52.47, '2017-02-23T16:35:24Z', 'CANCELED', 76, 'Mozhaysk', 'IT', '155126', 'Swallow', 'VISA', 5, 2023, '3583445015762830', 3);
 --OrderItems--
 insert into T_ORDERITEM (nr, quantity, version, book_nr, order_nr) values (2, 1, 56, 20, 2);
-insert into T_ORDERITEM (nr, quantity, version, book_nr, order_nr) values (3, 2, 61, 22, 17);
+insert into T_ORDERITEM (nr, quantity, version, book_nr, order_nr) values (3, 2, 61, 21, 17);
 insert into T_ORDERITEM (nr, quantity, version, book_nr, order_nr) values (4, 2, 50, 3, 16);
 insert into T_ORDERITEM (nr, quantity, version, book_nr, order_nr) values (5, 3, 33, 18, 4);
 insert into T_ORDERITEM (nr, quantity, version, book_nr, order_nr) values (6, 1, 39, 6, 11);

@@ -21,7 +21,7 @@ import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertEquals;
 
-public class CustomerServiceIT {
+public class CustomerServiceIT extends AbstractServiceIT {
 
     private static final String CUSTOMER_SERVICE_NAME = "java:global/bookstore-1.0-SNAPSHOT/CustomerService";
 
@@ -37,24 +37,6 @@ public class CustomerServiceIT {
         Context jndiContext = new InitialContext();
         customerService = (CustomerServiceRemote) jndiContext.lookup(CUSTOMER_SERVICE_NAME);
         customer = createCustomer();
-    }
-
-    private Customer createCustomer() {
-        Customer cust  = new Customer();
-        cust.setEmail("hans@dampf.ch");
-        cust.setFirstName("Hans");
-        cust.setLastName("Dampf");
-        cust.setCreditCard(createCreditCard());
-        return cust;
-    }
-
-    private CreditCard createCreditCard() {
-        CreditCard creditCard = new CreditCard();
-        creditCard.setExpirationMonth(8);
-        creditCard.setExpirationYear(2019);
-        creditCard.setNumber("232232221231211112");
-        creditCard.setType(CreditCardType.MASTERCARD);
-        return creditCard;
     }
 
     @Test

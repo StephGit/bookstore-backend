@@ -1,5 +1,7 @@
 package ch.bfh.eadj.application.service;
 
+import ch.bfh.eadj.application.logging.Logged;
+import ch.bfh.eadj.application.logging.LoggerInterceptor;
 import ch.bfh.eadj.application.exception.OrderAlreadyShippedException;
 import ch.bfh.eadj.application.exception.OrderNotFoundException;
 import ch.bfh.eadj.application.exception.PaymentFailedException;
@@ -8,15 +10,17 @@ import ch.bfh.eadj.persistence.entity.*;
 import ch.bfh.eadj.persistence.enumeration.OrderStatus;
 import ch.bfh.eadj.persistence.repository.OrderRepository;
 
-import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.interceptor.Interceptors;
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 
 @Stateless
+@Interceptors(LoggerInterceptor.class)
 public class OrderService implements OrderServiceRemote {
 
     @Inject
@@ -24,8 +28,7 @@ public class OrderService implements OrderServiceRemote {
 
     //TODO store config in .properites or xml file and retrieve it from there
     // ejb.jar does not work because we package our application into a war
-    @Resource(name="jndi.properties/withdrawLimit")
-    private BigDecimal PAYMENT_LIMIT;
+    private final static BigDecimal PAYMENT_LIMIT = new BigDecimal("1000");
 
 
     @Override
@@ -48,16 +51,29 @@ public class OrderService implements OrderServiceRemote {
         return orders.get(0);
     }
 
+    @Logged
     @Override
     public Order placeOrder(Customer customer, List<OrderItem> items) throws PaymentFailedException {
         Order order = new Order();
         order.setCustomer(customer);
         order.setItems(new HashSet<>(items));
+        order.setDate(Date.valueOf(LocalDate.now()));
         copyCustomerInfos(customer, order);
+        calculateOrderAmount(order);
         validateOrderPlacement(order);
+        order.setStatus(OrderStatus.ACCEPTED);
         orderRepo.create(order);
-
         return order;
+    }
+
+    private void calculateOrderAmount(Order order) {
+        BigDecimal orderAmount = new BigDecimal(0);
+        for (OrderItem orderItem: order.getItems()) {
+            BigDecimal mult = orderItem.getBook().getPrice().multiply( new BigDecimal(orderItem.getQuantity()));
+            orderAmount.add(mult);
+            System.out.println(mult);
+        }
+        order.setAmount(orderAmount);
     }
 
     private void copyCustomerInfos(Customer customer, Order order) {

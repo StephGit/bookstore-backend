@@ -1,21 +1,27 @@
 package ch.bfh.eadj.persistence.repository;
 
+import ch.bfh.eadj.BookstorePersistenceUnit;
 import ch.bfh.eadj.persistence.dto.OrderInfo;
 import ch.bfh.eadj.persistence.dto.OrderStatisticInfo;
 import ch.bfh.eadj.persistence.entity.Order;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 import java.util.List;
 
 import static ch.bfh.eadj.persistence.entity.Order.PARAM_NR;
 import static ch.bfh.eadj.persistence.entity.Order.PARAM_YEAR;
 
+@Stateless
 public class OrderRepository extends AbstractRepository<Order> {
 
-    @PersistenceContext
+    @Inject
+    @BookstorePersistenceUnit
     EntityManager em;
 
     public OrderRepository() {

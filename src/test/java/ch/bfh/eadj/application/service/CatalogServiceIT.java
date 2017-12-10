@@ -10,14 +10,13 @@ import org.testng.annotations.Test;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import java.math.BigDecimal;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 
-public class CatalogServiceIT  {
+public class CatalogServiceIT extends AbstractServiceIT {
 
     private static final String CATALOG_SERVICE_NAME = "java:global/bookstore-1.0-SNAPSHOT/CatalogService";
 
@@ -109,15 +108,6 @@ public class CatalogServiceIT  {
         Book b = createBook();
         catalogService.addBook(b);
         book = b;
-    }
-
-    private Book createBook() {
-        Book b = new Book();
-        b.setTitle("test");
-        b.setIsbn("12345");
-        b.setAuthors("max muster");
-        b.setPrice(new BigDecimal("10.14"));
-        return b;
     }
 
     @Test(dependsOnMethods = {"shouldCreateBook", "shouldUpdateBook", "shouldAddBook", "shouldFindBook"})

@@ -1,10 +1,7 @@
 package ch.bfh.eadj.persistence.entity;
 
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Table(name = "T_ORDERITEM")
 @Entity
@@ -13,7 +10,7 @@ public class OrderItem extends  BaseEntity {
     @Column(nullable = false)
     private Integer quantity;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     private Book book;
 
     public Book getBook() { return book; }

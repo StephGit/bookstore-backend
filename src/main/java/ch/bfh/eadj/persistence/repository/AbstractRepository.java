@@ -3,6 +3,7 @@ package ch.bfh.eadj.persistence.repository;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 
 public abstract class AbstractRepository<T> {
 
