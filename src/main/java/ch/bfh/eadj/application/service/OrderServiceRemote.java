@@ -22,4 +22,5 @@ public interface OrderServiceRemote {
 
     List<OrderInfo> searchOrders(Customer customer, Integer year);
 
+    void removeOrder(Order order);
 }

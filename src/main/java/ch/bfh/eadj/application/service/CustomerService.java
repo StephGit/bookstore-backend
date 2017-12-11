@@ -10,8 +10,8 @@ import ch.bfh.eadj.persistence.entity.Customer;
 import ch.bfh.eadj.persistence.entity.Login;
 import ch.bfh.eadj.persistence.enumeration.UserGroup;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -20,10 +20,10 @@ import java.util.Set;
 @Stateless
 public class CustomerService implements CustomerServiceRemote {
 
-    @Inject
+    @EJB
     private CustomerRepository customerRepository;
 
-    @Inject
+    @EJB
     private LoginRepository loginRepository;
 
     @Override

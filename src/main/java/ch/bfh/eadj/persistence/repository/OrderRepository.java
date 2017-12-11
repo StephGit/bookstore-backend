@@ -5,6 +5,7 @@ import ch.bfh.eadj.persistence.dto.OrderInfo;
 import ch.bfh.eadj.persistence.dto.OrderStatisticInfo;
 import ch.bfh.eadj.persistence.entity.Order;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
@@ -20,8 +21,8 @@ import static ch.bfh.eadj.persistence.entity.Order.PARAM_YEAR;
 @Stateless
 public class OrderRepository extends AbstractRepository<Order> {
 
-    @Inject
     @BookstorePersistenceUnit
+    @PersistenceContext(unitName = "bookstorePU")
     EntityManager em;
 
     public OrderRepository() {

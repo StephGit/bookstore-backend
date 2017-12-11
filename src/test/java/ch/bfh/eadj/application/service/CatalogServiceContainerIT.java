@@ -9,6 +9,7 @@ import org.jboss.weld.junit4.WeldInitiator;
 import org.junit.Rule;
 import org.junit.Test;
 
+import javax.ejb.EJB;
 import javax.inject.Inject;
 
 import static org.junit.Assert.assertEquals;
@@ -19,7 +20,7 @@ public class CatalogServiceContainerIT {
     public WeldInitiator weld = WeldInitiator.from(CatalogService.class, BookRepository.class, TestCDISetup.class).inject(this).build();
 
 
-    @Inject
+    @EJB
     private CatalogService catalogService;
 
     @Test

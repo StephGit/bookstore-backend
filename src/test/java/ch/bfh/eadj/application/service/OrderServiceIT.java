@@ -1,6 +1,5 @@
 package ch.bfh.eadj.application.service;
 
-import ch.bfh.eadj.application.exception.CustomerNotFoundException;
 import ch.bfh.eadj.application.exception.PaymentFailedException;
 import ch.bfh.eadj.persistence.dto.OrderInfo;
 import ch.bfh.eadj.persistence.entity.Book;
@@ -8,14 +7,11 @@ import ch.bfh.eadj.persistence.entity.Customer;
 import ch.bfh.eadj.persistence.entity.Order;
 import ch.bfh.eadj.persistence.entity.OrderItem;
 import ch.bfh.eadj.persistence.enumeration.OrderStatus;
-
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import java.math.BigDecimal;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -91,7 +87,7 @@ public class OrderServiceIT extends AbstractServiceIT {
             order = orderService.placeOrder(customer, items);
 
             //then
-            assertThat(order.getAmount(), is(book.getPrice().multiply(new BigDecimal(30))));
+//            assertThat(order.getAmount(), is(book.getPrice().multiply(new BigDecimal(30))));
             fail("PaymentFailedException exception");
         } catch (PaymentFailedException e) {
             System.out.println("Expected exception: PaymentFailedException");
@@ -115,5 +111,6 @@ public class OrderServiceIT extends AbstractServiceIT {
     public void tearDown() throws Exception {
         catalogService.removeBook(book.getNr());
         customerService.removeCustomer(customer);
+        orderService.removeOrder(order);
     }
 }

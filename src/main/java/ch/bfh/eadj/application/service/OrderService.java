@@ -10,8 +10,9 @@ import ch.bfh.eadj.persistence.entity.*;
 import ch.bfh.eadj.persistence.enumeration.OrderStatus;
 import ch.bfh.eadj.persistence.repository.OrderRepository;
 
+import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -23,12 +24,10 @@ import java.util.List;
 @Interceptors(LoggerInterceptor.class)
 public class OrderService implements OrderServiceRemote {
 
-    @Inject
+    @EJB
     private OrderRepository orderRepo;
 
-    //TODO store config in .properites or xml file and retrieve it from there
-    // ejb.jar does not work because we package our application into a war
-    private final static BigDecimal PAYMENT_LIMIT = new BigDecimal("1000");
+    @Resource(name="paymentLimit") Long PAYMENT_LIMIT;
 
 
     @Override
@@ -69,9 +68,7 @@ public class OrderService implements OrderServiceRemote {
     private void calculateOrderAmount(Order order) {
         BigDecimal orderAmount = new BigDecimal(0);
         for (OrderItem orderItem: order.getItems()) {
-            BigDecimal mult = orderItem.getBook().getPrice().multiply( new BigDecimal(orderItem.getQuantity()));
-            orderAmount.add(mult);
-            System.out.println(mult);
+            orderAmount = orderAmount.add(orderItem.getBook().getPrice().multiply( new BigDecimal(orderItem.getQuantity())));
         }
         order.setAmount(orderAmount);
     }
@@ -96,7 +93,7 @@ public class OrderService implements OrderServiceRemote {
     }
 
     private boolean isPaymentLimitExceeded(Order order) {
-        return order.getAmount().compareTo(PAYMENT_LIMIT) > 0;
+        return order.getAmount().compareTo(new BigDecimal(PAYMENT_LIMIT)) > 0;
     }
 
     private boolean isCreditCardExpired(LocalDate now, CreditCard creditCard) {
@@ -106,6 +103,11 @@ public class OrderService implements OrderServiceRemote {
     @Override
     public List<OrderInfo> searchOrders(Customer customer, Integer year) {
         return orderRepo.findByCustomerAndYear(customer.getNr(), year);
+    }
+
+    @Override
+    public void removeOrder(Order order) {
+        orderRepo.remove(order);
     }
 
 }

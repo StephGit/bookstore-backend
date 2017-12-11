@@ -4,8 +4,6 @@ import ch.bfh.eadj.application.exception.CustomerNotFoundException;
 import ch.bfh.eadj.application.exception.EmailAlreadyUsedException;
 import ch.bfh.eadj.application.exception.InvalidPasswordException;
 import ch.bfh.eadj.persistence.dto.CustomerInfo;
-import ch.bfh.eadj.persistence.entity.CreditCard;
-import ch.bfh.eadj.persistence.enumeration.CreditCardType;
 import ch.bfh.eadj.persistence.entity.Customer;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;

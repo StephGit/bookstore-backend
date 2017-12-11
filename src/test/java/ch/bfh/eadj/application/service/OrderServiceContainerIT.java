@@ -17,6 +17,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.testng.annotations.BeforeClass;
 
+import javax.ejb.EJB;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,13 +40,13 @@ public class OrderServiceContainerIT extends AbstractServiceIT {
 
     private static final String ORDER_SERVICE_NAME = "java:global/bookstore-1.0-SNAPSHOT/OrderService";
 
-    @Inject
+    @EJB
     private OrderService orderService;
 
-    @Inject
+    @EJB
     private CustomerService customerService;
 
-    @Inject
+    @EJB
     private CatalogService catalogService;
 
 

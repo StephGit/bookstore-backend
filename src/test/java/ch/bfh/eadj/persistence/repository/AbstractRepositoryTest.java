@@ -11,6 +11,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 public class AbstractRepositoryTest extends AbstractTest {
+
     private BookRepository bookRepo;
     @Before
     public void setUpRepo() throws Exception {

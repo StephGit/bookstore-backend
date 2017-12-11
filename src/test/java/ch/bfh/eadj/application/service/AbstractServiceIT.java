@@ -1,10 +1,8 @@
 package ch.bfh.eadj.application.service;
 
 import ch.bfh.eadj.application.exception.BookNotFoundException;
-import ch.bfh.eadj.persistence.entity.Book;
-import ch.bfh.eadj.persistence.entity.CreditCard;
-import ch.bfh.eadj.persistence.entity.Customer;
-import ch.bfh.eadj.persistence.entity.OrderItem;
+import ch.bfh.eadj.persistence.entity.*;
+import ch.bfh.eadj.persistence.enumeration.Country;
 import ch.bfh.eadj.persistence.enumeration.CreditCardType;
 
 import java.math.BigDecimal;
@@ -19,7 +17,12 @@ public class AbstractServiceIT {
         cust.setFirstName("Hans");
         cust.setLastName("Dampf");
         cust.setCreditCard(createCreditCard());
+        cust.setAddress(createAdddress());
         return cust;
+    }
+
+    private Address createAdddress() {
+       return new Address("Bahnstrasse", "Burgdorf", "3400", Country.CH);
     }
 
     protected CreditCard createCreditCard() {

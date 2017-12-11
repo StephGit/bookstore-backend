@@ -6,8 +6,8 @@ import ch.bfh.eadj.application.exception.BookNotFoundException;
 import ch.bfh.eadj.persistence.dto.BookInfo;
 import ch.bfh.eadj.persistence.entity.Book;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -20,7 +20,7 @@ public class CatalogService implements CatalogServiceRemote{
     private static final Logger logger = Logger.getLogger(CatalogService.class.getName());
 
 
-    @Inject
+    @EJB
     private BookRepository bookRepo;
 
     @Override
