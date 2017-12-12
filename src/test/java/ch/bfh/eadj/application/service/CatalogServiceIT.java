@@ -111,7 +111,8 @@ public class CatalogServiceIT extends AbstractServiceIT {
     }
 
     @Test(dependsOnMethods = {"shouldCreateBook", "shouldUpdateBook", "shouldAddBook", "shouldFindBook"})
-    public void shouldRemoveBook() throws BookAlreadyExistsException {
+    public void shouldRemoveBook() throws BookAlreadyExistsException, BookNotFoundException {
+        book = catalogService.findBook(book.getIsbn());
         catalogService.removeBook(book.getNr());
     }
 

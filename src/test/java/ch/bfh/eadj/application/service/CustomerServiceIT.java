@@ -115,7 +115,7 @@ public class CustomerServiceIT extends AbstractServiceIT {
         }
     }
 
-    @Test
+    @Test(dependsOnMethods = "shouldRegisterCustomer")
     public void shouldSearchCustomers() {
         //when
         List<CustomerInfo> result = customerService.searchCustomers(customer.getLastName());
