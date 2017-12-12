@@ -5,14 +5,12 @@ import static ch.bfh.eadj.persistence.entity.Book.FIND_BY_ISBN_QUERY.PARAM_ISBN;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -26,8 +24,8 @@ import ch.bfh.eadj.persistence.entity.Book;
 @Stateless
 public class BookRepository extends AbstractRepository<Book> {
 
+    @Inject
     @BookstorePersistenceUnit
-    @PersistenceContext(unitName = "bookstorePU")
     public EntityManager em;
 
 

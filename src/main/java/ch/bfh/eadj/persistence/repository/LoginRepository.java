@@ -1,24 +1,23 @@
 package ch.bfh.eadj.persistence.repository;
 
-import ch.bfh.eadj.BookstorePersistenceUnit;
-import ch.bfh.eadj.persistence.entity.Login;
+import static ch.bfh.eadj.persistence.entity.Login.FIND_BY_USERNAME_QUERY.PARAM_USERNAME;
 
-import javax.ejb.EJB;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
-import java.util.*;
-
-import static ch.bfh.eadj.persistence.entity.Login.FIND_BY_USERNAME_QUERY.PARAM_USERNAME;
+import ch.bfh.eadj.BookstorePersistenceUnit;
+import ch.bfh.eadj.persistence.entity.Login;
 
 @Stateless
 public class LoginRepository extends AbstractRepository<Login>{
 
+    @Inject
     @BookstorePersistenceUnit
-    @PersistenceContext(unitName = "bookstorePU")
     EntityManager em;
 
     public LoginRepository() {

@@ -1,30 +1,34 @@
 package ch.bfh.eadj.application.service;
 
-import ch.bfh.eadj.application.logging.Logged;
-import ch.bfh.eadj.application.logging.LoggerInterceptor;
-import ch.bfh.eadj.application.exception.OrderAlreadyShippedException;
-import ch.bfh.eadj.application.exception.OrderNotFoundException;
-import ch.bfh.eadj.application.exception.PaymentFailedException;
-import ch.bfh.eadj.persistence.dto.OrderInfo;
-import ch.bfh.eadj.persistence.entity.*;
-import ch.bfh.eadj.persistence.enumeration.OrderStatus;
-import ch.bfh.eadj.persistence.repository.OrderRepository;
-
-import javax.annotation.Resource;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.interceptor.Interceptors;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.annotation.Resource;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.interceptor.Interceptors;
+
+import ch.bfh.eadj.application.exception.OrderAlreadyShippedException;
+import ch.bfh.eadj.application.exception.OrderNotFoundException;
+import ch.bfh.eadj.application.exception.PaymentFailedException;
+import ch.bfh.eadj.application.logging.Logged;
+import ch.bfh.eadj.application.logging.LoggerInterceptor;
+import ch.bfh.eadj.persistence.dto.OrderInfo;
+import ch.bfh.eadj.persistence.entity.CreditCard;
+import ch.bfh.eadj.persistence.entity.Customer;
+import ch.bfh.eadj.persistence.entity.Order;
+import ch.bfh.eadj.persistence.entity.OrderItem;
+import ch.bfh.eadj.persistence.enumeration.OrderStatus;
+import ch.bfh.eadj.persistence.repository.OrderRepository;
+
 @Stateless
 @Interceptors(LoggerInterceptor.class)
 public class OrderService implements OrderServiceRemote {
 
-    @EJB
+    @Inject
     private OrderRepository orderRepo;
 
     @Resource(name="paymentLimit") Long PAYMENT_LIMIT;

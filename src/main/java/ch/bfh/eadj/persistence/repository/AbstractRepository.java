@@ -16,7 +16,6 @@ public abstract class AbstractRepository<T> {
 
     public void create(T entity) {
         getEntityManager().persist(entity);
-        getEntityManager().flush();
     }
 
     public void edit(T entity) {

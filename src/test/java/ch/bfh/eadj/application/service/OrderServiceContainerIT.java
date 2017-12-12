@@ -1,8 +1,19 @@
 package ch.bfh.eadj.application.service;
 
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.jboss.weld.junit4.WeldInitiator;
+import org.junit.Rule;
+import org.junit.Test;
+import org.testng.annotations.BeforeClass;
+
 import ch.bfh.eadj.TestCDISetup;
-import ch.bfh.eadj.application.exception.BookNotFoundException;
 import ch.bfh.eadj.persistence.entity.Book;
 import ch.bfh.eadj.persistence.entity.Customer;
 import ch.bfh.eadj.persistence.entity.Order;
@@ -12,18 +23,6 @@ import ch.bfh.eadj.persistence.repository.BookRepository;
 import ch.bfh.eadj.persistence.repository.CustomerRepository;
 import ch.bfh.eadj.persistence.repository.LoginRepository;
 import ch.bfh.eadj.persistence.repository.OrderRepository;
-import org.jboss.weld.junit4.WeldInitiator;
-import org.junit.Rule;
-import org.junit.Test;
-import org.testng.annotations.BeforeClass;
-
-import javax.ejb.EJB;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
 
 public class OrderServiceContainerIT extends AbstractServiceIT {
 
@@ -40,13 +39,13 @@ public class OrderServiceContainerIT extends AbstractServiceIT {
 
     private static final String ORDER_SERVICE_NAME = "java:global/bookstore-1.0-SNAPSHOT/OrderService";
 
-    @EJB
+    @Inject
     private OrderService orderService;
 
-    @EJB
+    @Inject
     private CustomerService customerService;
 
-    @EJB
+    @Inject
     private CatalogService catalogService;
 
 
