@@ -6,6 +6,7 @@ import static org.hamcrest.core.Is.is;
 
 import java.util.List;
 
+import javax.ejb.EJB;
 import javax.inject.Inject;
 
 import org.jboss.weld.junit4.WeldInitiator;
@@ -39,13 +40,13 @@ public class OrderServiceContainerIT extends AbstractServiceIT {
 
     private static final String ORDER_SERVICE_NAME = "java:global/bookstore-1.0-SNAPSHOT/OrderService";
 
-    @Inject
+    @EJB
     private OrderService orderService;
 
-    @Inject
+    @EJB
     private CustomerService customerService;
 
-    @Inject
+    @EJB
     private CatalogService catalogService;
 
 

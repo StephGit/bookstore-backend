@@ -7,8 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 
 import ch.bfh.eadj.application.exception.OrderAlreadyShippedException;
@@ -28,7 +28,7 @@ import ch.bfh.eadj.persistence.repository.OrderRepository;
 @Interceptors(LoggerInterceptor.class)
 public class OrderService implements OrderServiceRemote {
 
-    @Inject
+    @EJB
     private OrderRepository orderRepo;
 
     @Resource(name="paymentLimit") Long PAYMENT_LIMIT;

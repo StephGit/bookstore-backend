@@ -88,7 +88,6 @@ public class OrderServiceIT extends AbstractServiceIT {
             order = orderService.placeOrder(customer, items);
 
             //then
-//            assertThat(order.getAmount(), is(book.getPrice().multiply(new BigDecimal(30))));
             fail("PaymentFailedException exception");
         } catch (PaymentFailedException e) {
             System.out.println("Expected exception: PaymentFailedException");

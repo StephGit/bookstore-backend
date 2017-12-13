@@ -5,8 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 
 import ch.bfh.eadj.application.exception.CustomerNotFoundException;
 import ch.bfh.eadj.application.exception.EmailAlreadyUsedException;
@@ -21,10 +21,10 @@ import ch.bfh.eadj.persistence.repository.LoginRepository;
 @Stateless
 public class CustomerService implements CustomerServiceRemote {
 
-    @Inject
+    @EJB
     private CustomerRepository customerRepository;
 
-    @Inject
+    @EJB
     private LoginRepository loginRepository;
 
     @Override

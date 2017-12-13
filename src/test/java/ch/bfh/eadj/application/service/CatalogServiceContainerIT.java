@@ -4,8 +4,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 
+import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.jboss.weld.junit4.WeldInitiator;
 import org.junit.Before;
@@ -24,11 +26,11 @@ public class CatalogServiceContainerIT {
     @Rule
     public WeldInitiator weld = WeldInitiator.from(CatalogService.class, BookRepository.class, TestCDISetup.class).inject(this).build();
 
-    @Inject
     @BookstorePersistenceUnit
+    @PersistenceContext(unitName = "bookstorePU")
     EntityManager em;
 
-    @Inject
+    @EJB
     private CatalogService catalogService;
 
 

@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 
 import ch.bfh.eadj.application.exception.BookAlreadyExistsException;
 import ch.bfh.eadj.application.exception.BookNotFoundException;
@@ -21,7 +21,7 @@ public class CatalogService implements CatalogServiceRemote{
     private static final Logger logger = Logger.getLogger(CatalogService.class.getName());
 
 
-    @Inject
+    @EJB
     BookRepository bookRepo;
 
     @Override

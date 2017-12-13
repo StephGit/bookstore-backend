@@ -1,23 +1,22 @@
 package ch.bfh.eadj.persistence.repository;
 
-import static ch.bfh.eadj.persistence.entity.Customer.FIND_BY_NAME_QUERY.PARAM_NAME;
-
-import java.util.List;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-
 import ch.bfh.eadj.BookstorePersistenceUnit;
 import ch.bfh.eadj.persistence.dto.CustomerInfo;
 import ch.bfh.eadj.persistence.entity.Customer;
 
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import java.util.List;
+
+import static ch.bfh.eadj.persistence.entity.Customer.FIND_BY_NAME_QUERY.PARAM_NAME;
+
 @Stateless
 public class CustomerRepository extends AbstractRepository<Customer> {
 
-    @Inject
     @BookstorePersistenceUnit
+    @PersistenceContext(unitName = "bookstorePU")
     EntityManager em;
 
     public CustomerRepository() {
