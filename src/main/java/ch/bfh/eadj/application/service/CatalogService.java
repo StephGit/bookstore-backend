@@ -44,8 +44,8 @@ public class CatalogService implements CatalogServiceRemote{
     }
 
     @Override
-    public void removeBook(Long id) {
-        bookRepo.deleteBook(id);
+    public void removeBook(Book book) {
+        bookRepo.deleteBook(book.getNr());
     }
 
     @Override
