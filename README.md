@@ -10,7 +10,7 @@ JavaEE 7, Glassfish, Angular, REST
 ## Getting Started
 
 
-###Prerequisites
+### Prerequisites
 
 This project is based on a [Glassfish-Server 4.1.1.](https://javaee.github.io/glassfish/download)
 
@@ -66,4 +66,4 @@ mail/bookstore
 8. Stop server
 ```
 asadmin stop-domain bookstore
-```
+```````
