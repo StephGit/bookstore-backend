@@ -4,9 +4,18 @@ import javax.annotation.Resource;
 import javax.ejb.*;
 import javax.jms.Message;
 import javax.jms.MessageListener;
-
-@MessageDriven
+@MessageDriven(activationConfig={
+        @ActivationConfigProperty(propertyName="destinationLookup",
+                propertyValue="jms/orderQueue"),
+        @ActivationConfigProperty(
+                propertyName="destinationType", propertyValue="javax.jms.Queue")
+})
 public class OrderProcessor implements MessageListener {
+
+    @EJB
+    private OrderService orderService;
+
+    public OrderProcessor() {}
 
     @Resource
     TimerService timerService;
