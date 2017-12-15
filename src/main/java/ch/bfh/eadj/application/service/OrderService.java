@@ -9,10 +9,13 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.interceptor.Interceptors;
+import javax.jms.*;
 
 import ch.bfh.eadj.application.exception.OrderAlreadyShippedException;
 import ch.bfh.eadj.application.exception.OrderNotFoundException;
+import ch.bfh.eadj.application.exception.OrderProcessingException;
 import ch.bfh.eadj.application.exception.PaymentFailedException;
 import ch.bfh.eadj.application.logging.Logged;
 import ch.bfh.eadj.application.logging.LoggerInterceptor;
@@ -28,14 +31,25 @@ import ch.bfh.eadj.persistence.repository.OrderRepository;
 @Interceptors(LoggerInterceptor.class)
 public class OrderService implements OrderServiceRemote {
 
+    private static final String CONNECTION_FACTORY_NAME = "jms/connectionFactory";
+    private static final String QUEUE_NAME = "jms/orderQueue";
+
     @EJB
     private OrderRepository orderRepo;
 
-    @Resource(name="paymentLimit") Long PAYMENT_LIMIT;
+    @Inject
+    @JMSConnectionFactory(CONNECTION_FACTORY_NAME)
+    private JMSContext jmsContext;
+
+    @Resource(lookup=QUEUE_NAME)
+    private Queue orderQueue;
+
+    @Resource(name="paymentLimit")
+    Long PAYMENT_LIMIT;
 
 
     @Override
-    public void cancelOrder(Long nr) throws OrderNotFoundException, OrderAlreadyShippedException {
+    public void cancelOrder(Long nr) throws OrderNotFoundException, OrderAlreadyShippedException, OrderProcessingException {
         Order order = findOrder(nr);
         if (OrderStatus.SHIPPED.equals(order.getStatus())) {
             throw new OrderAlreadyShippedException();
@@ -43,30 +57,7 @@ public class OrderService implements OrderServiceRemote {
 
         order.setStatus(OrderStatus.CANCELED);
         orderRepo.edit(order);
-    }
-
-    @Override
-    public Order findOrder(Long nr) throws OrderNotFoundException {
-        List<Order> orders = orderRepo.findByNr(nr);
-        if (orders == null || orders.isEmpty()) {
-            throw new OrderNotFoundException();
-        }
-        return orders.get(0);
-    }
-
-    @Logged
-    @Override
-    public Order placeOrder(Customer customer, List<OrderItem> items) throws PaymentFailedException {
-        Order order = new Order();
-        order.setCustomer(customer);
-        order.setItems(new HashSet<>(items));
-        order.setDate(Date.valueOf(LocalDate.now()));
-        copyCustomerInfos(customer, order);
-        calculateOrderAmount(order);
-        validateOrderPlacement(order);
-        order.setStatus(OrderStatus.ACCEPTED);
-        orderRepo.create(order);
-        return order;
+        sendMessage(order);
     }
 
     private void calculateOrderAmount(Order order) {
@@ -82,6 +73,61 @@ public class OrderService implements OrderServiceRemote {
         order.setAddress(customer.getAddress());
     }
 
+    @Override
+    public Order findOrder(Long nr) throws OrderNotFoundException {
+        List<Order> orders = orderRepo.findByNr(nr);
+        if (orders == null || orders.isEmpty()) {
+            throw new OrderNotFoundException();
+        }
+        return orders.get(0);
+    }
+
+    private boolean isPaymentLimitExceeded(Order order) {
+        return order.getAmount().compareTo(new BigDecimal(PAYMENT_LIMIT)) > 0;
+    }
+
+    private boolean isCreditCardExpired(LocalDate now, CreditCard creditCard) {
+        return creditCard.getExpirationYear() < now.getYear() && creditCard.getExpirationMonth() < now.getMonthValue();
+    }
+
+    @Logged
+    @Override
+    public Order placeOrder(Customer customer, List<OrderItem> items) throws PaymentFailedException, OrderProcessingException {
+        Order order = new Order();
+        order.setCustomer(customer);
+        order.setItems(new HashSet<>(items));
+        order.setDate(Date.valueOf(LocalDate.now()));
+        copyCustomerInfos(customer, order);
+        calculateOrderAmount(order);
+        validateOrderPlacement(order);
+        order.setStatus(OrderStatus.ACCEPTED);
+        orderRepo.create(order);
+        sendMessage(order);
+        return order;
+    }
+
+    private void sendMessage(Order order) throws OrderProcessingException {
+        MapMessage message = jmsContext.createMapMessage();
+        try {
+            message.setJMSType(order.getStatus().toString());
+            message.setLong("orderNr", order.getNr());
+            jmsContext.createProducer().send(orderQueue, message);
+        } catch (JMSException e) {
+            throw new OrderProcessingException(e);
+        }
+    }
+
+    @Override
+    public void removeOrder(Order order) {
+        orderRepo.remove(order);
+    }
+
+
+    @Override
+    public List<OrderInfo> searchOrders(Customer customer, Integer year) {
+        return orderRepo.findByCustomerAndYear(customer.getNr(), year);
+    }
+
     private void validateOrderPlacement(Order order) throws PaymentFailedException {
         LocalDate now = LocalDate.now();
         CreditCard creditCard = order.getCreditCard();
@@ -94,24 +140,6 @@ public class OrderService implements OrderServiceRemote {
         }
 
         //TODO isCreditCardInvalid --> what to check here????
-    }
-
-    private boolean isPaymentLimitExceeded(Order order) {
-        return order.getAmount().compareTo(new BigDecimal(PAYMENT_LIMIT)) > 0;
-    }
-
-    private boolean isCreditCardExpired(LocalDate now, CreditCard creditCard) {
-        return creditCard.getExpirationYear() < now.getYear() && creditCard.getExpirationMonth() < now.getMonthValue();
-    }
-
-    @Override
-    public List<OrderInfo> searchOrders(Customer customer, Integer year) {
-        return orderRepo.findByCustomerAndYear(customer.getNr(), year);
-    }
-
-    @Override
-    public void removeOrder(Order order) {
-        orderRepo.remove(order);
     }
 
 }

@@ -1,6 +1,8 @@
 package ch.bfh.eadj.application.service;
 
 
+import ch.bfh.eadj.persistence.entity.Order;
+
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.mail.Session;
@@ -12,7 +14,7 @@ public class MailService {
     private Session mailSession;
 
 
-    public void sendMail() {
+    public void sendMail(Order order) {
 
     }
 }

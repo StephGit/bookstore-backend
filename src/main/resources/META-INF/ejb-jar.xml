@@ -11,6 +11,15 @@
                 <env-entry-type>java.lang.Long</env-entry-type>
                 <env-entry-value>1000</env-entry-value>
             </env-entry>
+
+        </session>
+        <session>
+            <ejb-name>OrderProcessor</ejb-name>
+            <env-entry>
+                <env-entry-name>timePeriod</env-entry-name>
+                <env-entry-type>java.lang.Long</env-entry-type>
+                <env-entry-value>10000</env-entry-value>
+            </env-entry>
         </session>
     </enterprise-beans>
 </ejb-jar>
