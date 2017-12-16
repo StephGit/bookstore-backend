@@ -1,20 +1,20 @@
 package ch.bfh.eadj.application.service;
 
-import ch.bfh.eadj.application.exception.BookNotFoundException;
-import ch.bfh.eadj.application.exception.CustomerNotFoundException;
-import ch.bfh.eadj.application.exception.OrderNotFoundException;
-import ch.bfh.eadj.application.exception.PaymentFailedException;
+import ch.bfh.eadj.application.exception.*;
 import ch.bfh.eadj.persistence.dto.OrderInfo;
 import ch.bfh.eadj.persistence.entity.Book;
 import ch.bfh.eadj.persistence.entity.Customer;
 import ch.bfh.eadj.persistence.entity.Order;
 import ch.bfh.eadj.persistence.entity.OrderItem;
 import ch.bfh.eadj.persistence.enumeration.OrderStatus;
+import ch.bfh.eadj.persistence.repository.OrderRepository;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import javax.ejb.EJB;
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -30,6 +30,9 @@ public class OrderServiceIT extends AbstractServiceIT {
     private CustomerServiceRemote customerService;
     private CatalogServiceRemote catalogService;
     private OrderServiceRemote orderService;
+
+    @EJB
+    private OrderRepository orderRepository;
 
     private Book book;
     private Customer customer;
@@ -53,13 +56,61 @@ public class OrderServiceIT extends AbstractServiceIT {
         assertThat(order.getStatus(), is(OrderStatus.CANCELED));
     }
 
+
+    @Test(dependsOnMethods = {"shouldPlaceOrder", "shouldCancelOrder"})
+    public void shouldFailCancelOrder() throws Exception {
+        //given
+        assertThat(order.getStatus(), is(OrderStatus.CANCELED));
+
+        try {
+            //when
+            orderService.cancelOrder(order.getNr());
+
+            //then
+            fail("OrderAlreadyCanceledException exception");
+        } catch (OrderAlreadyCanceledException e) {
+            System.out.println("Expected exception: OrderAlreadyCanceledException");
+        }
+    }
+
+    @Test(dependsOnMethods = {"shouldPlaceOrder", "shouldCancelOrder", "shouldFailCancelOrder"})
+    public void shouldFailCancelShippedOrder() throws Exception {
+        //given
+        assertThat(order.getStatus(), is(OrderStatus.CANCELED));
+        order = orderService.findOrder(order.getNr());
+        order.setStatus(OrderStatus.SHIPPED);
+
+        try {
+            //when
+            orderService.cancelOrder(order.getNr());
+
+            //then
+            fail("OrderAlreadyShippedException exception");
+        } catch (OrderAlreadyShippedException e) {
+            System.out.println("Expected exception: OrderAlreadyShippedException");
+        }
+    }
+
     @Test(dependsOnMethods = "shouldPlaceOrder")
-    public void findOrder() throws Exception {
+    public void shouldFindOrder() throws Exception {
         //when
         Order orderFromDb = orderService.findOrder(order.getNr());
 
         //then
         assertEquals(orderFromDb.getAmount(), order.getAmount());
+    }
+
+    @Test(dependsOnMethods = "shouldPlaceOrder")
+    public void shouldFailFindOrder() throws Exception {
+        try {
+            //when
+            Order orderFromDb = orderService.findOrder(222L);
+
+            //then
+            fail("OrderNotFoundException exception");
+        } catch (OrderNotFoundException e) {
+            System.out.println("Expected exception: OrderNotFoundException");
+        }
     }
 
     @Test
@@ -82,7 +133,7 @@ public class OrderServiceIT extends AbstractServiceIT {
     }
 
     @Test(dependsOnMethods = "shouldPlaceOrder")
-    public void shouldFailPlaceOrder() throws Exception {
+    public void shouldFailPlaceOrderLimitExceeded() throws Exception {
         //given
         List<OrderItem> items = createOrderItems(30, book);
         try {
@@ -92,7 +143,39 @@ public class OrderServiceIT extends AbstractServiceIT {
             //then
             fail("PaymentFailedException exception");
         } catch (PaymentFailedException e) {
+            assertTrue(e.getCode().equals(PaymentFailedException.Code.PAYMENT_LIMIT_EXCEEDED));
             System.out.println("Expected exception: PaymentFailedException");
+        }
+    }
+
+    @Test(dependsOnMethods = "shouldPlaceOrder") //TODO
+    public void shouldFailPlaceOrderExpiredCreditCard() throws Exception {
+        //given
+        List<OrderItem> items = createOrderItems(30, book);
+        try {
+            //when
+            order = orderService.placeOrder(customer, items);
+
+            //then
+            fail("PaymentFailedException exception");
+        } catch (PaymentFailedException e) {
+            assertTrue(e.getCode().equals(PaymentFailedException.Code.CREDIT_CARD_EXPIRED));
+            System.out.println("Expected exception: PaymentFailedException");
+        }
+    }
+
+    @Test(dependsOnMethods = "shouldPlaceOrder") //TODO
+    public void shouldFailPlaceOrderProcessing() throws Exception {
+        //given
+        List<OrderItem> items = createOrderItems(30, book);
+        try {
+            //when
+            order = orderService.placeOrder(customer, items);
+
+            //then
+            fail("OrderProcessingException exception");
+        } catch (OrderProcessingException e) {
+            System.out.println("Expected exception: OrderProcessingException");
         }
     }
 

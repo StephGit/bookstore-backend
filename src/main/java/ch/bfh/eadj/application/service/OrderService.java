@@ -13,10 +13,7 @@ import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 import javax.jms.*;
 
-import ch.bfh.eadj.application.exception.OrderAlreadyShippedException;
-import ch.bfh.eadj.application.exception.OrderNotFoundException;
-import ch.bfh.eadj.application.exception.OrderProcessingException;
-import ch.bfh.eadj.application.exception.PaymentFailedException;
+import ch.bfh.eadj.application.exception.*;
 import ch.bfh.eadj.application.logging.Logged;
 import ch.bfh.eadj.application.logging.LoggerInterceptor;
 import ch.bfh.eadj.persistence.dto.OrderInfo;
@@ -48,10 +45,13 @@ public class OrderService implements OrderServiceRemote {
 
 
     @Override
-    public void cancelOrder(Long nr) throws OrderNotFoundException, OrderAlreadyShippedException, OrderProcessingException {
+    public void cancelOrder(Long nr)
+            throws OrderNotFoundException, OrderAlreadyShippedException, OrderProcessingException, OrderAlreadyCanceledException {
         Order order = findOrder(nr);
         if (OrderStatus.SHIPPED.equals(order.getStatus())) {
             throw new OrderAlreadyShippedException();
+        } else if (OrderStatus.CANCELED.equals(order.getStatus())) {
+            throw new OrderAlreadyCanceledException();
         }
 
         order.setStatus(OrderStatus.CANCELED);
