@@ -18,9 +18,6 @@ import ch.bfh.eadj.persistence.repository.BookRepository;
 public class CatalogService implements CatalogServiceRemote{
 
 
-    private static final Logger logger = Logger.getLogger(CatalogService.class.getName());
-
-
     @EJB
     BookRepository bookRepo;
 
@@ -35,7 +32,6 @@ public class CatalogService implements CatalogServiceRemote{
 
     @Override
     public void addBook(Book book) throws BookAlreadyExistsException {
-        logger.warning("entering add method");
         List<Book> books = bookRepo.findByIsbn(book.getIsbn());
         if (books != null && !books.isEmpty()) {
             throw new BookAlreadyExistsException();

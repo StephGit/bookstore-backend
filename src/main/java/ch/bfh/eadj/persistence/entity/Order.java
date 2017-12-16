@@ -81,7 +81,8 @@ public class Order extends BaseEntity implements Serializable {
     Fetch-Typ:
     Lazy, da die Adresse und Kreditkarte bereits auf dem Order vorhanden ist und sonstige Kundeninfos nicht immer benötigt werden.
      */
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.REFRESH }, fetch = FetchType.LAZY)
+    // TODO removed CascadeType.Persist!! Customer should not be created  with Order!
+    @ManyToOne(cascade = { CascadeType.REFRESH }, fetch = FetchType.LAZY)
     private Customer customer;
 
     @Embedded

@@ -1,8 +1,9 @@
 package ch.bfh.eadj.persistence.dto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class OrderStatisticInfo {
+public class OrderStatisticInfo implements Serializable {
 
     private final Long positionsCount;
     private final BigDecimal totalAmount;

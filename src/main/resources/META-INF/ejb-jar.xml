@@ -21,4 +21,15 @@
             </env-entry>
         </message-driven>
     </enterprise-beans>
+    <interceptors>
+        <interceptor>
+            <interceptor-class>ch.bfh.eadj.application.logging.LoggerInterceptor</interceptor-class>
+        </interceptor>
+    </interceptors>
+    <assembly-descriptor>
+        <interceptor-binding>
+            <ejb-name>*</ejb-name>
+            <interceptor-class>ch.bfh.eadj.application.logging.LoggerInterceptor</interceptor-class>
+        </interceptor-binding>
+    </assembly-descriptor>
 </ejb-jar>

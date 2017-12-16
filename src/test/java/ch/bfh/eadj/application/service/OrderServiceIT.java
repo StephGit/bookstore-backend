@@ -1,6 +1,8 @@
 package ch.bfh.eadj.application.service;
 
 import ch.bfh.eadj.application.exception.BookNotFoundException;
+import ch.bfh.eadj.application.exception.CustomerNotFoundException;
+import ch.bfh.eadj.application.exception.OrderNotFoundException;
 import ch.bfh.eadj.application.exception.PaymentFailedException;
 import ch.bfh.eadj.persistence.dto.OrderInfo;
 import ch.bfh.eadj.persistence.entity.Book;
@@ -109,11 +111,24 @@ public class OrderServiceIT extends AbstractServiceIT {
 
     @Test(dependsOnMethods = "shouldPlaceOrder")
     public void tearDown() throws Exception {
+        order = orderService.findOrder(order.getNr());
+        orderService.removeOrder(order);
+        try {
+            order = orderService.findOrder(order.getNr());
+            fail("OrderNotFoundException exception");
+        } catch (OrderNotFoundException e) {
+            System.out.println("Expected exception: OrderNotFoundException");
+        }
 
         customer = customerService.findCustomer(customer.getNr());
         customerService.removeCustomer(customer);
-        order = orderService.findOrder(order.getNr());
-        orderService.removeOrder(order);
+        try {
+            customer = customerService.findCustomer(customer.getNr());
+            fail("CustomerNotFoundException exception");
+        } catch (CustomerNotFoundException e) {
+            System.out.println("Expected exception: CustomerNotFoundException");
+        }
+
         book = catalogService.findBook(book.getIsbn());
         catalogService.removeBook(book);
         try {

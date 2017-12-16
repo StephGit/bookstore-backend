@@ -28,7 +28,6 @@ import ch.bfh.eadj.persistence.enumeration.OrderStatus;
 import ch.bfh.eadj.persistence.repository.OrderRepository;
 
 @Stateless
-@Interceptors(LoggerInterceptor.class)
 public class OrderService implements OrderServiceRemote {
 
     private static final String CONNECTION_FACTORY_NAME = "jms/connectionFactory";
@@ -90,7 +89,6 @@ public class OrderService implements OrderServiceRemote {
         return creditCard.getExpirationYear() < now.getYear() && creditCard.getExpirationMonth() < now.getMonthValue();
     }
 
-    @Logged
     @Override
     public Order placeOrder(Customer customer, List<OrderItem> items) throws PaymentFailedException, OrderProcessingException {
         Order order = new Order();
@@ -125,7 +123,7 @@ public class OrderService implements OrderServiceRemote {
 
     @Override
     public List<OrderInfo> searchOrders(Customer customer, Integer year) {
-        return orderRepo.findByCustomerAndYear(customer.getNr(), year);
+       return orderRepo.findByCustomerAndYear(customer.getNr(), year);
     }
 
     private void validateOrderPlacement(Order order) throws PaymentFailedException {

@@ -2,10 +2,11 @@ package ch.bfh.eadj.persistence.dto;
 
 import ch.bfh.eadj.persistence.enumeration.OrderStatus;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class OrderInfo {
+public class OrderInfo implements Serializable {
 
     private Long nr;
     private final Date date;
