@@ -14,32 +14,25 @@ import java.util.Collection;
 import java.util.Date;
 
 @MessageDriven(
-        activationConfig={
-        @ActivationConfigProperty(propertyName="destinationLookup",
-                propertyValue="jms/orderQueue"),
-        @ActivationConfigProperty(
-                propertyName="destinationType", propertyValue="javax.jms.Queue")
-})
+        activationConfig = {
+                @ActivationConfigProperty(propertyName = "destinationLookup",
+                        propertyValue = "jms/orderQueue"),
+                @ActivationConfigProperty(
+                        propertyName = "destinationType", propertyValue = "javax.jms.Queue")
+        })
 public class OrderProcessor implements MessageListener {
-
-    @EJB
-    private OrderService orderService;
 
     @EJB
     private OrderRepository orderRepository;
 
-    @EJB
-    MailService mailService;
-
     @Resource
-    TimerService timerService;
+    private TimerService timerService;
 
-    @Resource(name="timePeriod")
-    private long timePeriod;
+    @Resource(name = "timePeriod")
+    Long timePeriod;
 
-
-    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     @Override
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void onMessage(Message message) {
         try {
             MapMessage msg = (MapMessage) message;
@@ -50,7 +43,7 @@ public class OrderProcessor implements MessageListener {
             } else {
                 cancelOrder(orderNr);
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             //LogException
         }
     }
@@ -85,7 +78,7 @@ public class OrderProcessor implements MessageListener {
         if (order.getStatus().equals(OrderStatus.PROCESSING)) {
             order.setStatus(OrderStatus.SHIPPED);
             orderRepository.edit(order);
-            mailService.sendMail(order);
+//            mailService.sendMail(order);
         } else {
             throw new OrderProcessingException(null);
         }
