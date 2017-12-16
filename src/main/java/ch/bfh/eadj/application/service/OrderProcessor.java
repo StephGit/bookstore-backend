@@ -28,7 +28,7 @@ public class OrderProcessor implements MessageListener {
     @Resource
     private TimerService timerService;
 
-    @Resource(name = "timePeriod")
+    @Resource(name = "timePeriod", lookup = "")
     Long timePeriod;
 
     @Override
