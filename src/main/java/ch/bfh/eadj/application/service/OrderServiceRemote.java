@@ -1,9 +1,6 @@
 package ch.bfh.eadj.application.service;
 
-import ch.bfh.eadj.application.exception.OrderAlreadyShippedException;
-import ch.bfh.eadj.application.exception.OrderNotFoundException;
-import ch.bfh.eadj.application.exception.OrderProcessingException;
-import ch.bfh.eadj.application.exception.PaymentFailedException;
+import ch.bfh.eadj.application.exception.*;
 import ch.bfh.eadj.persistence.dto.OrderInfo;
 import ch.bfh.eadj.persistence.entity.Customer;
 import ch.bfh.eadj.persistence.entity.Order;
@@ -15,7 +12,7 @@ import java.util.List;
 @Remote
 public interface OrderServiceRemote {
 
-    void cancelOrder(Long nr) throws OrderNotFoundException, OrderAlreadyShippedException, OrderProcessingException;
+    void cancelOrder(Long nr) throws OrderNotFoundException, OrderAlreadyShippedException, OrderProcessingException, OrderAlreadyCanceledException;
 
     Order findOrder(Long nr) throws OrderNotFoundException;
 
