@@ -137,7 +137,9 @@ public class OrderService implements OrderServiceRemote {
             throw new PaymentFailedException(PaymentFailedException.Code.PAYMENT_LIMIT_EXCEEDED);
         }
 
-        //TODO isCreditCardInvalid --> what to check here????
+        if (creditCard.getNumber().length()!=16) {
+            throw new PaymentFailedException(PaymentFailedException.Code.INVALID_CREDIT_CARD);
+        }
     }
 
 }
