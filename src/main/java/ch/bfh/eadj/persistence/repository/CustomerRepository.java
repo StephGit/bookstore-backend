@@ -5,8 +5,8 @@ import ch.bfh.eadj.persistence.dto.CustomerInfo;
 import ch.bfh.eadj.persistence.entity.Customer;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
@@ -15,9 +15,9 @@ import static ch.bfh.eadj.persistence.entity.Customer.FIND_BY_NAME_QUERY.PARAM_N
 @Stateless
 public class CustomerRepository extends AbstractRepository<Customer> {
 
+    @Inject
     @BookstorePersistenceUnit
-    @PersistenceContext(unitName = "bookstorePU")
-    EntityManager em;
+    public EntityManager em;
 
     public CustomerRepository() {
         super(Customer.class);
