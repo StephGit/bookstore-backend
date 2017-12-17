@@ -42,13 +42,14 @@ public class OrderProcessor implements MessageListener {
             MapMessage msg = (MapMessage) message;
             String status = msg.getJMSType();
             Long orderNr = msg.getLong("orderNr");
-            if (status.equals(OrderStatus.ACCEPTED)) {
+            if (status.equals(OrderStatus.ACCEPTED.name())) {
                 processOrder(orderNr);
             } else {
                 cancelOrder(orderNr);
             }
         } catch (Exception e) {
             //LogException
+            e.printStackTrace();
         }
     }
 
