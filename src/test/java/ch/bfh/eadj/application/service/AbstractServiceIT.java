@@ -29,7 +29,7 @@ public class AbstractServiceIT {
         CreditCard creditCard = new CreditCard();
         creditCard.setExpirationMonth(8);
         creditCard.setExpirationYear(2019);
-        creditCard.setNumber("232232221231211112");
+        creditCard.setNumber("2322322212312111");
         creditCard.setType(CreditCardType.MASTERCARD);
         return creditCard;
     }

@@ -148,10 +148,12 @@ public class OrderServiceIT extends AbstractServiceIT {
         }
     }
 
-    @Test(dependsOnMethods = "shouldPlaceOrder") //TODO
+    @Test(dependsOnMethods = "shouldPlaceOrder")
     public void shouldFailPlaceOrderExpiredCreditCard() throws Exception {
         //given
         List<OrderItem> items = createOrderItems(30, book);
+        customer.getCreditCard().setExpirationYear(2016);
+        customerService.updateCustomer(customer);
         try {
             //when
             order = orderService.placeOrder(customer, items);
@@ -164,18 +166,21 @@ public class OrderServiceIT extends AbstractServiceIT {
         }
     }
 
-    @Test(dependsOnMethods = "shouldPlaceOrder") //TODO
-    public void shouldFailPlaceOrderProcessing() throws Exception {
+    @Test(dependsOnMethods = "shouldPlaceOrder")
+    public void shouldFailPlaceOrderInvalidCard() throws Exception {
         //given
         List<OrderItem> items = createOrderItems(30, book);
+        customer.getCreditCard().setNumber("111122223333444");
+        customerService.updateCustomer(customer);
         try {
             //when
             order = orderService.placeOrder(customer, items);
 
             //then
-            fail("OrderProcessingException exception");
-        } catch (OrderProcessingException e) {
-            System.out.println("Expected exception: OrderProcessingException");
+            fail("PaymentFailedException exception");
+        } catch (PaymentFailedException e) {
+            assertTrue(e.getCode().equals(PaymentFailedException.Code.INVALID_CREDIT_CARD));
+            System.out.println("Expected exception: PaymentFailedException");
         }
     }
 
