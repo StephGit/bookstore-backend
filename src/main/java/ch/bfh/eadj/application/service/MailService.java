@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.MimeMessage;
 import java.util.Date;
 import java.util.concurrent.Future;
@@ -39,6 +40,8 @@ public class MailService {
     }
 
 
+    // 573 5.1.1 Swisscom Antispam: Authentifizierte Verbindung nicht moeglich. Bitte benutzen Sie den Port 587 oder 465 (SSL/TLS) anstelle von Port 25. Weitere Informationen: www.swisscom.ch/p25. Connexion authentifiee pas possible. Veuillez utiliser le port 587 ou 465 (SSL/TLS) a la place du port 25. Ulterieurs informations: www.swisscom.ch/p25. Collegamento autenticato non e possibile. Si prega di utilizzare la porta 587 o 465 (SSL/TLS) invece di porta 25. Altra informazione: www.swisscom.ch/p25. Authenticated connection is not possible. Please use port 587 or 465 (SSL/TLS) instead of port 25. More information: www.swisscom.ch/p25.
+
     private Future<String> sendMail(Order order, String text, String subject, String mailAddress) {
         String status;
         try {
@@ -49,6 +52,7 @@ public class MailService {
             msg.setSubject(subject);
             msg.setSentDate(new Date());
             msg.setText(text);
+            Transport.send(msg);
             status = "Sent";
         } catch (MessagingException mex) {
             System.out.println("send failed, exception: " + mex);
