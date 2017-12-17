@@ -7,6 +7,7 @@ import ch.bfh.eadj.persistence.repository.OrderRepository;
 
 import javax.annotation.Resource;
 import javax.ejb.*;
+import javax.inject.Inject;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
@@ -24,6 +25,9 @@ public class OrderProcessor implements MessageListener {
 
     @EJB
     private OrderRepository orderRepository;
+
+    @Inject
+    private MailService mailService;
 
     @Resource
     private TimerService timerService;
@@ -66,7 +70,7 @@ public class OrderProcessor implements MessageListener {
         Order order = orderRepository.find(orderNr);
         order.setStatus(OrderStatus.PROCESSING);
         orderRepository.edit(order);
-
+        mailService.sendProccessStartedMail(order);
         Date expiration = new Date();
         expiration.setTime(expiration.getTime() + timePeriod);
         timerService.createSingleActionTimer(expiration, new TimerConfig(order, true));
@@ -78,7 +82,7 @@ public class OrderProcessor implements MessageListener {
         if (order.getStatus().equals(OrderStatus.PROCESSING)) {
             order.setStatus(OrderStatus.SHIPPED);
             orderRepository.edit(order);
-//            mailService.sendMail(order);
+            mailService.sendProccessStartedMail(order);
         } else {
             throw new OrderProcessingException(null);
         }
