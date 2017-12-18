@@ -16,13 +16,13 @@ public class CustomerRepositoryTest extends AbstractTest {
 
 
     @Before
-    public void setUpRepo() throws Exception {
+    public void setUpRepo() {
         customerRepo = new CustomerRepository();
         customerRepo.em = em;
     }
 
     @Test
-    public void shouldFindCustomerByLastName() throws Exception {
+    public void shouldFindCustomerByLastName() {
 
         //given
         String lastName = "McKenny";
@@ -39,7 +39,7 @@ public class CustomerRepositoryTest extends AbstractTest {
     }
 
     @Test
-    public void shouldFindCustomerByFirstName() throws Exception {
+    public void shouldFindCustomerByFirstName() {
 
         //given
         String lastName = "McKenny";

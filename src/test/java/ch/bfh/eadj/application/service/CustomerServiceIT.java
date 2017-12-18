@@ -62,7 +62,7 @@ public class CustomerServiceIT extends AbstractServiceIT {
     }
 
     @Test(dependsOnMethods = "shouldRegisterCustomer")
-    public void shouldFailAuthenticateCustomer() throws InvalidPasswordException, CustomerNotFoundException {
+    public void shouldFailAuthenticateCustomer() throws CustomerNotFoundException {
         //when
         try {
             userId = customerService.authenticateCustomer(customer.getEmail(), "qwer");
@@ -75,7 +75,7 @@ public class CustomerServiceIT extends AbstractServiceIT {
     }
 
     @Test(dependsOnMethods = "shouldRegisterCustomer")
-    public void shouldFailAuthenticateUnknownUser() throws InvalidPasswordException, CustomerNotFoundException {
+    public void shouldFailAuthenticateUnknownUser() throws InvalidPasswordException {
         //when
         try {
             userId = customerService.authenticateCustomer("asdf@basd.org", "qwer");
@@ -100,13 +100,13 @@ public class CustomerServiceIT extends AbstractServiceIT {
     }
 
     @Test(dependsOnMethods = "shouldRegisterCustomer")
-    public void shouldFailFindCustomer() throws CustomerNotFoundException {
+    public void shouldFailFindCustomer() {
         //given
         Long unknownId = 2321L;
 
         //when
         try {
-            Customer foundCustomer = customerService.findCustomer(unknownId);
+            customerService.findCustomer(unknownId);
 
             //then
             fail("CustomerNotFoundException exception");
@@ -188,7 +188,7 @@ public class CustomerServiceIT extends AbstractServiceIT {
     }
 
     @Test(dependsOnMethods = "shouldChangePassword")
-    public void shouldFailChangePassword() throws Exception {
+    public void shouldFailChangePassword() {
         try {
             //when
             customerService.changePassword("new@some.org", password);

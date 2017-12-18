@@ -14,6 +14,7 @@ import javax.jms.MessageListener;
 import java.util.Collection;
 import java.util.Date;
 
+@SuppressWarnings("unused")
 @MessageDriven(
         activationConfig = {
                 @ActivationConfigProperty(propertyName = "destinationLookup",
@@ -33,7 +34,7 @@ public class OrderProcessor implements MessageListener {
     private TimerService timerService;
 
     @Resource(name = "timePeriod")
-    Long timePeriod;
+    private Long timePeriod;
 
     @Override
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)

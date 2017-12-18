@@ -112,8 +112,7 @@ public class CustomerService implements CustomerServiceRemote {
         Set<Login> loginSet = loginRepository.findByUsername(email);
 
         if (!loginSet.isEmpty()) {
-            for (Iterator<Login> it = loginSet.iterator(); it.hasNext(); ) {
-                Login login = it.next();
+            for (Login login : loginSet) {
                 login.setPassword(password);
                 loginRepository.edit(login);
             }
@@ -125,9 +124,12 @@ public class CustomerService implements CustomerServiceRemote {
     @Override
     public void removeCustomer(Customer customer) throws CustomerNotFoundException {
         Login login = loginRepository.find(customer.getNr());
-
-        loginRepository.remove(login);
-        customerRepository.remove(customer);
+        if (login!=null) {
+            loginRepository.remove(login);
+            customerRepository.remove(customer);
+        } else {
+            throw new CustomerNotFoundException();
+        }
     }
 }
 

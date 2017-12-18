@@ -25,7 +25,7 @@ public class AbstractServiceIT {
        return new Address("Bahnstrasse", "Burgdorf", "3400", Country.CH);
     }
 
-    protected CreditCard createCreditCard() {
+    private CreditCard createCreditCard() {
         CreditCard creditCard = new CreditCard();
         creditCard.setExpirationMonth(8);
         creditCard.setExpirationYear(2019);
@@ -34,7 +34,7 @@ public class AbstractServiceIT {
         return creditCard;
     }
 
-    protected Book createBook() {
+    Book createBook() {
         Book b = new Book();
         b.setTitle("test");
         b.setIsbn("12345");
@@ -43,7 +43,7 @@ public class AbstractServiceIT {
         return b;
     }
 
-    protected List<OrderItem> createOrderItems(int items, Book book) throws BookNotFoundException {
+    List<OrderItem> createOrderItems(int items, Book book) {
         List<OrderItem> orderItems = new ArrayList<>();
         for ( int i = 0; i < items; i++) {
             OrderItem orderItem = new OrderItem();

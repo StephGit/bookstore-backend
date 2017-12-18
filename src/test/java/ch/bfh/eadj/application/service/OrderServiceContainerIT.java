@@ -7,7 +7,6 @@ import static org.hamcrest.core.Is.is;
 import java.util.List;
 
 import javax.ejb.EJB;
-import javax.inject.Inject;
 
 import org.jboss.weld.junit4.WeldInitiator;
 import org.junit.Rule;
@@ -51,20 +50,6 @@ public class OrderServiceContainerIT extends AbstractServiceIT {
 
 
 
-    @BeforeClass
-    public void setUp() throws Exception {
-
-    }
-
-    @Test
-    public void cancelOrder() throws Exception {
-
-    }
-
-    @Test
-    public void findOrder() throws Exception {
-    }
-
     @Test
     public void shouldPlaceOrder() throws Exception {
         //given
@@ -79,8 +64,5 @@ public class OrderServiceContainerIT extends AbstractServiceIT {
         assertThat(order.getStatus(), is(OrderStatus.ACCEPTED));
     }
 
-    @Test
-    public void searchOrders() throws Exception {
-    }
 
 }

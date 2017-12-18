@@ -39,7 +39,7 @@ public abstract class AbstractRepository<T> {
         return getEntityManager().getReference(entityClass, id);
     }
 
-    public List<T> getAll() {
+    public List getAll() {
         javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
         cq.select(cq.from(entityClass));
         return getEntityManager().createQuery(cq).getResultList();

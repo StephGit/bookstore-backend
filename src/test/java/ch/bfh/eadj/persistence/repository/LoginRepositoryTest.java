@@ -7,7 +7,6 @@ import ch.bfh.eadj.persistence.repository.LoginRepository;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Iterator;
 import java.util.Set;
 
 import static org.hamcrest.core.Is.is;

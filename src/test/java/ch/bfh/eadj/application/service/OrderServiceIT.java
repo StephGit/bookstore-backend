@@ -7,16 +7,12 @@ import ch.bfh.eadj.persistence.entity.Customer;
 import ch.bfh.eadj.persistence.entity.Order;
 import ch.bfh.eadj.persistence.entity.OrderItem;
 import ch.bfh.eadj.persistence.enumeration.OrderStatus;
-import ch.bfh.eadj.persistence.repository.OrderRepository;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import javax.annotation.Resource;
-import javax.ejb.EJB;
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -112,10 +108,10 @@ public class OrderServiceIT extends AbstractServiceIT {
     }
 
     @Test(dependsOnMethods = "shouldPlaceOrder")
-    public void shouldFailFindOrder() throws Exception {
+    public void shouldFailFindOrder() {
         try {
             //when
-            Order orderFromDb = orderService.findOrder(222L);
+            orderService.findOrder(222L);
 
             //then
             fail("OrderNotFoundException exception");
@@ -213,7 +209,7 @@ public class OrderServiceIT extends AbstractServiceIT {
     }
 
     @Test(dependsOnMethods = "shouldPlaceOrder")
-    public void shouldFailSearchOrders() throws Exception {
+    public void shouldFailSearchOrders() {
         //when
         List<OrderInfo> orderInfoList = orderService.searchOrders(customer, 2015);
 

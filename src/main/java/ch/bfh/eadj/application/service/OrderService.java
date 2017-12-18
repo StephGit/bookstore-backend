@@ -10,12 +10,9 @@ import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.interceptor.Interceptors;
 import javax.jms.*;
 
 import ch.bfh.eadj.application.exception.*;
-import ch.bfh.eadj.application.logging.Logged;
-import ch.bfh.eadj.application.logging.LoggerInterceptor;
 import ch.bfh.eadj.persistence.dto.OrderInfo;
 import ch.bfh.eadj.persistence.entity.CreditCard;
 import ch.bfh.eadj.persistence.entity.Customer;
@@ -41,6 +38,7 @@ public class OrderService implements OrderServiceRemote {
     private Queue orderQueue;
 
     @Resource(name="paymentLimit")
+    private
     Long PAYMENT_LIMIT;
 
 

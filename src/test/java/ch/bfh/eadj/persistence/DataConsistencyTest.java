@@ -18,7 +18,7 @@ public class DataConsistencyTest extends AbstractTest {
 
         //when
         Query query = em.createQuery(queryString);
-        List<Object> result = query.getResultList();
+        List result = query.getResultList();
 
         //then
         assertThat(result.size(), is(0));

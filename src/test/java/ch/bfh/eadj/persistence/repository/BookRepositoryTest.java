@@ -20,13 +20,13 @@ public class BookRepositoryTest extends AbstractTest {
 
 
     @Before
-    public void setUpRepo() throws Exception {
+    public void setUpRepo() {
         bookRepo = new BookRepository();
         bookRepo.em = em;
     }
 
     @Test
-    public void souldFindBookByIsbn() throws Exception {
+    public void souldFindBookByIsbn() {
         //given
         String isbn = "417998182-3";
 
@@ -43,7 +43,7 @@ public class BookRepositoryTest extends AbstractTest {
     }
 
     @Test
-    public void shouldFindBooksByTitleKeywords() throws Exception {
+    public void shouldFindBooksByTitleKeywords() {
 
         //given
         List<String> keywords = Arrays.asList("Far Side", "Moon", "the");
@@ -60,7 +60,7 @@ public class BookRepositoryTest extends AbstractTest {
     }
 
     @Test
-    public void shouldFindBooksByAuthorKeywords() throws Exception {
+    public void shouldFindBooksByAuthorKeywords() {
 
         //given
         List<String> keywords = Arrays.asList("Hana");
@@ -75,7 +75,7 @@ public class BookRepositoryTest extends AbstractTest {
     }
 
     @Test
-    public void shouldFindBooksByPublisherKeywords() throws Exception {
+    public void shouldFindBooksByPublisherKeywords() {
 
         //given
         List<String> keywords = Arrays.asList("Babblestorm");
@@ -86,7 +86,7 @@ public class BookRepositoryTest extends AbstractTest {
         //then
         assertThat(booksByKeywords.size(),is(2));
         BookInfo foundBook = booksByKeywords.get(0);
-        //TODO assertion
+        assertTrue(foundBook.getAuthors().equals("Hana Cain"));
     }
 
 }

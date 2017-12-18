@@ -21,13 +21,13 @@ public class OrderRepositoryTest extends AbstractTest {
     private OrderRepository orderRepository;
 
     @Before
-    public void before() throws Exception {
+    public void before() {
         orderRepository = new OrderRepository();
         orderRepository.em = em;
     }
 
     @Test
-    public void shouldFindByNr() throws Exception {
+    public void shouldFindByNr() {
         //given
         Long orderNr = 11L;
         Double totalAmount = 45.24;
@@ -41,7 +41,7 @@ public class OrderRepositoryTest extends AbstractTest {
     }
 
     @Test
-    public void shouldFindByCustomerAndYear() throws Exception {
+    public void shouldFindByCustomerAndYear() {
         //given
         Long customerNr = 4L;
         Integer year = 2017;
@@ -56,7 +56,7 @@ public class OrderRepositoryTest extends AbstractTest {
     }
 
     @Test
-    public void shouldNotFindByCustomerAndYear() throws Exception {
+    public void shouldNotFindByCustomerAndYear() {
         //given
         Long customerNr = 1L;
         Integer year = 1950;
@@ -69,7 +69,7 @@ public class OrderRepositoryTest extends AbstractTest {
     }
 
        @Test
-    public void shouldGetStatisticForYear() throws Exception {
+    public void shouldGetStatisticForYear() {
         //given
         Integer year = 2017;
 
@@ -86,7 +86,7 @@ public class OrderRepositoryTest extends AbstractTest {
     }
 
     @Test
-    public void shouldNotGetStatisticForYear() throws Exception {
+    public void shouldNotGetStatisticForYear() {
         //given
         Integer year = 2010;
 

@@ -16,6 +16,7 @@ import javax.mail.internet.MimeMessage;
 import java.util.Date;
 import java.util.concurrent.Future;
 
+@SuppressWarnings("unused")
 @Stateless
 public class MailService {
 

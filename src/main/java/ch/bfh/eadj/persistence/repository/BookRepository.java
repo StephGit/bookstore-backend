@@ -50,9 +50,9 @@ public class BookRepository extends AbstractRepository<Book> {
 
 
         for (String keyword : keywords) {
-            titlePredicates.add(builder.like(root.<String>get("title"), "%" + keyword + "%"));
-            authorPredicates.add(builder.like(root.<String>get("authors"), "%" + keyword + "%"));
-            publisherPredicates.add(builder.like(root.<String>get("publisher"), "%" + keyword + "%"));
+            titlePredicates.add(builder.like(root.get("title"), "%" + keyword + "%"));
+            authorPredicates.add(builder.like(root.get("authors"), "%" + keyword + "%"));
+            publisherPredicates.add(builder.like(root.get("publisher"), "%" + keyword + "%"));
         }
 
 

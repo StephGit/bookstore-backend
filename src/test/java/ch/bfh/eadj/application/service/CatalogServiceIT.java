@@ -31,7 +31,7 @@ public class CatalogServiceIT extends AbstractServiceIT {
 
 
     @Test(dependsOnMethods = "shouldCreateBook")
-    public void shouldAddBook() throws BookAlreadyExistsException, BookNotFoundException {
+    public void shouldAddBook() throws BookNotFoundException {
 
         //then
         Book bookFromDb = catalogService.findBook(book.getIsbn());
@@ -47,7 +47,7 @@ public class CatalogServiceIT extends AbstractServiceIT {
     }
 
     @Test(dependsOnMethods = "shouldCreateBook")
-    public void shouldFindBook() throws BookAlreadyExistsException, BookNotFoundException {
+    public void shouldFindBook() throws BookNotFoundException {
 
         //when
         Book bookFromDb = catalogService.findBook(book.getIsbn());
@@ -66,7 +66,7 @@ public class CatalogServiceIT extends AbstractServiceIT {
     }
 
     @Test(dependsOnMethods = "shouldCreateBook")
-    public void shouldFindBookByKeywords() throws BookAlreadyExistsException {
+    public void shouldFindBookByKeywords() {
 
         //when
         List<BookInfo> booksFromDb = catalogService.searchBooks("max");
@@ -80,7 +80,7 @@ public class CatalogServiceIT extends AbstractServiceIT {
     }
 
     @Test(dependsOnMethods = "shouldCreateBook")
-    public void shouldUpdateBook() throws BookAlreadyExistsException, BookNotFoundException {
+    public void shouldUpdateBook() throws BookNotFoundException {
 
         //when
         Book bookFromDb = catalogService.findBook(book.getIsbn());
@@ -94,7 +94,7 @@ public class CatalogServiceIT extends AbstractServiceIT {
     }
 
     @Test(dependsOnMethods = "shouldCreateBook",expectedExceptions  = BookNotFoundException.class)
-    public void shouldFailUpdateBook() throws BookAlreadyExistsException, BookNotFoundException {
+    public void shouldFailUpdateBook() throws BookNotFoundException {
         //given
         Book book = createBook();
         book.setIsbn("1231231321");
@@ -111,7 +111,7 @@ public class CatalogServiceIT extends AbstractServiceIT {
     }
 
     @Test(dependsOnMethods = {"shouldCreateBook", "shouldUpdateBook", "shouldAddBook", "shouldFindBook"})
-    public void shouldRemoveBook() throws BookAlreadyExistsException, BookNotFoundException {
+    public void shouldRemoveBook() throws BookNotFoundException {
         book = catalogService.findBook(book.getIsbn());
         catalogService.removeBook(book);
     }

@@ -15,7 +15,7 @@ public class AbstractRepositoryTest extends AbstractTest {
     private BookRepository bookRepo;
 
     @Before
-    public void setUpRepo() throws Exception {
+    public void setUpRepo() {
         bookRepo = new BookRepository();
         bookRepo.em = em;
     }

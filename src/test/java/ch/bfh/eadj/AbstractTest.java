@@ -10,19 +10,17 @@ import java.util.logging.Logger;
 
 public abstract class AbstractTest {
 
-    protected final static Logger LOGGER = Logger.getLogger(AbstractTest.class.getName());
-
     private static EntityManagerFactory emf;
     protected static EntityManager em;
 
     @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
+    public static void setUpBeforeClass() {
         emf = Persistence.createEntityManagerFactory("bookstoreTestPU");
         em = emf.createEntityManager();
     }
 
     @AfterClass
-    public static void tearDownAfterClass() throws Exception {
+    public static void tearDownAfterClass() {
         if (em != null) {
             em.close();
         }
