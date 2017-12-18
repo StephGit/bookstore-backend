@@ -48,7 +48,7 @@ public class OrderProcessor implements MessageListener {
                 cancelOrder(orderNr);
             }
         } catch (Exception e) {
-            //LogException
+            e.printStackTrace();
         }
     }
 
@@ -80,6 +80,7 @@ public class OrderProcessor implements MessageListener {
     private void shipOrder(Timer timer) throws OrderProcessingException {
         Order order = (Order) timer.getInfo();
         if (order.getStatus().equals(OrderStatus.PROCESSING)) {
+            order = orderRepository.find(order.getNr());
             order.setStatus(OrderStatus.SHIPPED);
             orderRepository.edit(order);
             mailService.sendProccessStartedMail(order);
