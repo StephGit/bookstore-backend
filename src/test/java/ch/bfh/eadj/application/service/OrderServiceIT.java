@@ -76,15 +76,18 @@ public class OrderServiceIT extends AbstractServiceIT {
         }
     }
 
-    @Test(dependsOnMethods = "shouldPlaceOrder")
+    @Test(dependsOnMethods = {"shouldPlaceOrder", "shouldFailCancelOrder"})
     public void shouldFailCancelShippedOrder() throws Exception {
         //given
+
         List<OrderItem> items = createOrderItems(4, book);
         customer = customerService.findCustomer(customer.getNr());
         customer.getCreditCard().setExpirationYear(2017);
         customer.getCreditCard().setNumber("1111222233334444");
         customerService.updateCustomer(customer);
         order = orderService.placeOrder(customer, items);
+
+
         Thread.sleep(20000);
         order = orderService.findOrder(order.getNr());
 
