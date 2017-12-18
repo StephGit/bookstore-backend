@@ -42,7 +42,6 @@ public class OrderProcessor implements MessageListener {
             MapMessage msg = (MapMessage) message;
             String status = msg.getJMSType();
             Long orderNr = msg.getLong("orderNr");
-            System.out.println(status);
             if (status.equals(OrderStatus.ACCEPTED.toString())) {
                 processOrder(orderNr);
             } else {
@@ -55,10 +54,8 @@ public class OrderProcessor implements MessageListener {
 
     private void cancelOrder(Long orderNr) {
         Order order = orderRepository.find(orderNr);
-        if (!order.getStatus().equals(OrderStatus.CANCELED)) {
-            order.setStatus(OrderStatus.CANCELED);
-            orderRepository.edit(order);
-        }
+        order.setStatus(OrderStatus.CANCELED);
+        orderRepository.edit(order);
 
         Collection<Timer> timers = timerService.getTimers();
         for (Timer timer : timers) {
