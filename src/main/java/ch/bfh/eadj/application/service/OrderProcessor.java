@@ -84,7 +84,7 @@ public class OrderProcessor implements MessageListener {
             order = orderRepository.find(order.getNr());
             order.setStatus(OrderStatus.SHIPPED);
             orderRepository.edit(order);
-            mailService.sendProccessStartedMail(order);
+            mailService.sendOrderShippedMail(order);
         } else {
             throw new OrderProcessingException(null);
         }
