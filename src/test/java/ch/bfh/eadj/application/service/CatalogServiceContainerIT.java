@@ -1,24 +1,21 @@
 package ch.bfh.eadj.application.service;
 
-import static org.junit.Assert.assertEquals;
-
-import java.math.BigDecimal;
-
-import javax.ejb.EJB;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
-import org.jboss.weld.junit4.WeldInitiator;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-
 import ch.bfh.eadj.BookstorePersistenceUnit;
 import ch.bfh.eadj.TestCDISetup;
 import ch.bfh.eadj.application.exception.BookAlreadyExistsException;
 import ch.bfh.eadj.application.exception.BookNotFoundException;
 import ch.bfh.eadj.persistence.entity.Book;
 import ch.bfh.eadj.persistence.repository.BookRepository;
+import org.jboss.weld.junit4.WeldInitiator;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import java.math.BigDecimal;
+
+import static org.junit.Assert.assertEquals;
 
 public class CatalogServiceContainerIT {
 
@@ -26,12 +23,11 @@ public class CatalogServiceContainerIT {
     public WeldInitiator weld = WeldInitiator.from(CatalogService.class, BookRepository.class, TestCDISetup.class).inject(this).build();
 
     @BookstorePersistenceUnit
-    @PersistenceContext(unitName = "bookstorePU")
+    @Inject
     EntityManager em;
 
-    @EJB
+    @Inject
     private CatalogService catalogService;
-
 
 
     @Before

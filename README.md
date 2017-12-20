@@ -67,3 +67,14 @@ mail/bookstore
 ```
 asadmin stop-domain bookstore
 ```````
+
+
+
+##TODO
+
+- empty result wenn empty keyword search
+- transaction attributes
+- exception rollback=true?
+- zip file
+- Readme ergänzen - Setup - Doku - Releasnotes -> 
+- warum läuft Mail nicht?

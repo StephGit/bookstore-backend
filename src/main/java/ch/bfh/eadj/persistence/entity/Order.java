@@ -14,7 +14,7 @@ import java.util.*;
         @NamedQuery(name = Order.FIND_BY_CUSTOMER_AND_YEAR_QUERY.QUERY_NAME, query = Order.FIND_BY_CUSTOMER_AND_YEAR_QUERY.QUERY_STRING),
         @NamedQuery(name = Order.STATISTIC_BY_YEAR_QUERY.QUERY_NAME, query = Order.STATISTIC_BY_YEAR_QUERY.QUERY_STRING)
 })
-public class Order extends BaseEntity implements Serializable {
+public class Order extends BaseEntity {
 
 
     public static final String PARAM_NR = "nr";

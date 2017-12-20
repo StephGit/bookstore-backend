@@ -1,17 +1,5 @@
 package ch.bfh.eadj.application.service;
 
-import java.math.BigDecimal;
-import java.sql.Date;
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
-
-import javax.annotation.Resource;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.jms.*;
-
 import ch.bfh.eadj.application.exception.*;
 import ch.bfh.eadj.persistence.dto.OrderInfo;
 import ch.bfh.eadj.persistence.entity.CreditCard;
@@ -21,18 +9,28 @@ import ch.bfh.eadj.persistence.entity.OrderItem;
 import ch.bfh.eadj.persistence.enumeration.OrderStatus;
 import ch.bfh.eadj.persistence.repository.OrderRepository;
 
+import javax.annotation.Resource;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.jms.*;
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
+
 @Stateless
 public class OrderService implements OrderServiceRemote {
 
     private static final String CONNECTION_FACTORY_NAME = "jms/connectionFactory";
     private static final String QUEUE_NAME = "jms/orderQueue";
 
-    @EJB
-    private OrderRepository orderRepo;
+    @Inject
+    OrderRepository orderRepo;
 
     @Inject
     @JMSConnectionFactory(CONNECTION_FACTORY_NAME)
-    private JMSContext jmsContext;
+    JMSContext jmsContext;
 
     @Resource(lookup=QUEUE_NAME)
     private Queue orderQueue;

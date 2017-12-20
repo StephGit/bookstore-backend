@@ -1,23 +1,22 @@
 package ch.bfh.eadj.application.service;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-
 import ch.bfh.eadj.application.exception.BookAlreadyExistsException;
 import ch.bfh.eadj.application.exception.BookNotFoundException;
 import ch.bfh.eadj.persistence.dto.BookInfo;
 import ch.bfh.eadj.persistence.entity.Book;
 import ch.bfh.eadj.persistence.repository.BookRepository;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 @Stateless
 public class CatalogService implements CatalogServiceRemote{
 
 
-    @EJB
+    @Inject
     BookRepository bookRepo;
 
     @Override

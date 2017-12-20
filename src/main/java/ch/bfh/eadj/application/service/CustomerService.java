@@ -1,13 +1,5 @@
 package ch.bfh.eadj.application.service;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-
 import ch.bfh.eadj.application.exception.CustomerNotFoundException;
 import ch.bfh.eadj.application.exception.EmailAlreadyUsedException;
 import ch.bfh.eadj.application.exception.InvalidPasswordException;
@@ -18,13 +10,19 @@ import ch.bfh.eadj.persistence.enumeration.UserGroup;
 import ch.bfh.eadj.persistence.repository.CustomerRepository;
 import ch.bfh.eadj.persistence.repository.LoginRepository;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
 @Stateless
 public class CustomerService implements CustomerServiceRemote {
 
-    @EJB
+    @Inject
     private CustomerRepository customerRepository;
 
-    @EJB
+    @Inject
     private LoginRepository loginRepository;
 
     @Override
