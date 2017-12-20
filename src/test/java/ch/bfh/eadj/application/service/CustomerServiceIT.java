@@ -5,6 +5,7 @@ import ch.bfh.eadj.application.exception.EmailAlreadyUsedException;
 import ch.bfh.eadj.application.exception.InvalidPasswordException;
 import ch.bfh.eadj.persistence.dto.CustomerInfo;
 import ch.bfh.eadj.persistence.entity.Customer;
+import org.hibernate.validator.constraints.Email;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -44,12 +45,15 @@ public class CustomerServiceIT extends AbstractServiceIT {
 
         //then
         assertNotNull(userId);
-        try {
-            customerService.registerCustomer(customer, password);
-            fail("EmailAlreadyUsedException exception");
-        } catch (EmailAlreadyUsedException e) {
-            System.out.println("Expected exception: EmailAlreadyUsedException");
-        }
+    }
+
+    @Test(expectedExceptions = EmailAlreadyUsedException.class)
+    public void shouldFailRegisterCustomer() throws EmailAlreadyUsedException {
+        //when
+        customerService.registerCustomer(customer, password);
+
+        //then
+        fail("EmailAlreadyUsedException exception");
     }
 
     @Test(dependsOnMethods = "shouldRegisterCustomer")
@@ -61,30 +65,22 @@ public class CustomerServiceIT extends AbstractServiceIT {
         assertNotNull(userId);
     }
 
-    @Test(dependsOnMethods = "shouldRegisterCustomer")
-    public void shouldFailAuthenticateCustomer() throws CustomerNotFoundException {
+    @Test(dependsOnMethods = "shouldRegisterCustomer", expectedExceptions = InvalidPasswordException.class)
+    public void shouldFailAuthenticateCustomer() throws CustomerNotFoundException, InvalidPasswordException {
         //when
-        try {
-            userId = customerService.authenticateCustomer(customer.getEmail(), "qwer");
+        userId = customerService.authenticateCustomer(customer.getEmail(), "qwer");
 
-            //then
-            fail("InvalidPasswordException exception");
-        } catch (InvalidPasswordException e) {
-            System.out.println("Expected exception: InvalidPasswordException");
-        }
+        //then
+        fail("InvalidPasswordException exception");
     }
 
-    @Test(dependsOnMethods = "shouldRegisterCustomer")
-    public void shouldFailAuthenticateUnknownUser() throws InvalidPasswordException {
+    @Test(dependsOnMethods = "shouldRegisterCustomer", expectedExceptions = CustomerNotFoundException.class)
+    public void shouldFailAuthenticateUnknownUser() throws InvalidPasswordException, CustomerNotFoundException {
         //when
-        try {
-            userId = customerService.authenticateCustomer("asdf@basd.org", "qwer");
+        userId = customerService.authenticateCustomer("asdf@basd.org", "qwer");
 
-            //then
-            fail("CustomerNotFoundException exception");
-        } catch (CustomerNotFoundException e) {
-            System.out.println("Expected exception: CustomerNotFoundException");
-        }
+        //then
+        fail("CustomerNotFoundException exception");
     }
 
     @Test(dependsOnMethods = "shouldRegisterCustomer")
@@ -99,20 +95,16 @@ public class CustomerServiceIT extends AbstractServiceIT {
 
     }
 
-    @Test(dependsOnMethods = "shouldRegisterCustomer")
-    public void shouldFailFindCustomer() {
+    @Test(dependsOnMethods = "shouldRegisterCustomer", expectedExceptions = CustomerNotFoundException.class)
+    public void shouldFailFindCustomer() throws CustomerNotFoundException {
         //given
         Long unknownId = 2321L;
 
         //when
-        try {
-            customerService.findCustomer(unknownId);
+        customerService.findCustomer(unknownId);
 
-            //then
-            fail("CustomerNotFoundException exception");
-        } catch (CustomerNotFoundException e) {
-            System.out.println("Expected exception: CustomerNotFoundException");
-        }
+        //then
+        fail("CustomerNotFoundException exception");
     }
 
     @Test(dependsOnMethods = "shouldRegisterCustomer")
@@ -126,7 +118,7 @@ public class CustomerServiceIT extends AbstractServiceIT {
     }
 
     @Test
-    public void shouldFailSearchCustomers()  {
+    public void shouldFailSearchCustomers() {
         //when
         List<CustomerInfo> result = customerService.searchCustomers("Meier");
 
@@ -151,7 +143,8 @@ public class CustomerServiceIT extends AbstractServiceIT {
         assertEquals(updatedCustomer.getFirstName(), customer.getFirstName());
     }
 
-    @Test(dependsOnMethods = {"shouldRegisterCustomer","shouldFindCustomer"})
+    @Test(dependsOnMethods = {"shouldRegisterCustomer", "shouldFindCustomer"},
+            expectedExceptions = EmailAlreadyUsedException.class)
     public void shouldFailUpdateCustomer() throws CustomerNotFoundException, EmailAlreadyUsedException {
         //given
         Customer newCustomer = createCustomer();
@@ -161,16 +154,12 @@ public class CustomerServiceIT extends AbstractServiceIT {
         userId2 = customerService.registerCustomer(newCustomer, password);
         customer = customerService.findCustomer(userId);
         customer.setEmail(newCustomer.getEmail());
-        try {
-            //when
-            customerService.updateCustomer(customer);
 
-            //then
-            fail("EmailAlreadyUsedException exception");
-        } catch (EmailAlreadyUsedException e) {
-            System.out.println("Expected exception: EmailAlreadyUsedException");
-        }
+        //when
+        customerService.updateCustomer(customer);
 
+        //then
+        fail("EmailAlreadyUsedException exception");
     }
 
     @Test(dependsOnMethods = "shouldRegisterCustomer")
@@ -187,17 +176,13 @@ public class CustomerServiceIT extends AbstractServiceIT {
         assertEquals(loginId, resultLoginId);
     }
 
-    @Test(dependsOnMethods = "shouldChangePassword")
-    public void shouldFailChangePassword() {
-        try {
-            //when
-            customerService.changePassword("new@some.org", password);
+    @Test(dependsOnMethods = "shouldChangePassword", expectedExceptions = CustomerNotFoundException.class)
+    public void shouldFailChangePassword() throws CustomerNotFoundException {
+        //when
+        customerService.changePassword("new@some.org", password);
 
-            //then
-            fail("CustomerNotFoundException exception");
-        } catch (CustomerNotFoundException e) {
-            System.out.println("Expected exception: CustomerNotFoundException");
-        }
+        //then
+        fail("CustomerNotFoundException exception");
     }
 
     @Test(dependsOnMethods = {"shouldRegisterCustomer", "shouldFailUpdateCustomer"})

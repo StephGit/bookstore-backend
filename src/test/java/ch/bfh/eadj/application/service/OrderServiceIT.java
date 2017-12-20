@@ -55,27 +55,22 @@ public class OrderServiceIT extends AbstractServiceIT {
     }
 
 
-    @Test(dependsOnMethods = {"shouldPlaceOrder", "shouldCancelOrder"})
+    @Test(dependsOnMethods = {"shouldPlaceOrder", "shouldCancelOrder"}, expectedExceptions = OrderAlreadyCanceledException.class)
     public void shouldFailCancelOrder() throws Exception {
         //given
         order = orderService.findOrder(order.getNr());
         assertThat(order.getStatus(), is(OrderStatus.CANCELED));
 
-        try {
             //when
             orderService.cancelOrder(order.getNr());
 
             //then
             fail("OrderAlreadyCanceledException exception");
-        } catch (OrderAlreadyCanceledException e) {
-            System.out.println("Expected exception: OrderAlreadyCanceledException");
-        }
     }
 
-    @Test(dependsOnMethods = {"shouldPlaceOrder", "shouldFailCancelOrder"})
+    @Test(dependsOnMethods = {"shouldPlaceOrder", "shouldFailCancelOrder"}, expectedExceptions = OrderAlreadyShippedException.class)
     public void shouldFailCancelShippedOrder() throws Exception {
         //given
-
         List<OrderItem> items = createOrderItems(4, book);
         customer = customerService.findCustomer(customer.getNr());
         customer.getCreditCard().setExpirationYear(2017);
@@ -83,19 +78,14 @@ public class OrderServiceIT extends AbstractServiceIT {
         customerService.updateCustomer(customer);
         order = orderService.placeOrder(customer, items);
 
-
         Thread.sleep(20000);
         order = orderService.findOrder(order.getNr());
 
-        try {
             //when
             orderService.cancelOrder(order.getNr());
 
             //then
             fail("OrderAlreadyShippedException exception");
-        } catch (OrderAlreadyShippedException e) {
-            System.out.println("Expected exception: OrderAlreadyShippedException");
-        }
     }
 
     @Test(dependsOnMethods = "shouldPlaceOrder")
@@ -105,19 +95,17 @@ public class OrderServiceIT extends AbstractServiceIT {
 
         //then
         assertEquals(orderFromDb.getAmount(), order.getAmount());
+        assertEquals(orderFromDb.getStatus(), order.getStatus());
+        assertEquals(orderFromDb.getCustomer(), order.getCustomer());
     }
 
-    @Test(dependsOnMethods = "shouldPlaceOrder")
-    public void shouldFailFindOrder() {
-        try {
+    @Test(dependsOnMethods = "shouldPlaceOrder", expectedExceptions = OrderNotFoundException.class)
+    public void shouldFailFindOrder() throws OrderNotFoundException {
             //when
             orderService.findOrder(222L);
 
             //then
             fail("OrderNotFoundException exception");
-        } catch (OrderNotFoundException e) {
-            System.out.println("Expected exception: OrderNotFoundException");
-        }
     }
 
     @Test
@@ -131,12 +119,12 @@ public class OrderServiceIT extends AbstractServiceIT {
         Long userId = customerService.registerCustomer(customer, "pwd");
         customer = customerService.findCustomer(userId);
 
-
         //when
         order = orderService.placeOrder(customer, items);
 
         //then
         assertThat(order.getStatus(), is(OrderStatus.ACCEPTED));
+        assertEquals(order.getCustomer().getEmail(), customer.getEmail());
     }
 
     @Test(dependsOnMethods = "shouldPlaceOrder")
@@ -154,7 +142,6 @@ public class OrderServiceIT extends AbstractServiceIT {
             fail("PaymentFailedException exception");
         } catch (PaymentFailedException e) {
             assertTrue(e.getCode().equals(PaymentFailedException.Code.PAYMENT_LIMIT_EXCEEDED));
-            System.out.println("Expected exception: PaymentFailedException: PAYMENT_LIMIT_EXCEEDED");
         }
     }
 
@@ -174,7 +161,6 @@ public class OrderServiceIT extends AbstractServiceIT {
             fail("PaymentFailedException exception");
         } catch (PaymentFailedException e) {
             assertTrue(e.getCode().equals(PaymentFailedException.Code.CREDIT_CARD_EXPIRED));
-            System.out.println("Expected exception: PaymentFailedException: CREDIT_CARD_EXPIRED");
         }
     }
 
@@ -194,7 +180,6 @@ public class OrderServiceIT extends AbstractServiceIT {
             fail("PaymentFailedException exception");
         } catch (PaymentFailedException e) {
             assertTrue(e.getCode().equals(PaymentFailedException.Code.INVALID_CREDIT_CARD));
-            System.out.println("Expected exception: PaymentFailedException: INVALID_CREDIT_CARD");
         }
     }
 

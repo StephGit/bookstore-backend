@@ -15,6 +15,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class CatalogServiceIT extends AbstractServiceIT {
 
@@ -29,24 +30,28 @@ public class CatalogServiceIT extends AbstractServiceIT {
         catalogService = (CatalogServiceRemote) jndiContext.lookup(CATALOG_SERVICE_NAME);
     }
 
+    @Test
+    public void shouldAddBook() throws BookAlreadyExistsException, BookNotFoundException {
+        //given
+        Book b = createBook();
 
-    @Test(dependsOnMethods = "shouldCreateBook")
-    public void shouldAddBook() throws BookNotFoundException {
+        //when
+        catalogService.addBook(b);
+        book = b;
 
         //then
         Book bookFromDb = catalogService.findBook(book.getIsbn());
         assertEquals(book.getIsbn(), bookFromDb.getIsbn());
-
     }
 
-    @Test(dependsOnMethods = "shouldCreateBook",expectedExceptions  = BookAlreadyExistsException.class)
+    @Test(dependsOnMethods = "shouldAddBook", expectedExceptions  = BookAlreadyExistsException.class)
     public void shouldFailAddBook() throws BookAlreadyExistsException {
         //when
         Book book = createBook();
         catalogService.addBook(book);
     }
 
-    @Test(dependsOnMethods = "shouldCreateBook")
+    @Test(dependsOnMethods = "shouldAddBook")
     public void shouldFindBook() throws BookNotFoundException {
 
         //when
@@ -59,13 +64,13 @@ public class CatalogServiceIT extends AbstractServiceIT {
         assertEquals("12345", bookFromDb.getIsbn());
     }
 
-    @Test(dependsOnMethods = "shouldCreateBook",expectedExceptions  = BookNotFoundException.class)
+    @Test(dependsOnMethods = "shouldAddBook", expectedExceptions  = BookNotFoundException.class)
     public void shouldNotFindBook() throws BookNotFoundException {
         //when
        catalogService.findBook("999999");// not existent
     }
 
-    @Test(dependsOnMethods = "shouldCreateBook")
+    @Test(dependsOnMethods = "shouldAddBook")
     public void shouldFindBookByKeywords() {
 
         //when
@@ -79,7 +84,17 @@ public class CatalogServiceIT extends AbstractServiceIT {
         assertEquals("12345", bookFromDb.getIsbn());
     }
 
-    @Test(dependsOnMethods = "shouldCreateBook")
+    @Test
+    public void shouldNotFindBookByKeywords() {
+
+        //when
+        List<BookInfo> booksFromDb = catalogService.searchBooks("Mani");
+
+        //then
+        assertTrue(booksFromDb.isEmpty());
+    }
+
+    @Test(dependsOnMethods = "shouldAddBook")
     public void shouldUpdateBook() throws BookNotFoundException {
 
         //when
@@ -93,7 +108,7 @@ public class CatalogServiceIT extends AbstractServiceIT {
         assertEquals("Adrian Krebs", afterUpdate.getAuthors());
     }
 
-    @Test(dependsOnMethods = "shouldCreateBook",expectedExceptions  = BookNotFoundException.class)
+    @Test(dependsOnMethods = "shouldAddBook",expectedExceptions  = BookNotFoundException.class)
     public void shouldFailUpdateBook() throws BookNotFoundException {
         //given
         Book book = createBook();
@@ -102,15 +117,7 @@ public class CatalogServiceIT extends AbstractServiceIT {
         catalogService.updateBook(book);
     }
 
-
-    @Test
-    public void shouldCreateBook() throws BookAlreadyExistsException {
-        Book b = createBook();
-        catalogService.addBook(b);
-        book = b;
-    }
-
-    @Test(dependsOnMethods = {"shouldCreateBook", "shouldUpdateBook", "shouldAddBook", "shouldFindBook"})
+    @Test(dependsOnMethods = {"shouldAddBook", "shouldUpdateBook", "shouldFindBook"})
     public void shouldRemoveBook() throws BookNotFoundException {
         book = catalogService.findBook(book.getIsbn());
         catalogService.removeBook(book);
