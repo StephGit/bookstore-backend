@@ -120,7 +120,7 @@ public class OrderServiceIT extends AbstractServiceIT {
         customer = customerService.findCustomer(userId);
 
         //when
-        orderService.placeOrder(customer, items);
+        order = orderService.placeOrder(customer, items);
 
         //then
         assertThat(order.getStatus(), is(OrderStatus.ACCEPTED));

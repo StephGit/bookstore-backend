@@ -1,6 +1,5 @@
 package ch.bfh.eadj.application.service;
 
-import ch.bfh.eadj.application.exception.OrderProcessingException;
 import ch.bfh.eadj.persistence.entity.Order;
 import ch.bfh.eadj.persistence.enumeration.OrderStatus;
 import ch.bfh.eadj.persistence.repository.OrderRepository;
@@ -25,7 +24,7 @@ import java.util.Date;
 public class OrderProcessor implements MessageListener {
 
     @EJB
-    private OrderRepository orderRepository;
+    OrderRepository orderRepository;
 
     @Inject
     private MailService mailService;
@@ -37,7 +36,6 @@ public class OrderProcessor implements MessageListener {
     private Long timePeriod;
 
     @Override
-    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void onMessage(Message message) {
         try {
             MapMessage msg = (MapMessage) message;
@@ -45,8 +43,10 @@ public class OrderProcessor implements MessageListener {
             Long orderNr = msg.getLong("orderNr");
             if (status.equals(OrderStatus.ACCEPTED.toString())) {
                 processOrder(orderNr);
-            } else {
+            } else if (status.equals(OrderStatus.CANCELED.toString())) {
                 cancelOrder(orderNr);
+            } else {
+                throw new IllegalStateException("Order-Status '" + status + "' kann nicht verarbeitet werden.");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -78,7 +78,7 @@ public class OrderProcessor implements MessageListener {
     }
 
     @Timeout
-    private void shipOrder(Timer timer) throws OrderProcessingException {
+    private void shipOrder(Timer timer) {
         Order order = (Order) timer.getInfo();
         if (order.getStatus().equals(OrderStatus.PROCESSING)) {
             order = orderRepository.find(order.getNr());
@@ -86,7 +86,8 @@ public class OrderProcessor implements MessageListener {
             orderRepository.edit(order);
             mailService.sendOrderShippedMail(order);
         } else {
-            throw new OrderProcessingException(null);
+            throw new IllegalStateException("Order Status '" + order.getStatus()  +
+                    "' kann nicht verarbeitet werden.");
         }
     }
 }
