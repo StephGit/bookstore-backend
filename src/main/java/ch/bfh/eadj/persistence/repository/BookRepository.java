@@ -5,8 +5,6 @@ import ch.bfh.eadj.persistence.dto.BookInfo;
 import ch.bfh.eadj.persistence.entity.Book;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
@@ -15,6 +13,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,8 +37,11 @@ public class BookRepository extends AbstractRepository<Book> {
         return query.getResultList();
     }
 
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public List<BookInfo> findByKeywords(List<String> keywords) {
+        if (keywords == null || keywords.isEmpty() || keywords.get(0).isEmpty()) {
+            return Collections.emptyList();
+        }
+
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<BookInfo> query = builder.createQuery(BookInfo.class);
         Root<Book> root = query.from(Book.class);

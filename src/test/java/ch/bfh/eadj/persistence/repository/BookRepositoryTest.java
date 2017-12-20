@@ -89,4 +89,17 @@ public class BookRepositoryTest extends AbstractTest {
         assertTrue(foundBook.getAuthors().equals("Hana Cain"));
     }
 
+    @Test
+    public void shouldFindNoBooksWithEmptySearchString() {
+
+        //given
+        List<String> keywords = Arrays.asList("");
+
+        //when
+        List<BookInfo> booksByKeywords = bookRepo.findByKeywords(keywords);
+
+        //then
+        assertThat(booksByKeywords.size(),is(0));
+    }
+
 }
