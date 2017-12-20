@@ -78,3 +78,4 @@ asadmin stop-domain bookstore
 - zip file
 - Readme ergänzen - Setup - Doku - Releasnotes -> 
 - warum läuft Mail nicht?
+- transaction attributes? testing? exceptions? begründen!
