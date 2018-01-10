@@ -23,6 +23,7 @@ public class CatalogServiceIT extends AbstractServiceIT {
 
     private CatalogServiceRemote catalogService;
     private Book book;
+    private Book secondBook;
 
     @BeforeClass
     public void setUp() throws Exception {
@@ -33,21 +34,27 @@ public class CatalogServiceIT extends AbstractServiceIT {
     @Test
     public void shouldAddBook() throws BookAlreadyExistsException, BookNotFoundException {
         //given
-        Book b = createBook();
+        Book b = createBook("test", "12345", "max muster");
+        Book b2 = createBook("girod der knecht", "6789", "sven muster");
+
 
         //when
         catalogService.addBook(b);
+        catalogService.addBook(b2);
         book = b;
+        secondBook = b2;
 
         //then
         Book bookFromDb = catalogService.findBook(book.getIsbn());
+        Book book2FromDb = catalogService.findBook(secondBook.getIsbn());
         assertEquals(book.getIsbn(), bookFromDb.getIsbn());
+        assertEquals(secondBook.getIsbn(), book2FromDb.getIsbn());
     }
 
     @Test(dependsOnMethods = "shouldAddBook", expectedExceptions  = BookAlreadyExistsException.class)
     public void shouldFailAddBook() throws BookAlreadyExistsException {
         //when
-        Book book = createBook();
+        Book book = createBook("test", "12345", "max muster");
         catalogService.addBook(book);
     }
 
@@ -84,6 +91,37 @@ public class CatalogServiceIT extends AbstractServiceIT {
         assertEquals("12345", bookFromDb.getIsbn());
     }
 
+    @Test(dependsOnMethods = "shouldAddBook")
+    public void shouldFindBookByKeywordsCaseInsensitive() {
+
+        //when
+        List<BookInfo> booksFromDb = catalogService.searchBooks("MAX");
+
+        //then
+        assertThat(booksFromDb.size(), is(1));
+        BookInfo bookFromDb = booksFromDb.get(0);
+        assertEquals("test", bookFromDb.getTitle());
+        assertEquals("max muster", bookFromDb.getAuthors());
+        assertEquals("12345", bookFromDb.getIsbn());
+    }
+
+
+
+    @Test(dependsOnMethods = "shouldAddBook")
+    public void shouldNotFindNonExistingBookWithMultipleKeywords() throws BookNotFoundException {
+
+
+        //when
+        List<BookInfo> booksFromDb = catalogService.searchBooks("max sven");
+
+        //then
+        assertThat(booksFromDb.size(), is(0));
+
+
+    }
+
+
+
     @Test
     public void shouldNotFindBookByKeywords() {
 
@@ -111,16 +149,20 @@ public class CatalogServiceIT extends AbstractServiceIT {
     @Test(dependsOnMethods = "shouldAddBook",expectedExceptions  = BookNotFoundException.class)
     public void shouldFailUpdateBook() throws BookNotFoundException {
         //given
-        Book book = createBook();
+        Book book = createBook("test", "12345", "max muster");
         book.setIsbn("1231231321");
         //when
         catalogService.updateBook(book);
     }
 
-    @Test(dependsOnMethods = {"shouldAddBook", "shouldUpdateBook", "shouldFindBook"})
+    @Test(dependsOnMethods = {"shouldAddBook", "shouldUpdateBook", "shouldFindBook", "shouldFindBookByKeywordsCaseInsensitive", "shouldNotFindNonExistingBookWithMultipleKeywords"})
     public void shouldRemoveBook() throws BookNotFoundException {
-        book = catalogService.findBook(book.getIsbn());
+        book = catalogService.findBook("12345");
         catalogService.removeBook(book);
+        secondBook = catalogService.findBook("6789");
+        catalogService.removeBook(secondBook);
+
+
     }
 
 

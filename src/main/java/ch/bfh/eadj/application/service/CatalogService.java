@@ -46,7 +46,8 @@ public class CatalogService implements CatalogServiceRemote{
     @Override
     public List<BookInfo> searchBooks(String keywords) {
         if (keywords != null && keywords.length() > 0) {
-            String[] splited = keywords.split("\\s+");
+            String caseInsensitive = keywords.toLowerCase();
+            String[] splited = caseInsensitive.split("\\s+");
             return bookRepo.findByKeywords(Arrays.asList(splited));
         } else {
             return Collections.emptyList();
