@@ -1,6 +1,5 @@
 package ch.bfh.eadj.application.service;
 
-import ch.bfh.eadj.application.exception.BookNotFoundException;
 import ch.bfh.eadj.persistence.entity.*;
 import ch.bfh.eadj.persistence.enumeration.Country;
 import ch.bfh.eadj.persistence.enumeration.CreditCardType;
@@ -34,11 +33,11 @@ public class AbstractServiceIT {
         return creditCard;
     }
 
-    Book createBook() {
+    Book createBook(String title, String isbn, String author) {
         Book b = new Book();
-        b.setTitle("test");
-        b.setIsbn("12345");
-        b.setAuthors("max muster");
+        b.setTitle(title);
+        b.setIsbn(isbn);
+        b.setAuthors(author);
         b.setPrice(new BigDecimal("100.14"));
         return b;
     }

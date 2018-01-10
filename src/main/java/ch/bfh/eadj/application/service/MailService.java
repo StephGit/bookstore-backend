@@ -45,7 +45,6 @@ public class MailService {
         String status;
         try {
             MimeMessage msg = new MimeMessage(mailSession);
-            msg.setFrom("me@example.com");
             msg.setRecipients(Message.RecipientType.TO,
                     order.getCustomer().getEmail());
             msg.setSubject(subject);

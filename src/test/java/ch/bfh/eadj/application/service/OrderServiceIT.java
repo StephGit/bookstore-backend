@@ -111,7 +111,7 @@ public class OrderServiceIT extends AbstractServiceIT {
     @Test
     public void shouldPlaceOrder() throws Exception {
         //given
-        book = createBook();
+        book = createBook("test", "12345", "max muster");
         catalogService.addBook(book);
         book = catalogService.findBook(book.getIsbn());
         List<OrderItem> items = createOrderItems(3, book);

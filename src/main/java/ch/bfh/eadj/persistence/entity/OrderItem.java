@@ -10,7 +10,7 @@ public class OrderItem extends  BaseEntity {
     @Column(nullable = false)
     private Integer quantity;
 
-    @OneToOne
+    @ManyToOne
     private Book book;
 
     public Book getBook() { return book; }
