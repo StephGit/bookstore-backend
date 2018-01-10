@@ -7,6 +7,7 @@ import ch.bfh.eadj.persistence.dto.CustomerInfo;
 import ch.bfh.eadj.persistence.entity.Customer;
 
 import javax.ejb.Remote;
+import javax.resource.spi.IllegalStateException;
 import java.util.List;
 
 /**
@@ -27,5 +28,5 @@ public interface CustomerServiceRemote {
 
     List<CustomerInfo> searchCustomers(String name);
 
-    void updateCustomer(Customer customer) throws CustomerNotFoundException, EmailAlreadyUsedException;
+    void updateCustomer(Customer customer) throws CustomerNotFoundException, EmailAlreadyUsedException, IllegalStateException;
 }

@@ -8,6 +8,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
 
 import static ch.bfh.eadj.persistence.entity.Customer.FIND_BY_NAME_QUERY.PARAM_NAME;
@@ -26,8 +28,9 @@ public class CustomerRepository extends AbstractRepository<Customer> {
 
 
     public List<CustomerInfo> findByName(String name) {
+
         TypedQuery<CustomerInfo> query = em.createNamedQuery(Customer.FIND_BY_NAME_QUERY.QUERY_NAME, CustomerInfo.class);
-        query.setParameter(PARAM_NAME, name);
+        query.setParameter(PARAM_NAME,  Arrays.asList(name.split(" ")));
         return query.getResultList();
     }
 

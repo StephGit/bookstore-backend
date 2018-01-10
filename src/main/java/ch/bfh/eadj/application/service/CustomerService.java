@@ -12,7 +12,9 @@ import ch.bfh.eadj.persistence.repository.LoginRepository;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.resource.spi.IllegalStateException;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -87,7 +89,7 @@ public class CustomerService implements CustomerServiceRemote {
     }
 
     @Override
-    public void updateCustomer(Customer customer) throws CustomerNotFoundException, EmailAlreadyUsedException {
+    public void updateCustomer(Customer customer) throws CustomerNotFoundException, EmailAlreadyUsedException, IllegalStateException {
 
         Customer customerDb = customerRepository.find(customer.getNr());
 
@@ -101,7 +103,18 @@ public class CustomerService implements CustomerServiceRemote {
                 throw new EmailAlreadyUsedException();
             }
         }
-        customerRepository.edit(customer);
+        //get db-login-entry
+        Set<Login> loginSet = loginRepository.findByUsername(customerDb.getEmail());
+        if (!loginSet.isEmpty() && loginSet.size()==1) {
+            Iterator<Login> it = loginSet.iterator();
+            Login login = it.next();
+            loginRepository.edit(login);
+            customerRepository.edit(customer);
+        } else {
+            throw new IllegalStateException("Failed to update login and customer");
+        }
+
+
     }
 
     @Override

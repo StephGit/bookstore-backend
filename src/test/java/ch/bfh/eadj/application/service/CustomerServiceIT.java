@@ -11,6 +11,7 @@ import org.testng.annotations.Test;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.resource.spi.IllegalStateException;
 
 import java.util.List;
 
@@ -108,7 +109,17 @@ public class CustomerServiceIT extends AbstractServiceIT {
     }
 
     @Test(dependsOnMethods = "shouldRegisterCustomer")
-    public void shouldSearchCustomers() {
+    public void shouldSearchCustomersByFullName() {
+        //when
+        List<CustomerInfo> result = customerService.searchCustomers(customer.getFirstName() + " " + customer.getLastName());
+
+        //then
+        assertFalse(result.isEmpty());
+        assertEquals(result.get(0).getEmail(), customer.getEmail());
+    }
+
+    @Test(dependsOnMethods = "shouldRegisterCustomer")
+    public void shouldSearchCustomersByNamePart() {
         //when
         List<CustomerInfo> result = customerService.searchCustomers(customer.getLastName());
 
@@ -127,7 +138,7 @@ public class CustomerServiceIT extends AbstractServiceIT {
     }
 
     @Test(dependsOnMethods = "shouldRegisterCustomer")
-    public void shouldUpdateCustomer() throws CustomerNotFoundException, EmailAlreadyUsedException {
+    public void shouldUpdateCustomer() throws CustomerNotFoundException, EmailAlreadyUsedException, IllegalStateException {
         //given
         customer = customerService.findCustomer(userId);
         customer.setEmail("new@mail.com");
@@ -145,7 +156,7 @@ public class CustomerServiceIT extends AbstractServiceIT {
 
     @Test(dependsOnMethods = {"shouldRegisterCustomer", "shouldFindCustomer"},
             expectedExceptions = EmailAlreadyUsedException.class)
-    public void shouldFailUpdateCustomer() throws CustomerNotFoundException, EmailAlreadyUsedException {
+    public void shouldFailUpdateCustomer() throws CustomerNotFoundException, EmailAlreadyUsedException, IllegalStateException {
         //given
         Customer newCustomer = createCustomer();
         newCustomer.setLastName("Neuer");
@@ -162,7 +173,7 @@ public class CustomerServiceIT extends AbstractServiceIT {
         fail("EmailAlreadyUsedException exception");
     }
 
-    @Test(dependsOnMethods = "shouldRegisterCustomer")
+    @Test(dependsOnMethods = {"shouldRegisterCustomer","shouldUpdateCustomer"})
     public void shouldChangePassword() throws Exception {
         //given
         Long loginId = customerService.authenticateCustomer(customer.getEmail(), password);
