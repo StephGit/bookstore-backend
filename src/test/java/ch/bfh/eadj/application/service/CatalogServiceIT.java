@@ -94,6 +94,20 @@ public class CatalogServiceIT extends AbstractServiceIT {
     }
 
     @Test
+    public void shouldFindBookByTwoKeywords() {
+
+        //when
+        List<BookInfo> booksFromDb = catalogService.searchBooks("max test");
+
+        //then
+        assertThat(booksFromDb.size(), is(1));
+        BookInfo bookFromDb = booksFromDb.get(0);
+        assertEquals("test", bookFromDb.getTitle());
+        assertEquals("max muster", bookFromDb.getAuthors());
+        assertEquals(book.getIsbn(), bookFromDb.getIsbn());
+    }
+
+    @Test
     public void shouldFindBookByKeywordsCaseInsensitive() {
 
         //when
