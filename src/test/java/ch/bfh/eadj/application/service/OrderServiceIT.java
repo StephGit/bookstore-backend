@@ -13,6 +13,7 @@ import org.testng.annotations.Test;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -33,7 +34,7 @@ public class OrderServiceIT extends AbstractServiceIT {
     private Customer customer;
     private Order order;
 
-    private Integer year = 2017;
+    private Integer year = LocalDate.now().getYear();
 
     @BeforeClass
     public void setUp() throws Exception {
@@ -73,7 +74,7 @@ public class OrderServiceIT extends AbstractServiceIT {
         //given
         List<OrderItem> items = createOrderItems(4, book);
         customer = customerService.findCustomer(customer.getNr());
-        customer.getCreditCard().setExpirationYear(2017);
+        customer.getCreditCard().setExpirationYear(year);
         customer.getCreditCard().setNumber("1111222233334444");
         customerService.updateCustomer(customer);
         order = orderService.placeOrder(customer, items);
@@ -132,7 +133,7 @@ public class OrderServiceIT extends AbstractServiceIT {
         //given
         customer = customerService.findCustomer(customer.getNr());
         List<OrderItem> items = createOrderItems(30, book);
-        customer.getCreditCard().setExpirationYear(2017);
+        customer.getCreditCard().setExpirationYear(year);
         customer.getCreditCard().setNumber("1111222233334444");
         try {
             //when
@@ -145,7 +146,7 @@ public class OrderServiceIT extends AbstractServiceIT {
         }
     }
 
-    @Test(dependsOnMethods = "shouldPlaceOrder")
+    @Test(dependsOnMethods = "shouldFailPlaceOrderLimitExceeded")
     public void shouldFailPlaceOrderExpiredCreditCard() throws Exception {
         //given
         customer = customerService.findCustomer(customer.getNr());
@@ -164,12 +165,12 @@ public class OrderServiceIT extends AbstractServiceIT {
         }
     }
 
-    @Test(dependsOnMethods = "shouldPlaceOrder")
+    @Test(dependsOnMethods = "shouldFailPlaceOrderExpiredCreditCard")
     public void shouldFailPlaceOrderInvalidCard() throws Exception {
         //given
         customer = customerService.findCustomer(customer.getNr());
         List<OrderItem> items = createOrderItems(5, book);
-        customer.getCreditCard().setExpirationYear(2017);
+        customer.getCreditCard().setExpirationYear(year);
         customer.getCreditCard().setNumber("111122223333444");
         customerService.updateCustomer(customer);
         try {
@@ -187,7 +188,6 @@ public class OrderServiceIT extends AbstractServiceIT {
     public void shouldSearchOrders() throws Exception {
         //when
         List<OrderInfo> orderInfoList = orderService.searchOrders(customer, year);
-        order = orderService.findOrder(order.getNr());
 
         //then
         assertFalse(orderInfoList.isEmpty());
