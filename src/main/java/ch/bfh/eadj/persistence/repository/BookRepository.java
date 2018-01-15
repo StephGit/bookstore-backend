@@ -46,26 +46,24 @@ public class BookRepository extends AbstractRepository<Book> {
         CriteriaQuery<BookInfo> query = builder.createQuery(BookInfo.class);
         Root<Book> root = query.from(Book.class);
 
-        List<Predicate> titlePredicates = new LinkedList<>();
-        List<Predicate> authorPredicates = new LinkedList<>();
-        List<Predicate> publisherPredicates = new LinkedList<>();
+        List<Predicate> all = new LinkedList<>();
+
 
 
         for (String keyword : keywords) {
+            List<Predicate> titlePredicates = new LinkedList<>();
             titlePredicates.add(builder.like(root.get("title"), "%" + keyword + "%"));
-            authorPredicates.add(builder.like(root.get("authors"), "%" + keyword + "%"));
-            publisherPredicates.add(builder.like(root.get("publisher"), "%" + keyword + "%"));
+            titlePredicates.add(builder.like(root.get("authors"), "%" + keyword + "%"));
+            titlePredicates.add(builder.like(root.get("publisher"), "%" + keyword + "%"));
+            Predicate title = builder.or((titlePredicates.toArray(new Predicate[titlePredicates.size()])));
+            all.add(title);
         }
 
 
-        Predicate title = builder.and((titlePredicates.toArray(new Predicate[titlePredicates.size()])));
-        Predicate author = builder.and((authorPredicates.toArray(new Predicate[authorPredicates.size()])));
-        Predicate publisher = builder.and((publisherPredicates.toArray(new Predicate[publisherPredicates.size()])));
-
         return em.createQuery(
                 query.select(builder.construct(BookInfo.class, root.get("isbn"), root.get("authors"), root.get("title"), root.get("price"))).where(
-                        builder.or(
-                                title, author, publisher
+                        builder.and(
+                                all.toArray(new Predicate[all.size()])
 
                         )
                 ))
