@@ -1,6 +1,8 @@
-package ch.bfh.eadj.application.logging;
+package ch.bfh.eadj.integration;
 
 import javax.xml.namespace.QName;
+import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPHeader;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
@@ -18,12 +20,21 @@ public class LoggingHandler implements SOAPHandler<SOAPMessageContext> {
     }
 
     public boolean handleMessage(SOAPMessageContext smc) {
-        logToSystemOut(smc);
+        try {
+            logToSystemOut(smc);
+        } catch (SOAPException e) {
+            e.printStackTrace();
+        }
+
         return true;
     }
 
     public boolean handleFault(SOAPMessageContext smc) {
-        logToSystemOut(smc);
+        try {
+            logToSystemOut(smc);
+        } catch (SOAPException e) {
+            e.printStackTrace();
+        }
         return true;
     }
 
@@ -38,12 +49,14 @@ public class LoggingHandler implements SOAPHandler<SOAPMessageContext> {
      * output the message. The writeTo() method can throw
      * SOAPException or IOException
      */
-    private void logToSystemOut(SOAPMessageContext smc) {
+    private void logToSystemOut(SOAPMessageContext smc) throws SOAPException {
         Boolean outboundProperty = (Boolean)
                 smc.get (MessageContext.MESSAGE_OUTBOUND_PROPERTY);
 
         if (outboundProperty.booleanValue()) {
             out.println("\nOutbound message:");
+            //TODO add amazon security headers
+            SOAPHeader soapHeader = smc.getMessage().getSOAPHeader();
         } else {
             out.println("\nInbound message:");
         }
