@@ -7,12 +7,15 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 import java.io.PrintStream;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Iterator;
 import java.util.Set;
 
 public class AmazonSecurityHandler implements SOAPHandler<SOAPMessageContext> {
 
     @Resource
-
+    AmazonSecurityHelper amazonSecurityHelper;
 
     // change this to redirect output if desired
     private static PrintStream out = System.out;
@@ -59,14 +62,20 @@ public class AmazonSecurityHandler implements SOAPHandler<SOAPMessageContext> {
             out.println("\nOutbound message:");
             SOAPEnvelope envelope = smc.getMessage().getSOAPPart().getEnvelope();
             SOAPBody soapBody = envelope.getBody();
-            soapBody.getFirstChild().getNodeName();
+            String searchType = soapBody.getFirstChild().getNodeName();
+            try {
+                AmazonSecurityCredentials amazonSecurityCredentials = amazonSecurityHelper.createCredentials(searchType);
+            } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+                throw new SOAPException(e.toString());
+            }
 
-
+            Iterator it = soapBody.getChildElements();
+            it.next();
 
             SOAPHeader header = envelope.addHeader();
             SOAPElement security =
                     header.addChildElement("AssociateTag", "ns", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");
-                    header.addChildElement("AWSAccessKeyId", "ns", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");
+            header.addChildElement("AWSAccessKeyId", "ns", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");
 
 
         } else {
