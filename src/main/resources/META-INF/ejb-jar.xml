@@ -12,6 +12,19 @@
                 <env-entry-value>1000</env-entry-value>
             </env-entry>
         </session>
+        <session>
+            <ejb-name>AmazonSecurityHelper</ejb-name>
+            <env-entry>
+                <env-entry-name>AmazonAccessKey</env-entry-name>
+                <env-entry-type>java.lang.String</env-entry-type>
+                <env-entry-value>AKIAJ3GAM4266O4LXRIA</env-entry-value>
+            </env-entry>
+            <env-entry>
+                <env-entry-name>AmazonSecretKey</env-entry-name>
+                <env-entry-type>java.lang.String</env-entry-type>
+                <env-entry-value>3jcDJLFlBK0ABc2UcDaR89uogvJB3EXFmbNPFeos</env-entry-value>
+            </env-entry>
+        </session>
         <message-driven>
             <ejb-name>OrderProcessor</ejb-name>
             <env-entry>

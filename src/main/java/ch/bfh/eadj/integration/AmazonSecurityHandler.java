@@ -1,5 +1,6 @@
 package ch.bfh.eadj.integration;
 
+import javax.annotation.Resource;
 import javax.xml.namespace.QName;
 import javax.xml.soap.*;
 import javax.xml.ws.handler.MessageContext;
@@ -9,6 +10,9 @@ import java.io.PrintStream;
 import java.util.Set;
 
 public class AmazonSecurityHandler implements SOAPHandler<SOAPMessageContext> {
+
+    @Resource
+
 
     // change this to redirect output if desired
     private static PrintStream out = System.out;
@@ -54,7 +58,11 @@ public class AmazonSecurityHandler implements SOAPHandler<SOAPMessageContext> {
         if (outboundProperty.booleanValue()) {
             out.println("\nOutbound message:");
             SOAPEnvelope envelope = smc.getMessage().getSOAPPart().getEnvelope();
-            //TODO find out which operation to do
+            SOAPBody soapBody = envelope.getBody();
+            soapBody.getFirstChild().getNodeName();
+
+
+
             SOAPHeader header = envelope.addHeader();
             SOAPElement security =
                     header.addChildElement("AssociateTag", "ns", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");
