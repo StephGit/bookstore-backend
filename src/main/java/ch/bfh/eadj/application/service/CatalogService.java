@@ -8,7 +8,6 @@ import ch.bfh.eadj.persistence.repository.BookRepository;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,13 +18,16 @@ public class CatalogService implements CatalogServiceRemote{
     @Inject
     BookRepository bookRepo;
 
+    @Inject
+    AmazonCatalog amazonCatalog;
+
     @Override
     public Book findBook(String isbn) throws BookNotFoundException {
-        List<Book> bookByIsbn = bookRepo.findByIsbn(isbn);
-        if (bookByIsbn == null || bookByIsbn.isEmpty()) {
+        Book bookByIsbn = amazonCatalog.findBook(isbn);
+        if (bookByIsbn == null) {
             throw new BookNotFoundException();
         }
-        return bookByIsbn.get(0);
+        return bookByIsbn;
     }
 
     @Override
@@ -43,12 +45,23 @@ public class CatalogService implements CatalogServiceRemote{
         bookRepo.deleteBook(book.getNr());
     }
 
-    @Override
+    /*@Override
     public List<BookInfo> searchBooks(String keywords) {
         if (keywords != null && keywords.length() > 0) {
             String caseInsensitive = keywords.toLowerCase();
             String[] splited = caseInsensitive.split("\\s+");
             return bookRepo.findByKeywords(Arrays.asList(splited));
+        } else {
+            return Collections.emptyList();
+        }
+    }*/
+
+    @Override
+    public List<BookInfo> searchBooks(String keywords) {
+        if (keywords != null && keywords.length() > 0) {
+            String caseInsensitive = keywords.toLowerCase();
+            String[] splited = caseInsensitive.split("\\s+");
+            return amazonCatalog.searchBooks(keywords);
         } else {
             return Collections.emptyList();
         }
