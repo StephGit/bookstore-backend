@@ -1,4 +1,4 @@
-package ch.bfh.eadj;
+package ch.bfh.eadj.integration;
 
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
