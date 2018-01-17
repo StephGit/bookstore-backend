@@ -14,6 +14,9 @@ import java.util.Set;
 
 public class AmazonSecurityHandler implements SOAPHandler<SOAPMessageContext> {
 
+    public static final String AWS_ACCESS_KEY_ID = "AWSAccessKeyId";
+    public static final String SIGNATURE = "Signature";
+    public static final String TIMESTAMP = "Timestamp";
     @Resource
     AmazonSecurityHelper amazonSecurityHelper;
 
@@ -62,21 +65,18 @@ public class AmazonSecurityHandler implements SOAPHandler<SOAPMessageContext> {
             out.println("\nOutbound message:");
             SOAPEnvelope envelope = smc.getMessage().getSOAPPart().getEnvelope();
             SOAPBody soapBody = envelope.getBody();
-            String searchType = soapBody.getFirstChild().getNodeName();
+            Iterator it = soapBody.getChildElements();
+            SOAPElement searchType = (SOAPElement) it.next();
+            AmazonSecurityCredentials amazonSecurityCredentials;
             try {
-                AmazonSecurityCredentials amazonSecurityCredentials = amazonSecurityHelper.createCredentials(searchType);
+                amazonSecurityCredentials = amazonSecurityHelper.createCredentials(searchType.getNodeName());
             } catch (NoSuchAlgorithmException | InvalidKeyException e) {
                 throw new SOAPException(e.toString());
             }
 
-            Iterator it = soapBody.getChildElements();
-            it.next();
-
-            SOAPHeader header = envelope.addHeader();
-            SOAPElement security =
-                    header.addChildElement("AssociateTag", "ns", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");
-            header.addChildElement("AWSAccessKeyId", "ns", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");
-
+            setElementValue(AWS_ACCESS_KEY_ID, searchType, amazonSecurityCredentials.getAccessKey());
+            setElementValue(SIGNATURE, searchType, amazonSecurityCredentials.getSignature());
+            setElementValue(TIMESTAMP, searchType, amazonSecurityCredentials.getTimestamp());
 
         } else {
             out.println("\nInbound message:");
@@ -89,5 +89,12 @@ public class AmazonSecurityHandler implements SOAPHandler<SOAPMessageContext> {
         } catch (Exception e) {
             out.println("Exception in handler: " + e);
         }
+    }
+
+    private void setElementValue(String elementName, SOAPElement searchType, String value) {
+        QName qName = new QName(elementName);
+        Iterator it = searchType.getChildElements(qName);
+        SOAPElement soapElement = (SOAPElement) it.next();
+        soapElement.setValue(value);
     }
 }
