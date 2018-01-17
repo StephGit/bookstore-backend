@@ -55,7 +55,6 @@ public class AmazonSecurityHandler implements SOAPHandler<SOAPMessageContext> {
             out.println("\nOutbound message:");
             SOAPEnvelope envelope = smc.getMessage().getSOAPPart().getEnvelope();
             //TODO find out which operation to do
-
             SOAPHeader header = envelope.addHeader();
             SOAPElement security =
                     header.addChildElement("AssociateTag", "ns", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");

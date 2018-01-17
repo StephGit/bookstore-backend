@@ -6,4 +6,5 @@ import javax.ejb.Stateless;
 public class AmazonCatalog {
 
 
+
 }
