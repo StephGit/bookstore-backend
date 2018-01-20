@@ -3,6 +3,7 @@ package ch.bfh.eadj.persistence.entity;
 import ch.bfh.eadj.persistence.enumeration.BookBinding;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Table(name = "T_BOOK")
@@ -18,14 +19,17 @@ public class Book extends BaseEntity {
         public static final String QUERY_STRING = "select b from Book b where b.isbn = :isbn";
     }
 
+    @NotNull
     @Column(nullable = false)
     private String isbn;
 
     private String authors;
 
+    @NotNull
     @Column(nullable = false)
     private String title;
 
+    @NotNull
     @Column(nullable = false, precision = 8, scale = 2)
     private BigDecimal price;
 

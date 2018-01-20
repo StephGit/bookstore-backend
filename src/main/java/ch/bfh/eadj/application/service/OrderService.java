@@ -2,10 +2,7 @@ package ch.bfh.eadj.application.service;
 
 import ch.bfh.eadj.application.exception.*;
 import ch.bfh.eadj.persistence.dto.OrderInfo;
-import ch.bfh.eadj.persistence.entity.CreditCard;
-import ch.bfh.eadj.persistence.entity.Customer;
-import ch.bfh.eadj.persistence.entity.Order;
-import ch.bfh.eadj.persistence.entity.OrderItem;
+import ch.bfh.eadj.persistence.entity.*;
 import ch.bfh.eadj.persistence.enumeration.OrderStatus;
 import ch.bfh.eadj.persistence.repository.OrderRepository;
 
@@ -27,6 +24,9 @@ public class OrderService implements OrderServiceRemote {
 
     @Inject
     OrderRepository orderRepo;
+
+    @Inject
+    CatalogService catalogService;
 
     @Inject
     @JMSConnectionFactory(CONNECTION_FACTORY_NAME)
@@ -86,7 +86,8 @@ public class OrderService implements OrderServiceRemote {
     }
 
     @Override
-    public Order placeOrder(Customer customer, List<OrderItem> items) throws PaymentFailedException, OrderProcessingException {
+    public Order placeOrder(Customer customer, List<OrderItem> items) throws PaymentFailedException, OrderProcessingException, BookNotFoundException, BookAlreadyExistsException {
+        storeBooksIfNotPresent(items);
         Order order = new Order();
         order.setCustomer(customer);
         order.setItems(new HashSet<>(items));
@@ -98,6 +99,18 @@ public class OrderService implements OrderServiceRemote {
         orderRepo.create(order);
         sendMessage(order);
         return order;
+    }
+
+    private void storeBooksIfNotPresent(List<OrderItem> items) throws BookNotFoundException, BookAlreadyExistsException {
+        for (OrderItem item : items) {
+            Book book = item.getBook();
+            if (book != null) {
+                Book byIsbn = catalogService.findBookFromDb(book.getIsbn());
+                if (byIsbn == null) {
+                    catalogService.addBook(book);
+                }
+            }
+        }
     }
 
     private void sendMessage(Order order) throws OrderProcessingException {

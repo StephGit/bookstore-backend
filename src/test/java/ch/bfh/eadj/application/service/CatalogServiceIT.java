@@ -97,14 +97,15 @@ public class CatalogServiceIT extends AbstractServiceIT {
     public void shouldFindBookByKeywordsFewResults() {
 
         //when
-        List<BookInfo> booksFromDb = catalogService.searchBooks("Sapiens: A Brief History of Humankind");
+        List<BookInfo> books = catalogService.searchBooks("Sapiens: A Brief History of Humankind Yuval Noah Harari");
 
         //then
-        assertThat(booksFromDb.size(), is(1));
-        BookInfo bookFromDb = booksFromDb.get(0);
-        assertEquals("test", bookFromDb.getTitle());
-        assertEquals("max muster", bookFromDb.getAuthors());
-        assertEquals(book.getIsbn(), bookFromDb.getIsbn());
+        assertThat(books.size(), is(11));
+        BookInfo first = books.get(0);
+        assertNotNull(first.getTitle());
+        assertNotNull(first.getAuthors());
+        assertNotNull(first.getIsbn());
+        assertNotNull(first.getPrice());
     }
 
 

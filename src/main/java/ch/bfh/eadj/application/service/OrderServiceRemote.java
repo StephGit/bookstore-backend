@@ -16,7 +16,7 @@ public interface OrderServiceRemote {
 
     Order findOrder(Long nr) throws OrderNotFoundException;
 
-    Order placeOrder(Customer customer, List<OrderItem> items) throws PaymentFailedException, OrderProcessingException;
+    Order placeOrder(Customer customer, List<OrderItem> items) throws PaymentFailedException, OrderProcessingException, BookNotFoundException, BookAlreadyExistsException;
 
     List<OrderInfo> searchOrders(Customer customer, Integer year);
 

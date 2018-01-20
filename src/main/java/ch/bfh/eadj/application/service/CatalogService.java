@@ -6,11 +6,13 @@ import ch.bfh.eadj.persistence.dto.BookInfo;
 import ch.bfh.eadj.persistence.entity.Book;
 import ch.bfh.eadj.persistence.repository.BookRepository;
 
+import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 
+@LocalBean
 @Stateless
 public class CatalogService implements CatalogServiceRemote{
 
@@ -29,6 +31,15 @@ public class CatalogService implements CatalogServiceRemote{
         }
         return bookByIsbn;
     }
+
+    public Book findBookFromDb(String isbn) throws BookNotFoundException {
+        List<Book> bookByIsbn = bookRepo.findByIsbn(isbn);
+        if (bookByIsbn == null || bookByIsbn.isEmpty()) {
+            throw new BookNotFoundException();
+        }
+        return bookByIsbn.get(0);
+    }
+
 
     @Override
     public void addBook(Book book) throws BookAlreadyExistsException {
