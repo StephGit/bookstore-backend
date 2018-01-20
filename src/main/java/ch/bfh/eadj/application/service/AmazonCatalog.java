@@ -9,13 +9,15 @@ import org.contacts.soap.*;
 import javax.ejb.Stateless;
 import javax.xml.ws.WebServiceRef;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 @Stateless
 public class AmazonCatalog {
     public static final String MEDIUM = "Medium";
-    public static final String  SEARCH_INDEX = "Books";
+    public static final String SEARCH_INDEX = "Books";
     private static final String ASSOCIATE_TAG = "test";
 
     private static final Logger logger = Logger.getLogger(AmazonCatalog.class.getName());
@@ -27,17 +29,17 @@ public class AmazonCatalog {
     public Book findBook(String isbn) throws BookNotFoundException {
         ItemLookup lookup = new ItemLookup();
         lookup.setAssociateTag(ASSOCIATE_TAG);
-        lookup.setShared(new ItemLookupRequest());
-        ItemLookupRequest request = lookup.getShared();
+        ItemLookupRequest request = new ItemLookupRequest();
         request.getItemId().add(isbn);
 //        request.setSearchIndex(SEARCH_INDEX); When IdType equals ASIN, SearchIndex cannot be present.
         request.getResponseGroup().add(MEDIUM);
         //TODO productGroup
+        lookup.setShared(request);
         ItemLookupResponse itemLookupResponse = this.port.itemLookup(lookup);
 
-        validateResult(itemLookupResponse.getItems());
+        validateFindResult(itemLookupResponse.getItems());
         Book book = extractResult(itemLookupResponse.getItems());
-        logger.info(book.toString());
+        logger.info("result from book lookup with isbn: " + isbn + " : " + book.toString());
         return book;
     }
 
@@ -50,9 +52,9 @@ public class AmazonCatalog {
         Book book = new Book();
         book.setIsbn(itemAttributes.getISBN());
         book.setTitle(itemAttributes.getTitle());
-        book.setAuthors(itemAttributes.getManufacturer());
+        book.setAuthors(itemAttributes.getAuthor().toString());
         book.setBinding(BookBinding.HARDCOVER); //TODO compare string and set enum according to response
-        book.setPrice(new BigDecimal(itemAttributes.getListPrice().getAmount()));
+//        book.setPrice(new BigDecimal(itemAttributes.getListPrice().getAmount())); //TODO which price? listprice not available...
         book.setDescription(item.getEditorialReviews().getEditorialReview().get(0).getContent()); // TODO where to find description in response?
         book.setPublisher(itemAttributes.getPublisher());
 //        book.setPublicationYear(itemAttributes.getPublicationDate());  TODO extract year from date
@@ -62,7 +64,7 @@ public class AmazonCatalog {
 
     }
 
-    private void validateResult(List<Items> items) throws BookNotFoundException {
+    private void validateFindResult(List<Items> items) throws BookNotFoundException {
         //TODO extract and log Errors properly.. i.e missing associate tag
         //TODO test for each error
         if (items == null || items.isEmpty() || items.get(0).getItem().isEmpty()) {
@@ -75,19 +77,52 @@ public class AmazonCatalog {
     public List<BookInfo> searchBooks(String keywords) {
 
         ItemSearch search = new ItemSearch();
-        ItemSearchRequest shared = search.getShared();
-
+        search.setAssociateTag(ASSOCIATE_TAG);
+        ItemSearchRequest shared = new ItemSearchRequest();
+        shared.setItemPage(BigInteger.ONE);
         shared.setSearchIndex(SEARCH_INDEX);
         shared.setKeywords(keywords);
+        search.setShared(shared);
+        shared.getResponseGroup().add("ItemIds");
+        shared.getResponseGroup().add("ItemAttributes");
 
         ItemSearchResponse itemSearchResponse = port.itemSearch(search);
+        //TODO validate
+        List<BookInfo> results = new ArrayList<>();
+        extractSearchResult(itemSearchResponse, results);
+        int totalPages = itemSearchResponse.getItems().get(0).getTotalPages().intValue();
+        int pages = totalPages > 10 ? 10 : totalPages;
+        for (int i = 2; i <= pages; i++) {
+            // request, add to list, next;
+            shared.setItemPage(BigInteger.valueOf(i));
 
-        //TODO extract response
-        System.out.println(itemSearchResponse);
-        return null;
+            //leider sind batch requests nicht möglich bzw nur mit zwei searches pro request
+            ItemSearchResponse response = port.itemSearch(search);
+            extractSearchResult(response, results);
+        }
+        logger.info("result from book search with keywords: " + keywords + " : " + results.toString());
+        return results;
 
     }
 
+    private void extractSearchResult(ItemSearchResponse response, List<BookInfo> results) {
+        List<Item> item = response.getItems().get(0).getItem();
+        for (Item i : item) {
+            ItemAttributes attributes = i.getItemAttributes();
+
+            //TODO nur bücher mit isbn, titel, blabla -> validieren bzw herausfiltern!
+            if (isResultInvalid(attributes)) {
+                continue;
+            }
+            BookInfo b = new BookInfo(attributes.getISBN(), attributes.getAuthor().toString(), attributes.getTitle(), BigDecimal.ONE); //TODO get correct price
+            results.add(b);
+
+        }
+    }
+
+    private boolean isResultInvalid(ItemAttributes attributes) {
+        return attributes.getISBN() == null || attributes.getISBN().isEmpty() || attributes.getTitle() == null || attributes.getTitle().isEmpty();
+    }
 
 
 }

@@ -5,7 +5,6 @@ import ch.bfh.eadj.application.exception.BookAlreadyExistsException;
 import ch.bfh.eadj.application.exception.BookNotFoundException;
 import ch.bfh.eadj.persistence.dto.BookInfo;
 import ch.bfh.eadj.persistence.entity.Book;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -17,6 +16,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class CatalogServiceIT extends AbstractServiceIT {
@@ -64,12 +64,12 @@ public class CatalogServiceIT extends AbstractServiceIT {
     public void shouldFindBook() throws BookNotFoundException {
 
         //when
-        Book bookFromDb = catalogService.findBook("1846558239");
-        this.book = bookFromDb;
+        String isbn = "0099590085";
+        Book book = catalogService.findBook(isbn);
 
         //then
-        assertEquals("test", bookFromDb.getTitle());
-        assertEquals("max muster", bookFromDb.getAuthors());
+        assertEquals("Sapiens: A Brief History of Humankind", book.getTitle());
+        assertEquals(isbn, book.getIsbn());
     }
 
     @Test(expected = BookNotFoundException.class)
@@ -79,10 +79,25 @@ public class CatalogServiceIT extends AbstractServiceIT {
     }
 
     @Test
-    public void shouldFindBookByKeywords() {
+    public void shouldFindBookByKeywordsManyResults() {
 
         //when
-        List<BookInfo> booksFromDb = catalogService.searchBooks("max");
+        List<BookInfo> books = catalogService.searchBooks("sapiens");
+
+        //then
+        assertThat(books.size(), is(92));
+        BookInfo first = books.get(0);
+        assertNotNull(first.getTitle());
+        assertNotNull(first.getAuthors());
+        assertNotNull(first.getIsbn());
+        assertNotNull(first.getPrice());
+    }
+
+    @Test
+    public void shouldFindBookByKeywordsFewResults() {
+
+        //when
+        List<BookInfo> booksFromDb = catalogService.searchBooks("Sapiens: A Brief History of Humankind");
 
         //then
         assertThat(booksFromDb.size(), is(1));
@@ -91,6 +106,7 @@ public class CatalogServiceIT extends AbstractServiceIT {
         assertEquals("max muster", bookFromDb.getAuthors());
         assertEquals(book.getIsbn(), bookFromDb.getIsbn());
     }
+
 
     @Test
     public void shouldFindBookByTwoKeywords() {
@@ -170,15 +186,15 @@ public class CatalogServiceIT extends AbstractServiceIT {
         catalogService.updateBook(book);
     }
 
-    @After
-    public void shouldRemoveBook() throws BookNotFoundException {
-        book = catalogService.findBook(book.getIsbn());
-        catalogService.removeBook(book);
-        secondBook = catalogService.findBook(secondBook.getIsbn());
-        catalogService.removeBook(secondBook);
-
-
-    }
+//    @After
+//    public void shouldRemoveBook() throws BookNotFoundException {
+//        book = catalogService.findBook(book.getIsbn());
+//        catalogService.removeBook(book);
+//        secondBook = catalogService.findBook(secondBook.getIsbn());
+//        catalogService.removeBook(secondBook);
+//
+//
+//    }
 
 
 
