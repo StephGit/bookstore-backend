@@ -59,8 +59,7 @@ public class CatalogService implements CatalogServiceRemote{
     @Override
     public List<BookInfo> searchBooks(String keywords) {
         if (keywords != null && keywords.length() > 0) {
-            String caseInsensitive = keywords.toLowerCase();
-            String[] splited = caseInsensitive.split("\\s+");
+            String caseInsensitive = keywords.toLowerCase(); //TODO still needed?
             return amazonCatalog.searchBooks(keywords);
         } else {
             return Collections.emptyList();

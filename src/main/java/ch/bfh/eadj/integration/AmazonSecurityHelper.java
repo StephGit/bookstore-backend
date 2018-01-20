@@ -6,7 +6,6 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.ejb.Stateless;
 import javax.xml.bind.DatatypeConverter;
-import java.security.AccessControlContext;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
@@ -21,10 +20,10 @@ import java.util.Calendar;
 public class AmazonSecurityHelper {
 
 	@Resource(name="AmazonAccessKey")
-	private String ACCESS_KEY = "AKIAJ3GAM4266O4LXRIA";
+	private String ACCESS_KEY;
 
 	@Resource(name="AmazonSecretKey")
-	private String SECRET_KEY = "3jcDJLFlBK0ABc2UcDaR89uogvJB3EXFmbNPFeos";
+	private String SECRET_KEY;
 
 	private static final String TIMESTAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 	private static final String MAC_ALGORITHM = "HmacSHA256";
@@ -40,6 +39,6 @@ public class AmazonSecurityHelper {
 		byte[] data = mac.doFinal((searchType + timestamp).getBytes());
 		String signature = DatatypeConverter.printBase64Binary(data);
 
-		return new AmazonSecurityCredentials(ACCESS_KEY, signature, timestamp);
+		return new AmazonSecurityCredentials(ACCESS_KEY, timestamp, signature);
 	}
 }

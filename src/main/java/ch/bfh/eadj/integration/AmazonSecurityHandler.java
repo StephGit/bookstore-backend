@@ -1,11 +1,13 @@
 package ch.bfh.eadj.integration;
 
-import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.xml.namespace.QName;
 import javax.xml.soap.*;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -17,7 +19,9 @@ public class AmazonSecurityHandler implements SOAPHandler<SOAPMessageContext> {
     public static final String AWS_ACCESS_KEY_ID = "AWSAccessKeyId";
     public static final String SIGNATURE = "Signature";
     public static final String TIMESTAMP = "Timestamp";
-    @Resource
+    public static final String ASSOCIATE_TAG = "AssociateTag";
+
+    @EJB
     AmazonSecurityHelper amazonSecurityHelper;
 
     // change this to redirect output if desired
@@ -32,6 +36,8 @@ public class AmazonSecurityHandler implements SOAPHandler<SOAPMessageContext> {
             logToSystemOut(smc);
         } catch (SOAPException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         return true;
@@ -41,6 +47,8 @@ public class AmazonSecurityHandler implements SOAPHandler<SOAPMessageContext> {
         try {
             logToSystemOut(smc);
         } catch (SOAPException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return true;
@@ -57,12 +65,11 @@ public class AmazonSecurityHandler implements SOAPHandler<SOAPMessageContext> {
      * output the message. The writeTo() method can throw
      * SOAPException or IOException
      */
-    private void logToSystemOut(SOAPMessageContext smc) throws SOAPException {
+    private void logToSystemOut(SOAPMessageContext smc) throws SOAPException, IOException {
         Boolean outboundProperty = (Boolean)
                 smc.get (MessageContext.MESSAGE_OUTBOUND_PROPERTY);
 
         if (outboundProperty.booleanValue()) {
-            out.println("\nOutbound message:");
             SOAPEnvelope envelope = smc.getMessage().getSOAPPart().getEnvelope();
             SOAPBody soapBody = envelope.getBody();
             Iterator it = soapBody.getChildElements();
@@ -73,10 +80,15 @@ public class AmazonSecurityHandler implements SOAPHandler<SOAPMessageContext> {
             } catch (NoSuchAlgorithmException | InvalidKeyException e) {
                 throw new SOAPException(e.toString());
             }
+            SOAPHeader header = envelope.getHeader();
+            addHeaderElement(header, AWS_ACCESS_KEY_ID, amazonSecurityCredentials.getAccessKey());
+            addHeaderElement(header, SIGNATURE, amazonSecurityCredentials.getSignature());
+            addHeaderElement(header, TIMESTAMP, amazonSecurityCredentials.getTimestamp());
+            out.println("\nOutbound message:");
 
-            setElementValue(AWS_ACCESS_KEY_ID, searchType, amazonSecurityCredentials.getAccessKey());
-            setElementValue(SIGNATURE, searchType, amazonSecurityCredentials.getSignature());
-            setElementValue(TIMESTAMP, searchType, amazonSecurityCredentials.getTimestamp());
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            smc.getMessage().writeTo(stream);
+            System.out.println(stream.toString());
 
         } else {
             out.println("\nInbound message:");
@@ -91,10 +103,8 @@ public class AmazonSecurityHandler implements SOAPHandler<SOAPMessageContext> {
         }
     }
 
-    private void setElementValue(String elementName, SOAPElement searchType, String value) {
-        QName qName = new QName(elementName);
-        Iterator it = searchType.getChildElements(qName);
-        SOAPElement soapElement = (SOAPElement) it.next();
-        soapElement.setValue(value);
+    private void addHeaderElement(SOAPHeader header, String awsAccessKeyId, String accessKey) throws SOAPException {
+        SOAPElement element = header.addChildElement(awsAccessKeyId, "aws", "http://security.amazonaws.com/doc/2007-01-01/");
+        element.addTextNode(accessKey);
     }
 }
