@@ -1,6 +1,6 @@
 package ch.bfh.eadj.integration;
 
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.xml.namespace.QName;
 import javax.xml.soap.*;
 import javax.xml.ws.handler.MessageContext;
@@ -19,9 +19,8 @@ public class AmazonSecurityHandler implements SOAPHandler<SOAPMessageContext> {
     public static final String AWS_ACCESS_KEY_ID = "AWSAccessKeyId";
     public static final String SIGNATURE = "Signature";
     public static final String TIMESTAMP = "Timestamp";
-    public static final String ASSOCIATE_TAG = "AssociateTag";
 
-    @EJB
+    @Inject
     AmazonSecurityHelper amazonSecurityHelper;
 
     // change this to redirect output if desired

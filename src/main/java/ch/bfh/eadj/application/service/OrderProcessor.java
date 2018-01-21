@@ -23,7 +23,7 @@ import java.util.Date;
         })
 public class OrderProcessor implements MessageListener {
 
-    @EJB
+    @Inject
     OrderRepository orderRepository;
 
     @Inject
