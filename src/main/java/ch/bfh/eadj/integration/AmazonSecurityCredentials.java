@@ -12,15 +12,15 @@ public class AmazonSecurityCredentials {
         this.signature = signature;
     }
 
-    public String getAccessKey() {
+    protected String getAccessKey() {
         return accessKey;
     }
 
-    public String getTimestamp() {
+    protected String getTimestamp() {
         return timestamp;
     }
 
-    public String getSignature() {
+    protected String getSignature() {
         return signature;
     }
 }

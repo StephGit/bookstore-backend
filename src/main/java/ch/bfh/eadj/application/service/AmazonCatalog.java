@@ -33,6 +33,7 @@ public class AmazonCatalog {
         request.getItemId().add(isbn);
 //        request.setSearchIndex(SEARCH_INDEX); When IdType equals ASIN, SearchIndex cannot be present.
         request.getResponseGroup().add(MEDIUM);
+
         //TODO productGroup
         lookup.setShared(request);
         ItemLookupResponse itemLookupResponse = this.port.itemLookup(lookup);
@@ -53,7 +54,7 @@ public class AmazonCatalog {
         book.setIsbn(itemAttributes.getISBN());
         book.setTitle(itemAttributes.getTitle());
         book.setAuthors(itemAttributes.getAuthor().toString());
-        book.setBinding(BookBinding.HARDCOVER); //TODO compare string and set enum according to response
+        book.setBinding(BookBinding.getBinding(itemAttributes.getBinding()));
 //        book.setPrice(new BigDecimal(itemAttributes.getListPrice().getAmount())); //TODO which price? listprice not available...
         book.setDescription(item.getEditorialReviews().getEditorialReview().get(0).getContent()); // TODO where to find description in response?
         book.setPublisher(itemAttributes.getPublisher());

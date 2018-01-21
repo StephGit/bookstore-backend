@@ -1,5 +1,6 @@
 package ch.bfh.eadj.integration;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.xml.namespace.QName;
 import javax.xml.soap.*;
@@ -14,6 +15,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
 import java.util.Set;
 
+@Stateless
 public class AmazonSecurityHandler implements SOAPHandler<SOAPMessageContext> {
 
     public static final String AWS_ACCESS_KEY_ID = "AWSAccessKeyId";
@@ -32,24 +34,18 @@ public class AmazonSecurityHandler implements SOAPHandler<SOAPMessageContext> {
 
     public boolean handleMessage(SOAPMessageContext smc) {
         try {
-            logToSystemOut(smc);
-        } catch (SOAPException e) {
+            addSecurityHeader(smc);
+        } catch (SOAPException | IOException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            log(smc);
+            return false;
         }
 
         return true;
     }
 
     public boolean handleFault(SOAPMessageContext smc) {
-        try {
-            logToSystemOut(smc);
-        } catch (SOAPException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        log(smc);
         return true;
     }
 
@@ -64,9 +60,9 @@ public class AmazonSecurityHandler implements SOAPHandler<SOAPMessageContext> {
      * output the message. The writeTo() method can throw
      * SOAPException or IOException
      */
-    private void logToSystemOut(SOAPMessageContext smc) throws SOAPException, IOException {
+    private void addSecurityHeader(SOAPMessageContext smc) throws SOAPException, IOException {
         Boolean outboundProperty = (Boolean)
-                smc.get (MessageContext.MESSAGE_OUTBOUND_PROPERTY);
+                smc.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
 
         if (outboundProperty.booleanValue()) {
             SOAPEnvelope envelope = smc.getMessage().getSOAPPart().getEnvelope();
@@ -84,26 +80,24 @@ public class AmazonSecurityHandler implements SOAPHandler<SOAPMessageContext> {
             addHeaderElement(header, SIGNATURE, amazonSecurityCredentials.getSignature());
             addHeaderElement(header, TIMESTAMP, amazonSecurityCredentials.getTimestamp());
             out.println("\nOutbound message:");
-
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            smc.getMessage().writeTo(stream);
-            System.out.println(stream.toString());
-
         } else {
             out.println("\nInbound message:");
-        }
-
-        SOAPMessage message = smc.getMessage();
-        try {
-            message.writeTo(out);
-            out.println("");   // just to add a newline
-        } catch (Exception e) {
-            out.println("Exception in handler: " + e);
         }
     }
 
     private void addHeaderElement(SOAPHeader header, String awsAccessKeyId, String accessKey) throws SOAPException {
         SOAPElement element = header.addChildElement(awsAccessKeyId, "aws", "http://security.amazonaws.com/doc/2007-01-01/");
         element.addTextNode(accessKey);
+    }
+
+    private void log(SOAPMessageContext context) {
+        try {
+            boolean outbound = (Boolean) context.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            context.getMessage().writeTo(stream);
+            System.out.println("Message " + (outbound ? "sent" : "received") + ": " + stream.toString());
+        } catch (SOAPException | IOException ex) {
+            ex.printStackTrace();
+        }
     }
 }

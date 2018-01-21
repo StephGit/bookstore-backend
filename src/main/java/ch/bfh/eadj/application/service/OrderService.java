@@ -7,6 +7,7 @@ import ch.bfh.eadj.persistence.enumeration.OrderStatus;
 import ch.bfh.eadj.persistence.repository.OrderRepository;
 
 import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.jms.*;
@@ -25,7 +26,7 @@ public class OrderService implements OrderServiceRemote {
     @Inject
     OrderRepository orderRepo;
 
-    @Inject
+    @EJB
     CatalogService catalogService;
 
     @Inject
