@@ -8,15 +8,12 @@ import ch.bfh.eadj.persistence.repository.BookRepository;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Model;
-import javax.enterprise.inject.Stereotype;
 import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 
 @Stateless
+@LocalBean
 public class CatalogService implements CatalogServiceRemote{
 
 
