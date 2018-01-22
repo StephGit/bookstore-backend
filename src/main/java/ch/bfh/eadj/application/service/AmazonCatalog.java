@@ -55,7 +55,7 @@ public class AmazonCatalog {
         book.setTitle(itemAttributes.getTitle());
         book.setAuthors(itemAttributes.getAuthor().toString());
         book.setBinding(BookBinding.getBinding(itemAttributes.getBinding()));
-//        book.setPrice(new BigDecimal(itemAttributes.getListPrice().getAmount())); //TODO which price? listprice not available...
+        book.setPrice(new BigDecimal(item.getOfferSummary().getLowestNewPrice().getFormattedPrice()));
         book.setDescription(item.getEditorialReviews().getEditorialReview().get(0).getContent()); // TODO where to find description in response?
         book.setPublisher(itemAttributes.getPublisher());
 //        book.setPublicationYear(itemAttributes.getPublicationDate());  TODO extract year from date
