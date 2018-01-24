@@ -9,6 +9,19 @@ JavaEE 7, Glassfish, Angular, REST
 
 ### Releasenotes
 
+
+
+### TODO
+- [ ]  Correct error handling (More than one book with same ISBN --> Fischlis sample?) - S
+- [ ]  Handle empty results -> Tests - S
+- [ ]  When placing an order -> save book to db if not present yet - A
+- [ ]  Catalog Resource - A
+- [ ]  Book Resource - A
+- [ ]  Customers Resource - S
+- [ ]  REST Assured sample including dependency - A
+- [ ]  Swagger - S
+- [ ]  REMOVE TEST DEPENDENCIES - A & S
+
 ### Prerequisites
 
 This project is based on a [Glassfish-Server 4.1.1.](https://javaee.github.io/glassfish/download)
