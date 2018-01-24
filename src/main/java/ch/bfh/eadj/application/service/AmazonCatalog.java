@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.xml.ws.WebServiceRef;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -33,8 +34,6 @@ public class AmazonCatalog {
         request.getItemId().add(isbn);
 //        request.setSearchIndex(SEARCH_INDEX); When IdType equals ASIN, SearchIndex cannot be present.
         request.getResponseGroup().add(MEDIUM);
-
-        //TODO productGroup
         lookup.setShared(request);
         ItemLookupResponse itemLookupResponse = this.port.itemLookup(lookup);
 
@@ -55,10 +54,10 @@ public class AmazonCatalog {
         book.setTitle(itemAttributes.getTitle());
         book.setAuthors(itemAttributes.getAuthor().toString());
         book.setBinding(BookBinding.getBinding(itemAttributes.getBinding()));
-        book.setPrice(new BigDecimal(item.getOfferSummary().getLowestNewPrice().getFormattedPrice()));
-        book.setDescription(item.getEditorialReviews().getEditorialReview().get(0).getContent()); // TODO where to find description in response?
+        book.setPrice(new BigDecimal(item.getOfferSummary().getLowestNewPrice().getAmount()).divide(new BigDecimal(100)));
+        book.setDescription(item.getEditorialReviews().getEditorialReview().get(0).getContent());
         book.setPublisher(itemAttributes.getPublisher());
-//        book.setPublicationYear(itemAttributes.getPublicationDate());  TODO extract year from date
+        book.setPublicationYear(LocalDate.parse(itemAttributes.getPublicationDate()).getYear());
         book.setImageUrl(item.getMediumImage().getURL());
         book.setNumberOfPages(itemAttributes.getNumberOfPages().intValue());
         return book;
