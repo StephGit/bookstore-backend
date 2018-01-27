@@ -5,7 +5,6 @@ import ch.bfh.eadj.application.exception.EmailAlreadyUsedException;
 import ch.bfh.eadj.application.exception.InvalidPasswordException;
 import ch.bfh.eadj.persistence.dto.CustomerInfo;
 import ch.bfh.eadj.persistence.entity.Customer;
-import org.hibernate.validator.constraints.Email;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -23,7 +22,7 @@ import static org.testng.Assert.assertEquals;
 
 public class CustomerServiceIT extends AbstractServiceIT {
 
-    private static final String CUSTOMER_SERVICE_NAME = "java:global/bookstore-1.0-SNAPSHOT/CustomerService";
+    private static final String CUSTOMER_SERVICE_NAME = "java:global/bookstore-ejb-1.0-SNAPSHOT/CustomerService";
 
     private CustomerServiceRemote customerService;
 
