@@ -1,21 +1,19 @@
 package ch.bfh.eadj.presentation;
 
-import ch.bfh.eadj.application.exception.*;
+import ch.bfh.eadj.application.exception.CustomerNotFoundException;
+import ch.bfh.eadj.application.exception.EmailAlreadyUsedException;
+import ch.bfh.eadj.application.exception.InvalidPasswordException;
 import ch.bfh.eadj.application.service.CustomerService;
 import ch.bfh.eadj.persistence.dto.CustomerInfo;
-import ch.bfh.eadj.persistence.entity.Book;
 import ch.bfh.eadj.persistence.entity.Customer;
 
-import javax.ejb.EJB;
 import javax.inject.Inject;
+import javax.resource.spi.IllegalStateException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-
 import java.util.List;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.MediaType.TEXT_HTML;
-import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
+import static javax.ws.rs.core.MediaType.*;
 
 @Path("customers")
 public class CustomerResource {
@@ -25,7 +23,6 @@ public class CustomerResource {
 
     @GET
     @Path("login")
-    @Consumes(TEXT_PLAIN)
     @Produces(TEXT_HTML)
     public Long authenticateCustomer(String email, String password) {
         try {
@@ -36,6 +33,30 @@ public class CustomerResource {
             throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }
 
+    }
+
+    @PUT
+    @Path("login")
+    @Consumes(TEXT_PLAIN)
+    @Produces(APPLICATION_JSON)
+    public Response changePassword(String email, String password) {
+        try {
+            customerService.changePassword(email, password);
+            return Response.status(Response.Status.NO_CONTENT).build();
+        } catch (CustomerNotFoundException e) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+    }
+
+    @GET
+    @Path("{nr}")
+    @Produces(APPLICATION_JSON)
+    public Customer findCustomer(@PathParam("nr") Long nr) {
+        try {
+            return customerService.findCustomer(nr);
+        } catch (CustomerNotFoundException e) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
     }
 
     @POST
@@ -56,10 +77,27 @@ public class CustomerResource {
     }
 
     @GET
-    @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
     public List<CustomerInfo> searchCustomers(@QueryParam("name") String name) {
             return customerService.searchCustomers(name);
+    }
+
+    @PUT
+    @Path("{nr}")
+    @Consumes(APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    public Response updateCustomer(@PathParam("nr") Long nr) {
+        try {
+            Customer customer = customerService.findCustomer(nr);
+            customerService.updateCustomer(customer);
+            return Response.status(Response.Status.NO_CONTENT).build();
+        } catch (CustomerNotFoundException e) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        } catch (IllegalStateException e) {
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        } catch (EmailAlreadyUsedException e) {
+            throw new WebApplicationException(Response.Status.CONFLICT);
+        }
     }
 
 }
