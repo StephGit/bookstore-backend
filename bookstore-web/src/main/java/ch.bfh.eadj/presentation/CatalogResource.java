@@ -6,6 +6,7 @@ import ch.bfh.eadj.application.service.CatalogService;
 import ch.bfh.eadj.persistence.entity.Book;
 
 import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -22,7 +23,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Path("books")
 public class CatalogResource {
 
-	@EJB
+	@Inject
 	private CatalogService catalogService;
 
 	@POST
