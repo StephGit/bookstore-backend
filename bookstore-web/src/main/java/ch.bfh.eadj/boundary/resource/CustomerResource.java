@@ -33,7 +33,7 @@ public class CustomerResource {
 
     @GET
     @Path("login")
-    @Produces(TEXT_HTML)
+    @Produces(TEXT_PLAIN)
     public Response authenticateCustomer(@HeaderParam("email") String email, @HeaderParam("password") String password) {
         try {
             Long id = customerService.authenticateCustomer(email, password);
