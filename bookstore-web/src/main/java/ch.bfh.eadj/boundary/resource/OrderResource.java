@@ -1,4 +1,4 @@
-package ch.bfh.eadj.boundary;
+package ch.bfh.eadj.boundary.resource;
 
 import ch.bfh.eadj.application.exception.*;
 import ch.bfh.eadj.application.service.CustomerService;

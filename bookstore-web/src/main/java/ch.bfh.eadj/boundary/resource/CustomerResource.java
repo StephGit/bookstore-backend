@@ -1,9 +1,10 @@
-package ch.bfh.eadj.boundary;
+package ch.bfh.eadj.boundary.resource;
 
 import ch.bfh.eadj.application.exception.CustomerNotFoundException;
 import ch.bfh.eadj.application.exception.EmailAlreadyUsedException;
 import ch.bfh.eadj.application.exception.InvalidPasswordException;
 import ch.bfh.eadj.application.service.CustomerService;
+import ch.bfh.eadj.boundary.dto.CustomerDTO;
 import ch.bfh.eadj.persistence.dto.CustomerInfo;
 import ch.bfh.eadj.persistence.entity.Customer;
 
@@ -63,7 +64,7 @@ public class CustomerResource {
     public Response findCustomer(@PathParam("nr") Long nr) {
         try {
             Customer customer = customerService.findCustomer(nr);
-            return Response.status(Response.Status.OK).entity(customer).build();
+            return Response.status(Response.Status.OK).entity(convertCustomer(customer)).build();
         } catch (CustomerNotFoundException e) {
             throw new WebApplicationException(NO_CUSTOMER_WITH_ID, Response.Status.NOT_FOUND);
         }
@@ -95,12 +96,14 @@ public class CustomerResource {
     @Path("{nr}")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response updateCustomer(@PathParam("nr") Long nr, Customer customer) {
+    public Response updateCustomer(@PathParam("nr") Long nr, CustomerDTO customerDTO) {
 
-        if ((customer.getNr() != null) && (!customer.getNr().equals(nr))) {
+        if ((customerDTO.getNr() == null) || (!customerDTO.getNr().equals(nr))) {
             throw new WebApplicationException(NUMBER_NOT_MATCHING_PARAM, Response.Status.BAD_REQUEST);
         } else {
             try {
+                Customer customer = customerService.findCustomer(nr);
+                applyUpdates(customer, customerDTO);
                 customerService.updateCustomer(customer);
                 return Response.status(Response.Status.NO_CONTENT).entity(UPDATE_SUCCESSFUL).build();
             } catch (CustomerNotFoundException e) {
@@ -109,6 +112,18 @@ public class CustomerResource {
                 throw new WebApplicationException(EMAIL_TO_CHANGE_ALREADY_USED, Response.Status.CONFLICT);
             }
         }
+    }
+
+    private void applyUpdates(Customer customer, CustomerDTO customerDTO) {
+        customer.setEmail(customerDTO.getEmail());
+        customer.setFirstName(customerDTO.getFirstName());
+        customer.setLastName(customerDTO.getLastName());
+        customer.setAddress(customerDTO.getAddress());
+        customer.setCreditCard(customerDTO.getCreditCard());
+    }
+
+    private CustomerDTO convertCustomer(Customer customer) {
+        return new CustomerDTO(customer.getNr(), customer.getFirstName(), customer.getLastName(), customer.getEmail(), customer.getCreditCard(), customer.getAddress());
     }
 
 }
