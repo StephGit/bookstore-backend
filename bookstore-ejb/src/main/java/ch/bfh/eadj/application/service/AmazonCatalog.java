@@ -10,7 +10,6 @@ import javax.ejb.Stateless;
 import javax.xml.ws.WebServiceRef;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -57,7 +56,9 @@ public class AmazonCatalog {
         book.setPrice(new BigDecimal(item.getOfferSummary().getLowestNewPrice().getAmount()).divide(new BigDecimal(100)));
         book.setDescription(item.getEditorialReviews().getEditorialReview().get(0).getContent());
         book.setPublisher(itemAttributes.getPublisher());
-        book.setPublicationYear(LocalDate.parse(itemAttributes.getPublicationDate()).getYear());
+
+        //TODO test --- doesnt work
+        //book.setPublicationYear(LocalDate.parse(itemAttributes.getPublicationDate()).getYear());
         book.setImageUrl(item.getMediumImage().getURL());
         book.setNumberOfPages(itemAttributes.getNumberOfPages().intValue());
         return book;
