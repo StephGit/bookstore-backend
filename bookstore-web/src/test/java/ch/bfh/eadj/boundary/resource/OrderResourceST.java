@@ -19,9 +19,7 @@ import java.util.Random;
 
 import static com.jayway.restassured.RestAssured.given;
 import static com.jayway.restassured.RestAssured.when;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 
 public class OrderResourceST {
 
@@ -78,37 +76,32 @@ public class OrderResourceST {
                 .body("nr", equalTo(orderId))
                 .body("items", hasSize(1))
                 .body("items[0].book.isbn", equalTo(isbn))
-                .body("customer.nr", equalTo(customerId))
-                .body("status",equalTo(OrderStatus.SHIPPED.toString()));
-
-        //update
-
-
-        //find
+                .body("customer.nr", equalTo((int)customerId))
+                .body("status",not(equalTo((OrderStatus.ACCEPTED.toString()))))
+                .body("status",not(equalTo((OrderStatus.CANCELED.toString()))));
 
 
         //delete
         given().
-                when().delete("/" + 1)
+                when().delete("orders/" + orderId)
                 .then()
-                .statusCode(Response.Status.OK.getStatusCode());
+                .statusCode(Response.Status.NO_CONTENT.getStatusCode());
 
 
         //find
-        String keywords = "Sapiens: A Brief History of Humankind";
         given().
-                when().get("/orders?keywords=" + keywords)
+                when().get("orders/" + orderId)
                 .then()
                 .statusCode(Response.Status.OK.getStatusCode())
-                .body("", hasSize(greaterThan(2)));
+                .body("nr", equalTo(orderId))
+                .body("items", hasSize(1))
+                .body("items[0].book.isbn", equalTo(isbn))
+                .body("customer.nr", equalTo((int)customerId))
+                .body("status",equalTo((OrderStatus.CANCELED.toString())));
 
     }
 
     private long createCustomer() {
-
-
-        //TODO mr fischli has a number in his request body...?!
-
         Customer c = new Customer();
         c.setEmail("zeus" + Integer.toString(new Random().nextInt(10000)) + "@gmail.com");
         c.setFirstName("Sven");
