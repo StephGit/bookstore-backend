@@ -13,7 +13,9 @@ import javax.naming.InitialContext;
 import javax.resource.spi.IllegalStateException;
 
 import java.util.List;
+import java.util.Random;
 
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 
@@ -116,6 +118,9 @@ public class CustomerServiceIT extends AbstractServiceIT {
     public void shouldSearchCustomersByFullName() throws EmailAlreadyUsedException {
         //given
         customer = createCustomer();
+        customer.setEmail("reto" + Integer.toString(new Random().nextInt(10000)) + "@krebs.ch");
+        customer.setFirstName("Reto");
+        customer.setLastName("Krebs");
         customerService.registerCustomer(customer, password);
 
         //when
@@ -123,13 +128,15 @@ public class CustomerServiceIT extends AbstractServiceIT {
 
         //then
         assertFalse(result.isEmpty());
-        assertEquals(result.get(0).getEmail(), customer.getEmail());
+        assertTrue(result.get(0).getEmail().contains("@krebs.ch"));
     }
 
     @Test
     public void shouldSearchCustomersByNamePart() throws EmailAlreadyUsedException {
         //given
         customer = createCustomer();
+        customer.setLastName("Bollinger");
+        customer.setEmail("bolli" + Integer.toString(new Random().nextInt(10000)) + "@zueri.ch");
         customerService.registerCustomer(customer, password);
 
         //when
@@ -137,7 +144,7 @@ public class CustomerServiceIT extends AbstractServiceIT {
 
         //then
         assertFalse(result.isEmpty());
-        assertEquals(result.get(0).getEmail(), customer.getEmail());
+        assertTrue(result.get(0).getEmail().contains("bolli"));
     }
 
     @Test
@@ -153,13 +160,14 @@ public class CustomerServiceIT extends AbstractServiceIT {
     public void shouldUpdateCustomer() throws CustomerNotFoundException, EmailAlreadyUsedException, IllegalStateException {
         //given
         customer = createCustomer();
-        customerService.registerCustomer(customer, password);
+        userId = customerService.registerCustomer(customer, password);
+        customer = customerService.findCustomer(userId);
         customer.setEmail("new@mail.com");
         customer.setFirstName("Anton");
 
         //when
         customerService.updateCustomer(customer);
-        Customer updatedCustomer = customerService.findCustomer(customer.getNr());
+        Customer updatedCustomer = customerService.findCustomer(userId);
 
         //then
         assertEquals(updatedCustomer.getNr(), customer.getNr());

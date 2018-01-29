@@ -20,7 +20,7 @@ JavaEE 7, Glassfish, Angular, REST
 - [x]  Customers Resource - S
 - [x]  REST Assured sample including dependency - A
 - [ ]  Swagger - S
-- [ ]  REMOVE TEST DEPENDENCIES - A & S
+- [x]  REMOVE TEST DEPENDENCIES - A & S
 
 ### Prerequisites
 
