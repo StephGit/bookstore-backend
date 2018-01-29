@@ -13,8 +13,8 @@ JavaEE 7, Glassfish, Angular, REST
 
 ### TODO
 - [ ]  Correct error handling (More than one book with same ISBN --> Fischlis sample?) - S
-- [ ]  Handle empty results -> Tests - S
-- [ ]  When placing an order -> save book to db if not present yet - A
+- [?]  Handle empty results -> Tests - S
+- [x]  When placing an order -> save book to db if not present yet - A
 - [x]  Catalog Resource - A
 - [x]  Order Resource - A
 - [x]  Customers Resource - S
