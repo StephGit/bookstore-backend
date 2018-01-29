@@ -48,11 +48,13 @@
                         <ejbModule>
                             <groupId>ch.bfh.eadj</groupId>
                             <artifactId>bookstore-ejb</artifactId>
+                            <unpack>true</unpack>
                         </ejbModule>
                         <webModule>
                             <groupId>ch.bfh.eadj</groupId>
                             <artifactId>bookstore-web</artifactId>
                             <contextRoot>/bookstore</contextRoot>
+                            <unpack>true</unpack>
                         </webModule>
                     </modules>
                     <fileNameMapping>no-version</fileNameMapping>

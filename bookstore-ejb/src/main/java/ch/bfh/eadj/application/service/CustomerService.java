@@ -91,7 +91,7 @@ public class CustomerService implements CustomerServiceRemote {
     }
 
     @Override
-    public void updateCustomer(Customer customer) throws CustomerNotFoundException, EmailAlreadyUsedException, IllegalStateException {
+    public void updateCustomer(Customer customer) throws CustomerNotFoundException, EmailAlreadyUsedException {
 
         Customer customerDb = customerRepository.find(customer.getNr());
 
@@ -112,11 +112,9 @@ public class CustomerService implements CustomerServiceRemote {
             Login login = it.next();
             loginRepository.edit(login);
             customerRepository.edit(customer);
-        } else {
-            throw new IllegalStateException("Failed to update login and customer");
+//        } else {
+//            throw new IllegalStateException("Failed to update login and customer. No unique login found for customer.");
         }
-
-
     }
 
     @Override

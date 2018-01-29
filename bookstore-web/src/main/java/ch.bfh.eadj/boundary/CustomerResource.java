@@ -8,7 +8,6 @@ import ch.bfh.eadj.persistence.dto.CustomerInfo;
 import ch.bfh.eadj.persistence.entity.Customer;
 
 import javax.inject.Inject;
-import javax.resource.spi.IllegalStateException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -18,21 +17,31 @@ import static javax.ws.rs.core.MediaType.*;
 @Path("customers")
 public class CustomerResource {
 
+    public static final String NO_CUSTOMER_WITH_EMAIL = "no customer with the specified email address exists";
+    public static final String INVALID_PASSWORD = "the password is invalid";
+    public static final String NO_CUSTOMER_WITH_ID = "no customer with the specified number exists";
+    public static final String NO_DATA_FOR_CUSTOMER = "the number of the customer data is not null";
+    public static final String EMAIL_ALREADY_USED = "the email address is already used by another customer";
+    public static final String CHANGE_SUCCESSFUL = "the change was successful";
+    public static final String NUMBER_NOT_MATCHING_PARAM = "the number of the customer data does not match the path parameter";
+    public static final String UPDATE_SUCCESSFUL = "the update was successful";
+    public static final String EMAIL_TO_CHANGE_ALREADY_USED = "the email address to be changed is already used by another customer";
+
     @Inject
     CustomerService customerService;
 
     @GET
     @Path("login")
     @Produces(TEXT_HTML)
-    public Long authenticateCustomer(@HeaderParam("email") String email, @HeaderParam("password") String password) {
+    public Response authenticateCustomer(@HeaderParam("email") String email, @HeaderParam("password") String password) {
         try {
-            return customerService.authenticateCustomer(email, password);
+            Long id = customerService.authenticateCustomer(email, password);
+            return Response.status(Response.Status.OK).entity(id).build();
         } catch (CustomerNotFoundException e) {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
+            throw new WebApplicationException(NO_CUSTOMER_WITH_EMAIL, Response.Status.NOT_FOUND);
         } catch (InvalidPasswordException e) {
-            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+            throw new WebApplicationException(INVALID_PASSWORD, Response.Status.UNAUTHORIZED);
         }
-
     }
 
     @PUT
@@ -42,37 +51,37 @@ public class CustomerResource {
     public Response changePassword(@HeaderParam("email") String email, @HeaderParam("password") String password) {
         try {
             customerService.changePassword(email, password);
-            return Response.status(Response.Status.NO_CONTENT).build();
+            return Response.status(Response.Status.NO_CONTENT).entity(CHANGE_SUCCESSFUL).build();
         } catch (CustomerNotFoundException e) {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
+            throw new WebApplicationException(NO_CUSTOMER_WITH_EMAIL, Response.Status.NOT_FOUND);
         }
     }
 
     @GET
     @Path("{nr}")
     @Produces(APPLICATION_JSON)
-    public Customer findCustomer(@PathParam("nr") Long nr) {
+    public Response findCustomer(@PathParam("nr") Long nr) {
         try {
-            return customerService.findCustomer(nr);
+            Customer customer = customerService.findCustomer(nr);
+            return Response.status(Response.Status.OK).entity(customer).build();
         } catch (CustomerNotFoundException e) {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
+            throw new WebApplicationException(NO_CUSTOMER_WITH_ID, Response.Status.NOT_FOUND);
         }
     }
 
     @POST
     @Consumes(APPLICATION_JSON)
     @Produces(TEXT_PLAIN)
-    public Response registerCustomer(Customer customer,@HeaderParam("password") String password) {
-        //TODO check if incoming data is vaild
+    public Response registerCustomer(Customer customer, @HeaderParam("password") String password) {
         try {
             Long customerId = customerService.registerCustomer(customer, password);
             if (customerId != null) {
                 return Response.status(Response.Status.CREATED).entity(customerId).build();
             } else {
-                return Response.status(Response.Status.BAD_REQUEST).build();
+                throw new WebApplicationException(NO_DATA_FOR_CUSTOMER, Response.Status.BAD_REQUEST);
             }
         } catch (EmailAlreadyUsedException e) {
-            throw new WebApplicationException(Response.Status.CONFLICT);
+            throw new WebApplicationException(EMAIL_ALREADY_USED, Response.Status.CONFLICT);
         }
     }
 
@@ -86,17 +95,19 @@ public class CustomerResource {
     @Path("{nr}")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response updateCustomer(@PathParam("nr") Long nr) {
-        try {
-            Customer customer = customerService.findCustomer(nr);
-            customerService.updateCustomer(customer);
-            return Response.status(Response.Status.NO_CONTENT).build();
-        } catch (CustomerNotFoundException e) {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
-        } catch (IllegalStateException e) {
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
-        } catch (EmailAlreadyUsedException e) {
-            throw new WebApplicationException(Response.Status.CONFLICT);
+    public Response updateCustomer(@PathParam("nr") Long nr, Customer customer) {
+
+        if ((customer.getNr() != null) && (!customer.getNr().equals(nr))) {
+            throw new WebApplicationException(NUMBER_NOT_MATCHING_PARAM, Response.Status.BAD_REQUEST);
+        } else {
+            try {
+                customerService.updateCustomer(customer);
+                return Response.status(Response.Status.NO_CONTENT).entity(UPDATE_SUCCESSFUL).build();
+            } catch (CustomerNotFoundException e) {
+                throw new WebApplicationException(NO_CUSTOMER_WITH_ID, Response.Status.NOT_FOUND);
+            } catch (EmailAlreadyUsedException e) {
+                throw new WebApplicationException(EMAIL_TO_CHANGE_ALREADY_USED, Response.Status.CONFLICT);
+            }
         }
     }
 
