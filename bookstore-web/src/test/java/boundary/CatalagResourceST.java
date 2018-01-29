@@ -64,6 +64,18 @@ public class CatalagResourceST {
 
     }
 
+
+    @Test
+    public void shoudFindNoBookByKeywords() {
+
+        String keywords = "qewqwweqwe qeqweqw qweqweqweqweq";
+        when().get("?keywords="+keywords)
+                .then()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .body("", hasSize(0));
+
+    }
+
     @Test
     public void shouldAddBook() {
 
@@ -88,6 +100,39 @@ public class CatalagResourceST {
                 when().post()
                 .then()
                 .statusCode(Response.Status.CONFLICT.getStatusCode());
+    }
+
+
+    @Test
+    public void shouldUpdateBook() {
+
+        String isbn = Integer.toString(new Random().nextInt(10000));
+
+        Book b = new Book();
+        b.setIsbn(isbn);
+        b.setTitle("sapiens");
+        b.setPrice(BigDecimal.ONE);
+
+        //create
+        given().
+                contentType("application/json")
+                .body(b)
+                .when().post()
+                .then()
+                .statusCode(Response.Status.CREATED.getStatusCode());
+
+
+
+        //update
+        b.setPrice(new BigDecimal("999.99"));
+        given().
+                contentType("application/json").
+                body(b).
+                when().put("/"+isbn)
+                .then()
+                .statusCode(Response.Status.NO_CONTENT.getStatusCode());
+
+
     }
 
 
