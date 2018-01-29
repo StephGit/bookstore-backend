@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.Random;
 
 import static com.jayway.restassured.RestAssured.given;
-import static com.jayway.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.*;
 
 public class OrderResourceST {
@@ -32,18 +31,7 @@ public class OrderResourceST {
     }
 
     @Test
-    public void shouldSearchOrder() {
-
-        when().get("orders?customerNr=" + 1 + "&year=" + 2018)
-                .then()
-                .statusCode(Response.Status.OK.getStatusCode())
-                .body("", hasSize(0));
-
-    }
-
-
-    @Test
-    public void shouldPlaceOrder() {
+    public void shouldPlaceOrderAndDeleteIt() {
 
 
         long customerId = createCustomer();
@@ -90,14 +78,14 @@ public class OrderResourceST {
 
         //find
         given().
-                when().get("orders/" + orderId)
+                when().get("orders?customerNr="+customerId+"&year="+2018)
                 .then()
                 .statusCode(Response.Status.OK.getStatusCode())
-                .body("nr", equalTo(orderId))
-                .body("items", hasSize(1))
-                .body("items[0].book.isbn", equalTo(isbn))
-                .body("customer.nr", equalTo((int)customerId))
-                .body("status",equalTo((OrderStatus.CANCELED.toString())));
+                .body("", hasSize(1))
+                .body("[0].nr", equalTo(orderId))
+                .body("[0].amount", notNullValue())
+                .body("[0].date", notNullValue())
+                .body("[0].status",equalTo((OrderStatus.CANCELED.toString())));
 
     }
 
