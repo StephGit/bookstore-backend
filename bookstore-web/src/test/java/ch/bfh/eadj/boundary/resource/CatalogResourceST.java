@@ -1,4 +1,4 @@
-package boundary;
+package ch.bfh.eadj.boundary.resource;
 
 import ch.bfh.eadj.persistence.entity.Book;
 import ch.bfh.eadj.persistence.enumeration.BookBinding;
@@ -14,7 +14,7 @@ import static com.jayway.restassured.RestAssured.given;
 import static com.jayway.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.*;
 
-public class CatalagResourceST {
+public class CatalogResourceST {
 
 
     @BeforeClass

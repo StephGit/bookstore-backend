@@ -24,7 +24,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertFalse;
 
 
-public class CustomerResourceTest {
+public class CustomerResourceST {
 
     private String password = "asdfkjl";
 
