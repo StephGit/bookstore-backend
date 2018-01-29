@@ -22,7 +22,7 @@ import static org.testng.Assert.assertEquals;
 
 public class CustomerServiceIT extends AbstractServiceIT {
 
-    private static final String CUSTOMER_SERVICE_NAME = "java:global/bookstore-ejb-1.0-SNAPSHOT/CustomerService";
+    private static final String CUSTOMER_SERVICE_NAME = "java:global/bookstore-app-1.0-SNAPSHOT/bookstore/CustomerService!ch.bfh.eadj.application.service.CustomerServiceRemote";
 
     private CustomerServiceRemote customerService;
 

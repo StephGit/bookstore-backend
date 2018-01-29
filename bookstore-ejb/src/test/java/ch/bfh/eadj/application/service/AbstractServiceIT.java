@@ -5,6 +5,7 @@ import ch.bfh.eadj.persistence.enumeration.Country;
 import ch.bfh.eadj.persistence.enumeration.CreditCardType;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class AbstractServiceIT {
     private CreditCard createCreditCard() {
         CreditCard creditCard = new CreditCard();
         creditCard.setExpirationMonth(8);
-        creditCard.setExpirationYear(2019);
+        creditCard.setExpirationYear(LocalDate.now().getYear()+1);
         creditCard.setNumber("2322322212312111");
         creditCard.setType(CreditCardType.MASTERCARD);
         return creditCard;
