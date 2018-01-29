@@ -11,6 +11,7 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.jms.*;
+import java.lang.IllegalStateException;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -88,7 +89,7 @@ public class OrderService implements OrderServiceRemote {
     }
 
     @Override
-    public Order placeOrder(Customer customer, List<OrderItem> items) throws PaymentFailedException, OrderProcessingException, BookNotFoundException, BookAlreadyExistsException {
+    public Order placeOrder(Customer customer, List<OrderItem> items) throws PaymentFailedException, OrderProcessingException, BookNotFoundException {
         storeBooksIfNotPresent(items);
         Order order = new Order();
         order.setCustomer(customer);
@@ -103,13 +104,17 @@ public class OrderService implements OrderServiceRemote {
         return order;
     }
 
-    private void storeBooksIfNotPresent(List<OrderItem> items) throws BookNotFoundException, BookAlreadyExistsException {
+    private void storeBooksIfNotPresent(List<OrderItem> items) throws BookNotFoundException {
         for (OrderItem item : items) {
             Book book = item.getBook();
             if (book != null) {
                 Book byIsbn = catalogService.findBookFromDb(book.getIsbn());
                 if (byIsbn == null) {
-                    catalogService.addBook(book);
+                    try {
+                        catalogService.addBook(book);
+                    } catch (BookAlreadyExistsException e) {
+                        throw new IllegalStateException("book alread in db.. should not happen");
+                    }
                 }
             }
         }

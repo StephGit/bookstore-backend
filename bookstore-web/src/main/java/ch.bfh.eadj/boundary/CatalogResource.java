@@ -44,7 +44,6 @@ public class CatalogResource {
     }
 
     @GET
-    @Produces(APPLICATION_JSON)
     public List<BookInfo> searchBooks(@QueryParam("keywords") String keywords) {
         return catalogService.searchBooks(keywords);
 
@@ -52,7 +51,6 @@ public class CatalogResource {
 
     @PUT
     @Path("{isbn}")
-    @Produces(APPLICATION_JSON)
     public Response updateBook(@PathParam("isbn") String isbn, Book book) {
         validatePathAndBodyIsbn(isbn, book);
 
