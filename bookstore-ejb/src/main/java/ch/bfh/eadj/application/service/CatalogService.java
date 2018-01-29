@@ -21,6 +21,7 @@ public class CatalogService implements CatalogServiceRemote{
     BookRepository bookRepo;
 
     @Inject
+    private
     AmazonCatalog amazonCatalog;
 
     @Override
@@ -32,12 +33,13 @@ public class CatalogService implements CatalogServiceRemote{
         return bookByIsbn;
     }
 
-    public Book findBookFromDb(String isbn) throws BookNotFoundException {
+    public Book findBookFromDb(String isbn) {
         List<Book> bookByIsbn = bookRepo.findByIsbn(isbn);
-        if (bookByIsbn == null || bookByIsbn.isEmpty()) {
-            throw new BookNotFoundException();
+        if (bookByIsbn != null && !bookByIsbn.isEmpty()) {
+            return bookByIsbn.get(0);
+        } else {
+            return null;
         }
-        return bookByIsbn.get(0);
     }
 
 
@@ -56,22 +58,9 @@ public class CatalogService implements CatalogServiceRemote{
         bookRepo.deleteBook(book.getNr());
     }
 
-    //TODO remove
-    /*@Override
-    public List<BookInfo> searchBooks(String keywords) {
-        if (keywords != null && keywords.length() > 0) {
-            String caseInsensitive = keywords.toLowerCase();
-            String[] splited = caseInsensitive.split("\\s+");
-            return bookRepo.findByKeywords(Arrays.asList(splited));
-        } else {
-            return Collections.emptyList();
-        }
-    }*/
-
     @Override
     public List<BookInfo> searchBooks(String keywords) {
         if (keywords != null && keywords.length() > 0) {
-            String caseInsensitive = keywords.toLowerCase(); //TODO still needed?
             return amazonCatalog.searchBooks(keywords);
         } else {
             return Collections.emptyList();

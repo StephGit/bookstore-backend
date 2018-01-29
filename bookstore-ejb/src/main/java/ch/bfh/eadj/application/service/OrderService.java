@@ -13,7 +13,6 @@ import javax.inject.Inject;
 import javax.jms.*;
 import java.lang.IllegalStateException;
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
@@ -35,10 +34,10 @@ public class OrderService implements OrderServiceRemote {
     @JMSConnectionFactory(CONNECTION_FACTORY_NAME)
     JMSContext jmsContext;
 
-    @Resource(lookup=QUEUE_NAME)
+    @Resource(lookup = QUEUE_NAME)
     private Queue orderQueue;
 
-    @Resource(name="paymentLimit")
+    @Resource(name = "paymentLimit")
     private
     Long PAYMENT_LIMIT;
 
@@ -60,8 +59,8 @@ public class OrderService implements OrderServiceRemote {
 
     private void calculateOrderAmount(Order order) {
         BigDecimal orderAmount = new BigDecimal(0);
-        for (OrderItem orderItem: order.getItems()) {
-            orderAmount = orderAmount.add(orderItem.getBook().getPrice().multiply( new BigDecimal(orderItem.getQuantity())));
+        for (OrderItem orderItem : order.getItems()) {
+            orderAmount = orderAmount.add(orderItem.getBook().getPrice().multiply(new BigDecimal(orderItem.getQuantity())));
         }
         order.setAmount(orderAmount);
     }
@@ -94,7 +93,7 @@ public class OrderService implements OrderServiceRemote {
         Order order = new Order();
         order.setCustomer(customer);
         order.setItems(new HashSet<>(items));
-        order.setDate(Date.valueOf(LocalDate.now()));
+        order.setDate(new java.util.Date());
         copyCustomerInfos(customer, order);
         calculateOrderAmount(order);
         validateOrderPlacement(order);
@@ -104,21 +103,22 @@ public class OrderService implements OrderServiceRemote {
         return order;
     }
 
-
-    //TODO how is this supposed to work? the order references a non-existent customer or book?
     private void storeBooksIfNotPresent(List<OrderItem> items) throws BookNotFoundException {
         for (OrderItem item : items) {
             Book book = item.getBook();
             if (book != null) {
-                try {
-                    catalogService.findBookFromDb(book.getIsbn());
-                } catch (BookNotFoundException e) {
+                Book bookFromDb = catalogService.findBookFromDb(book.getIsbn());
+                if (bookFromDb == null) {
                     try {
                         Book bookFromAmazon = catalogService.findBook(book.getIsbn());
                         catalogService.addBook(bookFromAmazon);
+                        item.setBook(bookFromAmazon);
                     } catch (BookAlreadyExistsException e1) {
                         throw new IllegalStateException("should not happen.... book is not supposed to be in DB yet");
                     }
+
+                } else {
+                    item.setBook(bookFromDb);
                 }
             }
         }
@@ -143,7 +143,7 @@ public class OrderService implements OrderServiceRemote {
 
     @Override
     public List<OrderInfo> searchOrders(Customer customer, Integer year) {
-       return orderRepo.findByCustomerAndYear(customer.getNr(), year);
+        return orderRepo.findByCustomerAndYear(customer.getNr(), year);
     }
 
     private void validateOrderPlacement(Order order) throws PaymentFailedException {
@@ -157,7 +157,7 @@ public class OrderService implements OrderServiceRemote {
             throw new PaymentFailedException(PaymentFailedException.Code.PAYMENT_LIMIT_EXCEEDED);
         }
 
-        if (creditCard.getNumber().length()!=16) {
+        if (creditCard.getNumber().length() != 16) {
             throw new PaymentFailedException(PaymentFailedException.Code.INVALID_CREDIT_CARD);
         }
     }

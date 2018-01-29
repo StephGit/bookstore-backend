@@ -71,7 +71,7 @@ public class OrderProcessor implements MessageListener {
         Order order = orderRepository.find(orderNr);
         order.setStatus(OrderStatus.PROCESSING);
         orderRepository.edit(order);
-        mailService.sendProccessStartedMail(order);
+//        mailService.sendProccessStartedMail(order);
         Date expiration = new Date();
         expiration.setTime(expiration.getTime() + timePeriod);
         timerService.createSingleActionTimer(expiration, new TimerConfig(order, true));
@@ -84,7 +84,7 @@ public class OrderProcessor implements MessageListener {
             order = orderRepository.find(order.getNr());
             order.setStatus(OrderStatus.SHIPPED);
             orderRepository.edit(order);
-            mailService.sendOrderShippedMail(order);
+//            mailService.sendOrderShippedMail(order);
         } else {
             throw new IllegalStateException("Order Status '" + order.getStatus()  +
                     "' kann nicht verarbeitet werden.");

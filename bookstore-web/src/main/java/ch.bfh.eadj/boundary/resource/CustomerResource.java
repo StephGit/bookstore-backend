@@ -91,6 +91,8 @@ public class CustomerResource {
     @GET
     @Produces(APPLICATION_JSON)
     public List<CustomerInfo> searchCustomers(@QueryParam("name") String name) {
+            //TODO how to deal with multiple words?
+            // such a request  would probably look like this http://localhost:8080/bookstore/api/customers?name=Hotz+Sven+Girod
             return customerService.searchCustomers(name);
     }
 

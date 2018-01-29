@@ -32,7 +32,7 @@ public class OrderResource {
     private CustomerService customerService;
 
     @POST
-    public Response placeOrder(OrderDTO orderDTO) {
+    public Order placeOrder(OrderDTO orderDTO) {
 
 
         Customer c;
@@ -45,7 +45,8 @@ public class OrderResource {
         List<OrderItem> orderItems = extractOrderItems(orderDTO);
 
         try {
-            orderService.placeOrder(c, orderItems);
+            return orderService.placeOrder(c, orderItems);
+
         } catch (PaymentFailedException e) {
             throw new WebApplicationException(Status.PAYMENT_REQUIRED);
         } catch (OrderProcessingException e) {
@@ -53,7 +54,6 @@ public class OrderResource {
         } catch (BookNotFoundException e) {
             throw new WebApplicationException(Status.NOT_FOUND);
         }
-        return Response.status(Status.CREATED).build();
 
     }
 

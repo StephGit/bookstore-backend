@@ -7,6 +7,7 @@ import ch.bfh.eadj.persistence.entity.CreditCard;
 import ch.bfh.eadj.persistence.entity.Customer;
 import ch.bfh.eadj.persistence.enumeration.Country;
 import ch.bfh.eadj.persistence.enumeration.CreditCardType;
+import ch.bfh.eadj.persistence.enumeration.OrderStatus;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Header;
 import org.junit.BeforeClass;
@@ -18,6 +19,7 @@ import java.util.Random;
 
 import static com.jayway.restassured.RestAssured.given;
 import static com.jayway.restassured.RestAssured.when;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
 
@@ -34,7 +36,7 @@ public class OrderResourceST {
     @Test
     public void shouldSearchOrder() {
 
-        when().get("orders?customerNr="+1+"&year="+2018)
+        when().get("orders?customerNr=" + 1 + "&year=" + 2018)
                 .then()
                 .statusCode(Response.Status.OK.getStatusCode())
                 .body("", hasSize(0));
@@ -51,27 +53,35 @@ public class OrderResourceST {
         OrderDTO b = new OrderDTO();
         b.setCustomerNr(customerId);
         OrderItemDTO item = new OrderItemDTO();
-        item.setIsbn("1416902449");
+        String isbn = "1416902449";
+        item.setIsbn(isbn);
         item.setQuantity(1);
         b.setItems(Arrays.asList(item));
 
         //create
-        given().
+        com.jayway.restassured.response.Response response = given().
                 contentType("application/json")
                 .body(b)
                 .when().post("/orders")
                 .then()
-                .statusCode(Response.Status.CREATED.getStatusCode());
+                .statusCode(Response.Status.OK.getStatusCode()).extract().response();
+
+
+        Integer orderId = response.jsonPath().get("nr");
 
 
         //find
         given().
-        when().get("/"+1)
+                when().get("orders/" + orderId)
                 .then()
-                .statusCode(Response.Status.OK.getStatusCode());
+                .statusCode(Response.Status.OK.getStatusCode())
+                .body("nr", equalTo(orderId))
+                .body("items", hasSize(1))
+                .body("items[0].book.isbn", equalTo(isbn))
+                .body("customer.nr", equalTo(customerId))
+                .body("status",equalTo(OrderStatus.SHIPPED.toString()));
 
         //update
-
 
 
         //find
@@ -79,7 +89,7 @@ public class OrderResourceST {
 
         //delete
         given().
-                when().delete("/"+1)
+                when().delete("/" + 1)
                 .then()
                 .statusCode(Response.Status.OK.getStatusCode());
 
@@ -87,7 +97,7 @@ public class OrderResourceST {
         //find
         String keywords = "Sapiens: A Brief History of Humankind";
         given().
-                when().get("/orders?keywords="+keywords)
+                when().get("/orders?keywords=" + keywords)
                 .then()
                 .statusCode(Response.Status.OK.getStatusCode())
                 .body("", hasSize(greaterThan(2)));
@@ -100,7 +110,7 @@ public class OrderResourceST {
         //TODO mr fischli has a number in his request body...?!
 
         Customer c = new Customer();
-        c.setEmail("zeus"+Integer.toString(new Random().nextInt(10000))+"@gmail.com");
+        c.setEmail("zeus" + Integer.toString(new Random().nextInt(10000)) + "@gmail.com");
         c.setFirstName("Sven");
         c.setLastName("Hotz");
 
@@ -115,7 +125,7 @@ public class OrderResourceST {
         creditCard.setExpirationYear(2019);
         creditCard.setExpirationMonth(12);
         creditCard.setType(CreditCardType.MASTERCARD);
-        creditCard.setNumber("1234 5622 2222 2222");
+        creditCard.setNumber("1234562222222222");
 
         c.setCreditCard(creditCard);
 
@@ -131,9 +141,6 @@ public class OrderResourceST {
         return Long.parseLong(validatableResponse.getBody().asString());
 
     }
-
-
-
 
 
 }

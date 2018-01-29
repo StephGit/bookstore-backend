@@ -45,7 +45,6 @@ public class AmazonCatalog {
     private Book extractResult(List<Items> items) {
 
         //TODO wenn mehrere bücher zurück kommen das erst beste mit der ISBN --> siehe fischli testcase
-
         Item item = items.get(0).getItem().get(0);
         ItemAttributes itemAttributes = item.getItemAttributes();
         Book book = new Book();
@@ -56,7 +55,7 @@ public class AmazonCatalog {
         book.setPrice(new BigDecimal(item.getOfferSummary().getLowestNewPrice().getAmount()).divide(new BigDecimal(100)));
 
         //TODO to long for length 255
-        //        book.setDescription(item.getEditorialReviews().getEditorialReview().get(0).getContent());
+        //book.setDescription(item.getEditorialReviews().getEditorialReview().get(0).getContent());
         book.setPublisher(itemAttributes.getPublisher());
 
         //TODO test --- doesnt work
