@@ -1,3 +1,5 @@
 .idea
-bookstore.iml
+bookstore-app.iml
+bookstore-ejb.iml
+bookstore-web.iml
 target

@@ -16,7 +16,7 @@ JavaEE 7, Glassfish, Angular, REST
 - [ ]  Handle empty results -> Tests - S
 - [ ]  When placing an order -> save book to db if not present yet - A
 - [ ]  Catalog Resource - A
-- [ ]  Book Resource - A
+- [ ]  Order Resource - A
 - [x]  Customers Resource - S
 - [ ]  REST Assured sample including dependency - A
 - [ ]  Swagger - S
