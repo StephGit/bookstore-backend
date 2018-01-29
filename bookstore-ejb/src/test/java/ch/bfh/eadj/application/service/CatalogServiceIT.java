@@ -21,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 
 public class CatalogServiceIT extends AbstractServiceIT {
 
-    private static final String CATALOG_SERVICE_NAME = "java:global/bookstore-ejb-1.0-SNAPSHOT/CatalogService!ch.bfh.eadj.application.service.CatalogServiceRemote";
+    private static final String CATALOG_SERVICE_NAME = "java:global/bookstore-app-1.0-SNAPSHOT/bookstore/CatalogService!ch.bfh.eadj.application.service.CatalogServiceRemote";
 
     private static CatalogServiceRemote catalogService;
     private Book book;

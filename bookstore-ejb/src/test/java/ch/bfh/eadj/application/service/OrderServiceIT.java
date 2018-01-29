@@ -22,9 +22,9 @@ import static org.testng.Assert.*;
 
 public class OrderServiceIT extends AbstractServiceIT {
 
-    private static final String ORDER_SERVICE_NAME = "java:global/bookstore-ejb-1.0-SNAPSHOT/OrderService";
-    private static final String CATALOG_SERVICE_NAME = "java:global/bookstore-ejb-1.0-SNAPSHOT/CatalogService!ch.bfh.eadj.application.service.CatalogServiceRemote";
-    private static final String CUSTOMER_SERVICE_NAME = "java:global/bookstore-ejb-1.0-SNAPSHOT/CustomerService";
+    private static final String ORDER_SERVICE_NAME = "java:global/bookstore-app-1.0-SNAPSHOT/bookstore/OrderService!ch.bfh.eadj.application.service.OrderServiceRemote";
+    private static final String CATALOG_SERVICE_NAME = "java:global/bookstore-app-1.0-SNAPSHOT/bookstore/CatalogService!ch.bfh.eadj.application.service.CatalogServiceRemote";
+    private static final String CUSTOMER_SERVICE_NAME = "java:global/bookstore-app-1.0-SNAPSHOT/bookstore/CustomerService!ch.bfh.eadj.application.service.CustomerServiceRemote";
 
     private CustomerServiceRemote customerService;
     private CatalogServiceRemote catalogService;

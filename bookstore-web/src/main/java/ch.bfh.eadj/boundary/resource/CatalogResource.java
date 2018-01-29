@@ -1,4 +1,4 @@
-package ch.bfh.eadj.boundary;
+package ch.bfh.eadj.boundary.resource;
 
 import ch.bfh.eadj.application.exception.BookAlreadyExistsException;
 import ch.bfh.eadj.application.exception.BookNotFoundException;
