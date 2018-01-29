@@ -8,12 +8,13 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class AbstractServiceIT {
 
     protected Customer createCustomer() {
         Customer cust  = new Customer();
-        cust.setEmail("hans@dampf.ch");
+        cust.setEmail("hans" + Integer.toString(new Random().nextInt(10000)) + "@dampf.ch");
         cust.setFirstName("Hans");
         cust.setLastName("Dampf");
         cust.setCreditCard(createCreditCard());

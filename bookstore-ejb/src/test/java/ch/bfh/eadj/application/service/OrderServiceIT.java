@@ -7,9 +7,8 @@ import ch.bfh.eadj.persistence.entity.Customer;
 import ch.bfh.eadj.persistence.entity.Order;
 import ch.bfh.eadj.persistence.entity.OrderItem;
 import ch.bfh.eadj.persistence.enumeration.OrderStatus;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -18,7 +17,10 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.testng.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 
 public class OrderServiceIT extends AbstractServiceIT {
 
@@ -33,21 +35,30 @@ public class OrderServiceIT extends AbstractServiceIT {
     private Book book;
     private Customer customer;
     private Order order;
+    private List<OrderItem> items;
 
     private Integer year = LocalDate.now().getYear();
 
-    @BeforeClass
+    @Before
     public void setUp() throws Exception {
         Context jndiContext = new InitialContext();
         orderService = (OrderServiceRemote) jndiContext.lookup(ORDER_SERVICE_NAME);
         catalogService = (CatalogServiceRemote) jndiContext.lookup(CATALOG_SERVICE_NAME);
         customerService = (CustomerServiceRemote) jndiContext.lookup(CUSTOMER_SERVICE_NAME);
+
+        book = createBook("test", "12345", "max muster");
+        catalogService.addBook(book);
+        book = catalogService.findBook(book.getIsbn());
+        items = createOrderItems(3, book);
+        customer = createCustomer();
+        Long userId = customerService.registerCustomer(customer, "pwd");
+        customer = customerService.findCustomer(userId);
     }
 
-    @Test(dependsOnMethods = "shouldPlaceOrder")
+    @Test
     public void shouldCancelOrder() throws Exception {
         //when
-        order = orderService.findOrder(order.getNr());
+        order = orderService.placeOrder(customer, items);
         orderService.cancelOrder(order.getNr());
         order = orderService.findOrder(order.getNr());
 
@@ -56,41 +67,35 @@ public class OrderServiceIT extends AbstractServiceIT {
     }
 
 
-    @Test(dependsOnMethods = {"shouldPlaceOrder", "shouldCancelOrder"}, expectedExceptions = OrderAlreadyCanceledException.class)
+    @Test(expected = OrderAlreadyCanceledException.class)
     public void shouldFailCancelOrder() throws Exception {
         //given
+        order = orderService.placeOrder(customer, items);
+        orderService.cancelOrder(order.getNr());
         order = orderService.findOrder(order.getNr());
         assertThat(order.getStatus(), is(OrderStatus.CANCELED));
 
-            //when
-            orderService.cancelOrder(order.getNr());
-
-            //then
-            fail("OrderAlreadyCanceledException exception");
+        //when
+        orderService.cancelOrder(order.getNr());
     }
 
-    @Test(dependsOnMethods = {"shouldPlaceOrder", "shouldFailCancelOrder"}, expectedExceptions = OrderAlreadyShippedException.class)
+    @Test(expected = OrderAlreadyShippedException.class)
     public void shouldFailCancelShippedOrder() throws Exception {
         //given
-        List<OrderItem> items = createOrderItems(4, book);
-        customer = customerService.findCustomer(customer.getNr());
-        customer.getCreditCard().setExpirationYear(year);
-        customer.getCreditCard().setNumber("1111222233334444");
-        customerService.updateCustomer(customer);
         order = orderService.placeOrder(customer, items);
 
         Thread.sleep(20000);
         order = orderService.findOrder(order.getNr());
 
-            //when
-            orderService.cancelOrder(order.getNr());
-
-            //then
-            fail("OrderAlreadyShippedException exception");
+        //when
+        orderService.cancelOrder(order.getNr());
     }
 
-    @Test(dependsOnMethods = "shouldPlaceOrder")
+    @Test
     public void shouldFindOrder() throws Exception {
+        //given
+        order = orderService.placeOrder(customer, items);
+
         //when
         Order orderFromDb = orderService.findOrder(order.getNr());
 
@@ -100,25 +105,14 @@ public class OrderServiceIT extends AbstractServiceIT {
         assertEquals(orderFromDb.getCustomer(), order.getCustomer());
     }
 
-    @Test(dependsOnMethods = "shouldPlaceOrder", expectedExceptions = OrderNotFoundException.class)
+    @Test(expected = OrderNotFoundException.class)
     public void shouldFailFindOrder() throws OrderNotFoundException {
             //when
             orderService.findOrder(222L);
-
-            //then
-            fail("OrderNotFoundException exception");
     }
 
     @Test
     public void shouldPlaceOrder() throws Exception {
-        //given
-        book = createBook("test", "12345", "max muster");
-        catalogService.addBook(book);
-        book = catalogService.findBook(book.getIsbn());
-        List<OrderItem> items = createOrderItems(3, book);
-        customer = createCustomer();
-        Long userId = customerService.registerCustomer(customer, "pwd");
-        customer = customerService.findCustomer(userId);
 
         //when
         order = orderService.placeOrder(customer, items);
@@ -128,28 +122,23 @@ public class OrderServiceIT extends AbstractServiceIT {
         assertEquals(order.getCustomer().getEmail(), customer.getEmail());
     }
 
-    @Test(dependsOnMethods = "shouldPlaceOrder")
+    @Test
     public void shouldFailPlaceOrderLimitExceeded() throws Exception {
         //given
-        customer = customerService.findCustomer(customer.getNr());
-        List<OrderItem> items = createOrderItems(30, book);
-        customer.getCreditCard().setExpirationYear(year);
-        customer.getCreditCard().setNumber("1111222233334444");
+        List<OrderItem> items2 = createOrderItems(30, book);
         try {
             //when
-            order = orderService.placeOrder(customer, items);
+            order = orderService.placeOrder(customer, items2);
 
             //then
-            fail("PaymentFailedException exception");
         } catch (PaymentFailedException e) {
             assertTrue(e.getCode().equals(PaymentFailedException.Code.PAYMENT_LIMIT_EXCEEDED));
         }
     }
 
-    @Test(dependsOnMethods = "shouldFailPlaceOrderLimitExceeded")
+    @Test
     public void shouldFailPlaceOrderExpiredCreditCard() throws Exception {
         //given
-        customer = customerService.findCustomer(customer.getNr());
         List<OrderItem> items = createOrderItems(5, book);
         customer.getCreditCard().setExpirationYear(2016);
         customer.getCreditCard().setNumber("1111222233334444");
@@ -159,16 +148,14 @@ public class OrderServiceIT extends AbstractServiceIT {
             order = orderService.placeOrder(customer, items);
 
             //then
-            fail("PaymentFailedException exception");
         } catch (PaymentFailedException e) {
             assertTrue(e.getCode().equals(PaymentFailedException.Code.CREDIT_CARD_EXPIRED));
         }
     }
 
-    @Test(dependsOnMethods = "shouldFailPlaceOrderExpiredCreditCard")
+    @Test
     public void shouldFailPlaceOrderInvalidCard() throws Exception {
         //given
-        customer = customerService.findCustomer(customer.getNr());
         List<OrderItem> items = createOrderItems(5, book);
         customer.getCreditCard().setExpirationYear(year);
         customer.getCreditCard().setNumber("111122223333444");
@@ -178,14 +165,15 @@ public class OrderServiceIT extends AbstractServiceIT {
             order = orderService.placeOrder(customer, items);
 
             //then
-            fail("PaymentFailedException exception");
         } catch (PaymentFailedException e) {
             assertTrue(e.getCode().equals(PaymentFailedException.Code.INVALID_CREDIT_CARD));
         }
     }
 
-    @Test(dependsOnMethods = "shouldPlaceOrder")
+    @Test
     public void shouldSearchOrders() throws Exception {
+        order = orderService.placeOrder(customer, items);
+
         //when
         List<OrderInfo> orderInfoList = orderService.searchOrders(customer, year);
 
@@ -193,8 +181,10 @@ public class OrderServiceIT extends AbstractServiceIT {
         assertFalse(orderInfoList.isEmpty());
     }
 
-    @Test(dependsOnMethods = "shouldPlaceOrder")
-    public void shouldFailSearchOrders() {
+    @Test
+    public void shouldFailSearchOrders() throws Exception {
+        order = orderService.placeOrder(customer, items);
+
         //when
         List<OrderInfo> orderInfoList = orderService.searchOrders(customer, 2015);
 
@@ -202,36 +192,36 @@ public class OrderServiceIT extends AbstractServiceIT {
         assertTrue(orderInfoList.isEmpty());
     }
 
-    @AfterClass
-    public void tearDown() throws OrderNotFoundException, CustomerNotFoundException, BookNotFoundException {
-        customer = customerService.findCustomer(customer.getNr());
-        List<OrderInfo> orderInfoList = orderService.searchOrders(customer, year);
-        for (OrderInfo orderInfo : orderInfoList) {
-            order = orderService.findOrder(orderInfo.getNr());
-            orderService.removeOrder(order);
-            try {
-                order = orderService.findOrder(order.getNr());
-                fail("OrderNotFoundException exception");
-            } catch (OrderNotFoundException e) {
-                System.out.println("Expected exception: OrderNotFoundException");
-            }
-        }
-
-        customerService.removeCustomer(customer);
-        try {
-            customer = customerService.findCustomer(customer.getNr());
-            fail("CustomerNotFoundException exception");
-        } catch (CustomerNotFoundException e) {
-            System.out.println("Expected exception: CustomerNotFoundException");
-        }
-
-        book = catalogService.findBook(book.getIsbn());
-        catalogService.removeBook(book);
-        try {
-            book = catalogService.findBook(book.getIsbn());
-            fail("BookNotFoundException exception");
-        } catch (BookNotFoundException e) {
-            System.out.println("Expected exception: BookNotFoundException");
-        }
-    }
+//    @AfterClass
+//    public void tearDown() throws OrderNotFoundException, CustomerNotFoundException, BookNotFoundException {
+//        customer = customerService.findCustomer(customer.getNr());
+//        List<OrderInfo> orderInfoList = orderService.searchOrders(customer, year);
+//        for (OrderInfo orderInfo : orderInfoList) {
+//            order = orderService.findOrder(orderInfo.getNr());
+//            orderService.removeOrder(order);
+//            try {
+//                order = orderService.findOrder(order.getNr());
+//                fail("OrderNotFoundException exception");
+//            } catch (OrderNotFoundException e) {
+//                System.out.println("Expected exception: OrderNotFoundException");
+//            }
+//        }
+//
+//        customerService.removeCustomer(customer);
+//        try {
+//            customer = customerService.findCustomer(customer.getNr());
+//            fail("CustomerNotFoundException exception");
+//        } catch (CustomerNotFoundException e) {
+//            System.out.println("Expected exception: CustomerNotFoundException");
+//        }
+//
+//        book = catalogService.findBook(book.getIsbn());
+//        catalogService.removeBook(book);
+//        try {
+//            book = catalogService.findBook(book.getIsbn());
+//            fail("BookNotFoundException exception");
+//        } catch (BookNotFoundException e) {
+//            System.out.println("Expected exception: BookNotFoundException");
+//        }
+//    }
 }
