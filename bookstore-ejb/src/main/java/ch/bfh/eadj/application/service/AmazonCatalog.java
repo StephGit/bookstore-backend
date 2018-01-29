@@ -10,6 +10,8 @@ import javax.ejb.Stateless;
 import javax.xml.ws.WebServiceRef;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -31,7 +33,6 @@ public class AmazonCatalog {
         lookup.setAssociateTag(ASSOCIATE_TAG);
         ItemLookupRequest request = new ItemLookupRequest();
         request.getItemId().add(isbn);
-//        request.setSearchIndex(SEARCH_INDEX); When IdType equals ASIN, SearchIndex cannot be present.
         request.getResponseGroup().add(MEDIUM);
         lookup.setShared(request);
         ItemLookupResponse itemLookupResponse = this.port.itemLookup(lookup);
@@ -45,6 +46,7 @@ public class AmazonCatalog {
     private Book extractResult(List<Items> items) {
 
         //TODO wenn mehrere bücher zurück kommen das erst beste mit der ISBN --> siehe fischli testcase
+
         Item item = items.get(0).getItem().get(0);
         ItemAttributes itemAttributes = item.getItemAttributes();
         Book book = new Book();
@@ -57,9 +59,7 @@ public class AmazonCatalog {
         //TODO to long for length 255
         //book.setDescription(item.getEditorialReviews().getEditorialReview().get(0).getContent());
         book.setPublisher(itemAttributes.getPublisher());
-
-        //TODO test --- doesnt work
-        //book.setPublicationYear(LocalDate.parse(itemAttributes.getPublicationDate()).getYear());
+        book.setPublicationYear(validatePublicationDate(itemAttributes.getPublicationDate()));
         book.setImageUrl(item.getMediumImage().getURL());
         book.setNumberOfPages(itemAttributes.getNumberOfPages().intValue());
         return book;
@@ -72,7 +72,14 @@ public class AmazonCatalog {
         if (items == null || items.isEmpty() || items.get(0).getItem().isEmpty()) {
             throw new BookNotFoundException();
         }
+    }
 
+    private Integer validatePublicationDate(String publicationDate) {
+        if (publicationDate.length()==4) {
+            return Integer.parseInt(publicationDate);
+        } else {
+            return LocalDate.parse(publicationDate).getYear();
+        }
     }
 
 
@@ -116,7 +123,8 @@ public class AmazonCatalog {
             if (isResultInvalid(attributes)) {
                 continue;
             }
-            BookInfo b = new BookInfo(attributes.getISBN(), attributes.getAuthor().toString(), attributes.getTitle(), BigDecimal.ONE); //TODO get correct price
+            BookInfo b = new BookInfo(attributes.getISBN(), attributes.getAuthor().toString(), attributes.getTitle(),
+                    new BigDecimal(attributes.getListPrice().getAmount()).divide(new BigDecimal(100)));
             results.add(b);
 
         }
@@ -125,6 +133,4 @@ public class AmazonCatalog {
     private boolean isResultInvalid(ItemAttributes attributes) {
         return attributes.getISBN() == null || attributes.getISBN().isEmpty() || attributes.getTitle() == null || attributes.getTitle().isEmpty();
     }
-
-
 }

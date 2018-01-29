@@ -1,4 +1,4 @@
-package boundary;
+package ch.bfh.eadj.boundary.resource;
 
 import ch.bfh.eadj.boundary.dto.OrderDTO;
 import ch.bfh.eadj.boundary.dto.OrderItemDTO;
