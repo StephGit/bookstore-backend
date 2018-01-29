@@ -104,16 +104,20 @@ public class OrderService implements OrderServiceRemote {
         return order;
     }
 
+
+    //TODO how is this supposed to work? the order references a non-existent customer or book?
     private void storeBooksIfNotPresent(List<OrderItem> items) throws BookNotFoundException {
         for (OrderItem item : items) {
             Book book = item.getBook();
             if (book != null) {
-                Book byIsbn = catalogService.findBookFromDb(book.getIsbn());
-                if (byIsbn == null) {
+                try {
+                    catalogService.findBookFromDb(book.getIsbn());
+                } catch (BookNotFoundException e) {
                     try {
-                        catalogService.addBook(book);
-                    } catch (BookAlreadyExistsException e) {
-                        throw new IllegalStateException("book alread in db.. should not happen");
+                        Book bookFromAmazon = catalogService.findBook(book.getIsbn());
+                        catalogService.addBook(bookFromAmazon);
+                    } catch (BookAlreadyExistsException e1) {
+                        throw new IllegalStateException("should not happen.... book is not supposed to be in DB yet");
                     }
                 }
             }

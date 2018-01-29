@@ -54,7 +54,9 @@ public class AmazonCatalog {
         book.setAuthors(itemAttributes.getAuthor().toString());
         book.setBinding(BookBinding.getBinding(itemAttributes.getBinding()));
         book.setPrice(new BigDecimal(item.getOfferSummary().getLowestNewPrice().getAmount()).divide(new BigDecimal(100)));
-        book.setDescription(item.getEditorialReviews().getEditorialReview().get(0).getContent());
+
+        //TODO to long for length 255
+        //        book.setDescription(item.getEditorialReviews().getEditorialReview().get(0).getContent());
         book.setPublisher(itemAttributes.getPublisher());
 
         //TODO test --- doesnt work
