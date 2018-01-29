@@ -56,6 +56,7 @@ public class CatalogService implements CatalogServiceRemote{
         bookRepo.deleteBook(book.getNr());
     }
 
+    //TODO remove
     /*@Override
     public List<BookInfo> searchBooks(String keywords) {
         if (keywords != null && keywords.length() > 0) {

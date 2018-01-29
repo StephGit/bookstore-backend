@@ -1,13 +1,18 @@
 package boundary;
 
+import ch.bfh.eadj.persistence.entity.Book;
 import ch.bfh.eadj.persistence.enumeration.BookBinding;
 import com.jayway.restassured.RestAssured;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import javax.ws.rs.core.Response;
+import java.math.BigDecimal;
+import java.util.Random;
+
+import static com.jayway.restassured.RestAssured.given;
 import static com.jayway.restassured.RestAssured.when;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 
 public class CatalagResourceST {
 
@@ -20,12 +25,12 @@ public class CatalagResourceST {
     }
 
     @Test
-    public void getBookByIsbn() {
+    public void shoudFindBookByIsbn() {
 
         String isbn = "0099590085";
         when().get("/"+isbn)
                 .then()
-                .statusCode(200)
+                .statusCode(Response.Status.OK.getStatusCode())
                 .body("isbn", equalTo(isbn))
                 .body("binding", equalTo(BookBinding.PAPERBACK.toString()))
                 .body("numberOfPages", equalTo(434))
@@ -37,6 +42,55 @@ public class CatalagResourceST {
                 .body("publisher", notNullValue());
 
     }
+
+    @Test
+    public void shouldNotFindBookByIsbn() {
+
+        String isbn = "0000000001";
+        when().get("/"+isbn)
+                .then()
+                .statusCode(Response.Status.NOT_FOUND.getStatusCode());
+    }
+
+
+    @Test
+    public void shoudFindBookByKeywords() {
+
+        String keywords = "Sapiens: A Brief History of Humankind";
+        when().get("?keywords="+keywords)
+                .then()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .body("", hasSize(greaterThan(2)));
+
+    }
+
+    @Test
+    public void shouldAddBook() {
+
+        String isbn = Integer.toString(new Random().nextInt(10000));
+
+        Book b = new Book();
+        b.setIsbn(isbn);
+        b.setTitle("sapiens");
+        b.setPrice(BigDecimal.ONE);
+
+        given().
+                contentType("application/json")
+                .body(b)
+                .when().post()
+                .then()
+                .statusCode(Response.Status.CREATED.getStatusCode());
+
+        // try to add same book twice
+        given().
+                contentType("application/json").
+                body(b).
+                when().post()
+                .then()
+                .statusCode(Response.Status.CONFLICT.getStatusCode());
+    }
+
+
 
 
 
