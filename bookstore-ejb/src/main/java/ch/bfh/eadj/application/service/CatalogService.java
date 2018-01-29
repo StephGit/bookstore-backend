@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 
-@Stateless
+@Stateless(name = "CatalogService")
 @LocalBean
 public class CatalogService implements CatalogServiceRemote{
 

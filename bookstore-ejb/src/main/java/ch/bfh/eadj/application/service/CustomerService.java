@@ -10,6 +10,7 @@ import ch.bfh.eadj.persistence.enumeration.UserGroup;
 import ch.bfh.eadj.persistence.repository.CustomerRepository;
 import ch.bfh.eadj.persistence.repository.LoginRepository;
 
+import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.resource.spi.IllegalStateException;
@@ -18,7 +19,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-@Stateless
+@Stateless(name = "CustomerService")
+@LocalBean
 public class CustomerService implements CustomerServiceRemote {
 
     @Inject

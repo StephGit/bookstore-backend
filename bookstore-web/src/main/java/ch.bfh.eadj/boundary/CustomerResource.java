@@ -1,4 +1,4 @@
-package ch.bfh.eadj.presentation;
+package ch.bfh.eadj.boundary;
 
 import ch.bfh.eadj.application.exception.CustomerNotFoundException;
 import ch.bfh.eadj.application.exception.EmailAlreadyUsedException;
@@ -24,7 +24,7 @@ public class CustomerResource {
     @GET
     @Path("login")
     @Produces(TEXT_HTML)
-    public Long authenticateCustomer(String email, String password) {
+    public Long authenticateCustomer(@HeaderParam("email") String email, @HeaderParam("password") String password) {
         try {
             return customerService.authenticateCustomer(email, password);
         } catch (CustomerNotFoundException e) {
@@ -39,7 +39,7 @@ public class CustomerResource {
     @Path("login")
     @Consumes(TEXT_PLAIN)
     @Produces(APPLICATION_JSON)
-    public Response changePassword(String email, String password) {
+    public Response changePassword(@HeaderParam("email") String email, @HeaderParam("password") String password) {
         try {
             customerService.changePassword(email, password);
             return Response.status(Response.Status.NO_CONTENT).build();
@@ -62,7 +62,7 @@ public class CustomerResource {
     @POST
     @Consumes(APPLICATION_JSON)
     @Produces(TEXT_PLAIN)
-    public Response registerCustomer(Customer customer, String password) {
+    public Response registerCustomer(Customer customer,@HeaderParam("password") String password) {
         //TODO check if incoming data is vaild
         try {
             Long customerId = customerService.registerCustomer(customer, password);

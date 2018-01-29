@@ -11,8 +11,6 @@
         <groupId>ch.bfh.eadj</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-
-    <groupId>ch.bfh.eadj</groupId>
     <artifactId>bookstore-app</artifactId>
     <packaging>ear</packaging>
     <name>bookstore-app</name>

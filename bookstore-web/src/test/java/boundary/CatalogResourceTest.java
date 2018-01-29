@@ -1,4 +1,4 @@
-package ch.bfh.eadj.presentation;
+package ch.bfh.eadj.boundary;
 
 public class CatalogResourceTest {
 

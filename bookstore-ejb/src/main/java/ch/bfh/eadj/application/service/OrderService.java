@@ -7,6 +7,7 @@ import ch.bfh.eadj.persistence.enumeration.OrderStatus;
 import ch.bfh.eadj.persistence.repository.OrderRepository;
 
 import javax.annotation.Resource;
+import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.jms.*;
@@ -16,7 +17,8 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 
-@Stateless
+@LocalBean
+@Stateless(name = "OrderService")
 public class OrderService implements OrderServiceRemote {
 
     private static final String CONNECTION_FACTORY_NAME = "jms/connectionFactory";
