@@ -15,10 +15,10 @@ JavaEE 7, Glassfish, Angular, REST
 - [ ]  Correct error handling (More than one book with same ISBN --> Fischlis sample?) - S
 - [ ]  Handle empty results -> Tests - S
 - [ ]  When placing an order -> save book to db if not present yet - A
-- [ ]  Catalog Resource - A
-- [ ]  Order Resource - A
+- [x]  Catalog Resource - A
+- [x]  Order Resource - A
 - [x]  Customers Resource - S
-- [ ]  REST Assured sample including dependency - A
+- [x]  REST Assured sample including dependency - A
 - [ ]  Swagger - S
 - [ ]  REMOVE TEST DEPENDENCIES - A & S
 
