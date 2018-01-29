@@ -17,9 +17,12 @@ import java.time.LocalDate;
 import static com.jayway.restassured.RestAssured.given;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.*;
 
 public class CustomerResourceTest {
+
+    private String password = "asdfkjl";
 
     @Before
     public void setUp() throws Exception {
@@ -39,7 +42,16 @@ public class CustomerResourceTest {
     @Test
     public void shouldFindCustomer() {
         CustomerDTO customer = createCustomerDTO();
-        customer.setEmail("Bruno@Gans.ch");
+        customer.setEmail("Bruno3@Gans.ch");
+
+        given().
+                accept(TEXT_PLAIN)
+                .contentType(APPLICATION_JSON)
+                .header("password", password)
+                .body(customer)
+                .when().post()
+                .then()
+                .statusCode(Response.Status.CREATED.getStatusCode());
 
         int nr = 1;
 
@@ -47,7 +59,23 @@ public class CustomerResourceTest {
                 contentType(APPLICATION_JSON)
                 .when().get("/" + nr)
                 .then()
-                .statusCode(Response.Status.OK.getStatusCode());
+                .statusCode(Response.Status.OK.getStatusCode())
+                .body("firstName", equalTo(customer.getFirstName()))
+                .body("lastName", equalTo(customer.getLastName()))
+                .body("address.country", equalTo(customer.getAddress().getCountry().toString()))
+                .body("address.city", equalTo(customer.getAddress().getCity()))
+                .body("address.street", equalTo(customer.getAddress().getStreet()))
+                .body("address.postalCode", equalTo(customer.getAddress().getPostalCode()))
+                .body("creditCard.expirationMonth", equalTo(customer.getCreditCard().getExpirationMonth()))
+                .body("creditCard.expirationYear", equalTo(customer.getCreditCard().getExpirationYear()))
+                .body("creditCard.number", equalTo(customer.getCreditCard().getNumber()))
+                .body("creditCard.type", equalTo(customer.getCreditCard().getType().toString()))
+        ;
+
+    }
+
+    @Test
+    public void shouldNotFindCustomer() {
 
         given().
                 contentType(APPLICATION_JSON)
@@ -57,10 +85,10 @@ public class CustomerResourceTest {
 
     }
 
+
     @Test
     public void shouldRegisterCustomer() {
         CustomerDTO customer = createCustomerDTO();
-        String password = "asdfkjl";
 
         given().
                 accept(TEXT_PLAIN)
@@ -80,6 +108,12 @@ public class CustomerResourceTest {
                 .then()
                 .statusCode(Response.Status.CONFLICT.getStatusCode());
 
+    }
+
+    @Test
+    public void shouldFailRegisterCustomer() {
+        CustomerDTO customer = createCustomerDTO();
+
         given().
                 accept(TEXT_PLAIN)
                 .contentType(APPLICATION_JSON)
@@ -88,6 +122,16 @@ public class CustomerResourceTest {
                 .then()
                 .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
 
+        customer.setEmail(null);
+
+        given().
+                accept(TEXT_PLAIN)
+                .contentType(APPLICATION_JSON)
+                .header("password", password)
+                .body(customer)
+                .when().post()
+                .then()
+                .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
     }
 
     @Test
