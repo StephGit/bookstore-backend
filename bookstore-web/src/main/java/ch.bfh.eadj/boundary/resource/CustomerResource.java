@@ -73,14 +73,16 @@ public class CustomerResource {
     @POST
     @Consumes(APPLICATION_JSON)
     @Produces(TEXT_PLAIN)
-    public Response registerCustomer(Customer customer, @HeaderParam("password") String password) {
+    public Response registerCustomer(CustomerDTO customerDTO, @HeaderParam("password") String password) {
+        if ((password == null) || (password.isEmpty())) {
+            throw new WebApplicationException(NO_DATA_FOR_CUSTOMER, Response.Status.BAD_REQUEST);
+        }
         try {
+            Customer customer = convertCustomerDTO(customerDTO);
             Long customerId = customerService.registerCustomer(customer, password);
-            if (customerId != null) {
-                return Response.status(Response.Status.CREATED).entity(customerId).build();
-            } else {
-                throw new WebApplicationException(NO_DATA_FOR_CUSTOMER, Response.Status.BAD_REQUEST);
-            }
+            return Response.status(Response.Status.CREATED).entity(customerId).build();
+        } catch (IllegalArgumentException e) {
+            throw new WebApplicationException(NO_DATA_FOR_CUSTOMER, Response.Status.BAD_REQUEST);
         } catch (EmailAlreadyUsedException e) {
             throw new WebApplicationException(EMAIL_ALREADY_USED, Response.Status.CONFLICT);
         }
@@ -124,6 +126,32 @@ public class CustomerResource {
 
     private CustomerDTO convertCustomer(Customer customer) {
         return new CustomerDTO(customer.getNr(), customer.getFirstName(), customer.getLastName(), customer.getEmail(), customer.getCreditCard(), customer.getAddress());
+    }
+
+    private Customer convertCustomerDTO(CustomerDTO customerDTO) {
+        Customer customer = new Customer();
+
+        if ((customerDTO != null) && (customerDTO.getEmail() != null)) {
+            customer.setEmail(customerDTO.getEmail());
+        } else {
+            throw new IllegalStateException();
+        }
+
+        if (customerDTO.getFirstName() != null) {
+            customer.setFirstName(customerDTO.getFirstName());
+        } else {
+            throw new IllegalStateException();
+        }
+
+        if (customerDTO.getLastName() != null) {
+            customer.setLastName(customerDTO.getLastName());
+        } else {
+            throw new IllegalStateException();
+        }
+
+        customer.setAddress(customerDTO.getAddress());
+        customer.setCreditCard(customerDTO.getCreditCard());
+        return customer;
     }
 
 }

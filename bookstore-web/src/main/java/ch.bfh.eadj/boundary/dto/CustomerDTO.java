@@ -51,4 +51,28 @@ public class CustomerDTO {
     public CreditCard getCreditCard() {
         return creditCard;
     }
+
+    public void setNr(Long nr) {
+        this.nr = nr;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public void setCreditCard(CreditCard creditCard) {
+        this.creditCard = creditCard;
+    }
 }
