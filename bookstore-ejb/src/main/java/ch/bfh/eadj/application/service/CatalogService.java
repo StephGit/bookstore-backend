@@ -21,8 +21,7 @@ public class CatalogService implements CatalogServiceRemote{
     BookRepository bookRepo;
 
     @Inject
-    private
-    AmazonCatalog amazonCatalog;
+    private AmazonCatalog amazonCatalog;
 
     @Override
     public Book findBook(String isbn) throws BookNotFoundException {

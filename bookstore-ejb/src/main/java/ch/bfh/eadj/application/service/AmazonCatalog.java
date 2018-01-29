@@ -54,8 +54,7 @@ public class AmazonCatalog {
         book.setTitle(itemAttributes.getTitle());
         book.setAuthors(itemAttributes.getAuthor().toString());
         book.setBinding(BookBinding.getBinding(itemAttributes.getBinding()));
-        book.setPrice(new BigDecimal(item.getOfferSummary().getLowestNewPrice().getAmount()).divide(new BigDecimal(100)));
-
+        book.setPrice(validatePrice(item.getOfferSummary().getLowestNewPrice()));
         //TODO to long for length 255
         //book.setDescription(item.getEditorialReviews().getEditorialReview().get(0).getContent());
         book.setPublisher(itemAttributes.getPublisher());
@@ -124,9 +123,17 @@ public class AmazonCatalog {
                 continue;
             }
             BookInfo b = new BookInfo(attributes.getISBN(), attributes.getAuthor().toString(), attributes.getTitle(),
-                    new BigDecimal(attributes.getListPrice().getAmount()).divide(new BigDecimal(100)));
+                    validatePrice(attributes.getListPrice()));
             results.add(b);
 
+        }
+    }
+
+    private BigDecimal validatePrice(Price price) {
+        if ((price != null) && (price.getAmount() != null)) {
+            return new BigDecimal(price.getAmount()).divide(new BigDecimal(100));
+        } else {
+            return null;
         }
     }
 

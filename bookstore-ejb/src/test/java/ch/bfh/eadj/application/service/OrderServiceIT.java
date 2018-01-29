@@ -14,6 +14,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Random;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -46,9 +47,8 @@ public class OrderServiceIT extends AbstractServiceIT {
         catalogService = (CatalogServiceRemote) jndiContext.lookup(CATALOG_SERVICE_NAME);
         customerService = (CustomerServiceRemote) jndiContext.lookup(CUSTOMER_SERVICE_NAME);
 
-        book = createBook("test", "12345", "max muster");
-        catalogService.addBook(book);
-        book = catalogService.findBook(book.getIsbn());
+        String isbn = "0099590085";
+        book = catalogService.findBook(isbn);
         items = createOrderItems(3, book);
         customer = createCustomer();
         Long userId = customerService.registerCustomer(customer, "pwd");
@@ -71,9 +71,11 @@ public class OrderServiceIT extends AbstractServiceIT {
     public void shouldFailCancelOrder() throws Exception {
         //given
         order = orderService.placeOrder(customer, items);
+        Thread.sleep(300);
         orderService.cancelOrder(order.getNr());
         order = orderService.findOrder(order.getNr());
         assertThat(order.getStatus(), is(OrderStatus.CANCELED));
+        Thread.sleep(300);
 
         //when
         orderService.cancelOrder(order.getNr());
@@ -101,8 +103,7 @@ public class OrderServiceIT extends AbstractServiceIT {
 
         //then
         assertEquals(orderFromDb.getAmount(), order.getAmount());
-        assertEquals(orderFromDb.getStatus(), order.getStatus());
-        assertEquals(orderFromDb.getCustomer(), order.getCustomer());
+        assertEquals(orderFromDb.getNr(), order.getNr());
     }
 
     @Test(expected = OrderNotFoundException.class)
@@ -191,37 +192,4 @@ public class OrderServiceIT extends AbstractServiceIT {
         //then
         assertTrue(orderInfoList.isEmpty());
     }
-
-//    @AfterClass
-//    public void tearDown() throws OrderNotFoundException, CustomerNotFoundException, BookNotFoundException {
-//        customer = customerService.findCustomer(customer.getNr());
-//        List<OrderInfo> orderInfoList = orderService.searchOrders(customer, year);
-//        for (OrderInfo orderInfo : orderInfoList) {
-//            order = orderService.findOrder(orderInfo.getNr());
-//            orderService.removeOrder(order);
-//            try {
-//                order = orderService.findOrder(order.getNr());
-//                fail("OrderNotFoundException exception");
-//            } catch (OrderNotFoundException e) {
-//                System.out.println("Expected exception: OrderNotFoundException");
-//            }
-//        }
-//
-//        customerService.removeCustomer(customer);
-//        try {
-//            customer = customerService.findCustomer(customer.getNr());
-//            fail("CustomerNotFoundException exception");
-//        } catch (CustomerNotFoundException e) {
-//            System.out.println("Expected exception: CustomerNotFoundException");
-//        }
-//
-//        book = catalogService.findBook(book.getIsbn());
-//        catalogService.removeBook(book);
-//        try {
-//            book = catalogService.findBook(book.getIsbn());
-//            fail("BookNotFoundException exception");
-//        } catch (BookNotFoundException e) {
-//            System.out.println("Expected exception: BookNotFoundException");
-//        }
-//    }
 }
