@@ -49,7 +49,6 @@ public class OrderRepository extends AbstractRepository<Order> {
     public boolean deleteOrder(Long order) {
         try {
             Order orderToRemove = em.getReference(Order.class, order);
-            //TODO cascading
             em.remove(orderToRemove);
             return true;
         } catch (EntityExistsException ex ) {

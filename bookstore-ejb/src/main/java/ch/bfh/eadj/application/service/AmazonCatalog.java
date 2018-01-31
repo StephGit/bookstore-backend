@@ -53,9 +53,8 @@ public class AmazonCatalog {
         book.setTitle(itemAttributes.getTitle());
         book.setAuthors(itemAttributes.getAuthor().toString());
         book.setBinding(BookBinding.getBinding(itemAttributes.getBinding()));
-        book.setPrice(validatePrice(item.getOfferSummary().getLowestNewPrice()));
-        //TODO to long for length 255
-        //book.setDescription(item.getEditorialReviews().getEditorialReview().get(0).getContent());
+        book.setPrice(getPrice(item.getOfferSummary().getLowestNewPrice()));
+        book.setDescription(item.getEditorialReviews().getEditorialReview().get(0).getContent());
         book.setPublisher(itemAttributes.getPublisher());
         book.setPublicationYear(validatePublicationDate(itemAttributes.getPublicationDate()));
         book.setImageUrl(item.getMediumImage().getURL());
@@ -73,7 +72,7 @@ public class AmazonCatalog {
     }
 
     private Integer validatePublicationDate(String publicationDate) {
-        if (publicationDate.length()==4) {
+        if (publicationDate.length() == 4) {
             return Integer.parseInt(publicationDate);
         } else {
             return LocalDate.parse(publicationDate).getYear();
@@ -116,27 +115,24 @@ public class AmazonCatalog {
         List<Item> item = response.getItems().get(0).getItem();
         for (Item i : item) {
             ItemAttributes attributes = i.getItemAttributes();
-
-            //TODO nur bücher mit isbn, titel, blabla -> validieren bzw herausfiltern!
             if (isResultInvalid(attributes)) {
                 continue;
             }
             BookInfo b = new BookInfo(attributes.getISBN(), attributes.getAuthor().toString(), attributes.getTitle(),
-                    validatePrice(attributes.getListPrice()));
+                    getPrice(attributes.getListPrice()));
             results.add(b);
 
         }
     }
 
-    private BigDecimal validatePrice(Price price) {
-        if ((price != null) && (price.getAmount() != null)) {
-            return new BigDecimal(price.getAmount()).divide(new BigDecimal(100));
-        } else {
-            return null;
-        }
+    private BigDecimal getPrice(Price price) {
+        return new BigDecimal(price.getAmount()).divide(new BigDecimal(100));
+
     }
 
     private boolean isResultInvalid(ItemAttributes attributes) {
-        return attributes.getISBN() == null || attributes.getISBN().isEmpty() || attributes.getTitle() == null || attributes.getTitle().isEmpty();
+        return attributes.getISBN() == null || attributes.getISBN().isEmpty() ||
+                attributes.getTitle() == null || attributes.getTitle().isEmpty()
+                || attributes.getListPrice() == null || attributes.getListPrice().getAmount() == null;
     }
 }
