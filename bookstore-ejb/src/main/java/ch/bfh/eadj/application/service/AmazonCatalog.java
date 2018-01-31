@@ -10,7 +10,6 @@ import javax.ejb.Stateless;
 import javax.xml.ws.WebServiceRef;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.MathContext;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,7 @@ import java.util.logging.Logger;
 public class AmazonCatalog {
     public static final String MEDIUM = "Medium";
     public static final String SEARCH_INDEX = "Books";
-    private static final String ASSOCIATE_TAG = "test";
+    private static final String ASSOCIATE_TAG = "test0953-20";
 
     private static final Logger logger = Logger.getLogger(AmazonCatalog.class.getName());
 
