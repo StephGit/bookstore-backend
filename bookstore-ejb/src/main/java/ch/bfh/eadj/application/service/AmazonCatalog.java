@@ -33,7 +33,7 @@ public class AmazonCatalog {
         ItemLookupRequest request = new ItemLookupRequest();
         request.getItemId().add(isbn);
         request.getResponseGroup().add(MEDIUM);
-        request.setTruncateReviewsAt(BigInteger.valueOf(255));
+        request.setTruncateReviewsAt(BigInteger.valueOf(254)); // doesnt work???
         lookup.setShared(request);
         ItemLookupResponse itemLookupResponse = this.port.itemLookup(lookup);
 
