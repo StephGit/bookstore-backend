@@ -42,7 +42,6 @@ public class Book extends BaseEntity {
 
     private Integer numberOfPages;
 
-    @Column(length = 500)
     private String description;
 
     private String imageUrl;
