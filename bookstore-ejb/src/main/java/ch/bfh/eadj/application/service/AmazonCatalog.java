@@ -127,7 +127,11 @@ public class AmazonCatalog {
     }
 
     private BigDecimal getPrice(Price price) {
-        return new BigDecimal(price.getAmount()).divide(new BigDecimal(100));
+        if ((price != null) && (price.getAmount() != null)) {
+            return new BigDecimal(price.getAmount()).divide(new BigDecimal(100));
+        } else {
+            return null;
+        }
 
     }
 
