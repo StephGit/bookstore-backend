@@ -21,7 +21,7 @@ JavaEE 7, Glassfish, Angular, REST
 - [x]  REST Assured sample including dependency - A
 - [ ]  Make integration tests great again! - A
 - [ ]  Swagger - S
-- [ ]  Handle multiple names in search "Hans%20Peter"
+- [x]  Handle names with blanks (?name=von+Gruenigen)
 - [x]  REMOVE TEST DEPENDENCIES - A & S
 
 ### Prerequisites

@@ -34,7 +34,6 @@ public class CustomerRepositoryTest extends AbstractTest {
         //then
         assertThat(customersByName.size(),is(1));
         assertEquals(lastName,customersByName.get(0).getLastName());
-        assertEquals(firstName,customersByName.get(0).getFirstName());
 
     }
 
@@ -42,7 +41,6 @@ public class CustomerRepositoryTest extends AbstractTest {
     public void shouldFindCustomerByFirstName() {
 
         //given
-        String lastName = "McKenny";
         String firstName = "Cléa";
 
         //when
@@ -50,9 +48,23 @@ public class CustomerRepositoryTest extends AbstractTest {
 
         //then
         assertThat(customersByName.size(),is(1));
-        assertEquals(lastName,customersByName.get(0).getLastName());
         assertEquals(firstName,customersByName.get(0).getFirstName());
 
     }
 
+    @Test
+    public void shouldFindCustomerByMultipartName() {
+
+        //given
+        String firstName = "Hans Ulrich";
+        String lastName = "von Känel";
+
+        //when
+        List<CustomerInfo> customersByName = customerRepo.findByName(firstName);
+
+        //then
+        assertThat(customersByName.size(),is(1));
+        assertEquals(firstName,customersByName.get(0).getFirstName());
+
+    }
 }
