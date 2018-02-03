@@ -60,7 +60,6 @@ public class AmazonCatalog {
     }
 
     private Item validateFindResult(List<Items> itemsList) throws BookNotFoundException {
-        //TODO test for each error
         if (itemsList == null || itemsList.isEmpty() || itemsList.get(0).getItem().isEmpty()) {
             if (!itemsList.get(0).getRequest().getErrors().getError().isEmpty()) {
                 itemsList.get(0).getRequest().getErrors().getError().forEach(error ->
