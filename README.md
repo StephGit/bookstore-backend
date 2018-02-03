@@ -19,7 +19,7 @@ JavaEE 7, Glassfish, Angular, REST
 - [x]  Order Resource - A
 - [x]  Customers Resource - S
 - [x]  REST Assured sample including dependency - A
-- [ ]  Make integration tests great again! - A
+- [x]  Make integration tests great again! - A
 - [x]  Swagger - S
 - [x]  Handle names with blanks (?name=von+Gruenigen)
 - [x]  REMOVE TEST DEPENDENCIES - A & S
