@@ -112,7 +112,7 @@ public class CustomerResource {
             Customer customer = convertCustomerDTO(body);
             Long customerId = customerService.registerCustomer(customer, password);
             return Response.status(Response.Status.CREATED).entity(customerId).build();
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalStateException e) {
             throw new WebApplicationException(NO_DATA_FOR_CUSTOMER, Response.Status.BAD_REQUEST);
         } catch (EmailAlreadyUsedException e) {
             throw new WebApplicationException(EMAIL_ALREADY_USED, Response.Status.CONFLICT);

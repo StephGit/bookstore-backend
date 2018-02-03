@@ -184,7 +184,7 @@ public class CustomerResourceST {
     }
 
     @Test
-    public void searchCustomers() {
+    public void shouldSearchCustomers() {
         CustomerDTO customer = createCustomerDTO();
         addCustomer(customer);
 
