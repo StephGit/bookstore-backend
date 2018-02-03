@@ -31,6 +31,14 @@ public class CustomerResource {
     @Inject
     CustomerService customerService;
 
+    /**
+     * Authenticates a customer with email address and password and returns the number of the authenticated customer.
+     * @param email the email address of the customer
+     * @param password the password of the customer
+     * @responseMessage 200 the authentication was successful
+     * @responseMessage 401 the password is invalid
+     * @responseMessage 404 no customer with the specified email address exists
+     */
     @GET
     @Path("login")
     @Produces(TEXT_PLAIN)
@@ -45,19 +53,32 @@ public class CustomerResource {
         }
     }
 
+    /**
+     * Changes the password of a customer.
+     * @param email
+     * @param body
+     * @responseMessage 204 the change was successful
+     * @responseMessage 404 no customer with the specified email address exists
+     */
     @PUT
     @Path("login")
     @Consumes(TEXT_PLAIN)
     @Produces(APPLICATION_JSON)
-    public Response changePassword(@HeaderParam("email") String email, @HeaderParam("password") String password) {
+    public Response changePassword(@HeaderParam("email") String email, String body) {
         try {
-            customerService.changePassword(email, password);
+            customerService.changePassword(email, body);
             return Response.status(Response.Status.NO_CONTENT).entity(CHANGE_SUCCESSFUL).build();
         } catch (CustomerNotFoundException e) {
             throw new WebApplicationException(NO_CUSTOMER_WITH_EMAIL, Response.Status.NOT_FOUND);
         }
     }
 
+    /**
+     * Finds a customer by number and returns the data of the found customer.
+     * @param nr the number of the customer
+     * @responseMessage 200 the retrieval was successful
+     * @responseMessage 404 no customer with the specified number exists
+     */
     @GET
     @Path("{nr}")
     @Produces(APPLICATION_JSON)
@@ -70,15 +91,25 @@ public class CustomerResource {
         }
     }
 
+    /**
+     * Registers a customer with the bookstore and returns the number of the registered customer.
+     * @description The email address and password will be used for authentication.
+     * @param body the data of the customer
+     * @param password the password of the customer
+     * @responseMessage 200 the registration was successful
+     * @responseMessage 400 the number of the customer data is not null
+     * @responseMessage 409 the email address is already used by another customer
+     * @return customerId id of the customer
+     */
     @POST
     @Consumes(APPLICATION_JSON)
     @Produces(TEXT_PLAIN)
-    public Response registerCustomer(CustomerDTO customerDTO, @HeaderParam("password") String password) {
+    public Response registerCustomer(CustomerDTO body, @HeaderParam("password") String password) {
         if ((password == null) || (password.isEmpty())) {
             throw new WebApplicationException(NO_DATA_FOR_CUSTOMER, Response.Status.BAD_REQUEST);
         }
         try {
-            Customer customer = convertCustomerDTO(customerDTO);
+            Customer customer = convertCustomerDTO(body);
             Long customerId = customerService.registerCustomer(customer, password);
             return Response.status(Response.Status.CREATED).entity(customerId).build();
         } catch (IllegalArgumentException e) {
@@ -88,24 +119,40 @@ public class CustomerResource {
         }
     }
 
+    /**
+     * Searches for customers by name and returns a list of matching customer.
+     * @description A customer is included in the result if the specified name is part of the first or last name.
+     * @param name the name to search for
+     * @responseMessage 200 the search was successful
+     * @return
+     */
     @GET
     @Produces(APPLICATION_JSON)
     public List<CustomerInfo> searchCustomers(@QueryParam("name") String name) {
             return customerService.searchCustomers(name);
     }
 
+    /**
+     * Updates the data of a customer.
+     * @param nr the number of the customer
+     * @param body the new data of the customer
+     * @responseMessage 204 the update was successful
+     * @responseMessage 400 the number of the customer data does not match the path parameter
+     * @responseMessage 404 no customer with the specified number exists
+     * @responseMessage 409 the email address to be changed is already used by another customer
+     */
     @PUT
     @Path("{nr}")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response updateCustomer(@PathParam("nr") Long nr, CustomerDTO customerDTO) {
+    public Response updateCustomer(@PathParam("nr") Long nr, CustomerDTO body) {
 
-        if ((customerDTO.getNr() == null) || (!customerDTO.getNr().equals(nr))) {
+        if ((body.getNr() == null) || (!body.getNr().equals(nr))) {
             throw new WebApplicationException(NUMBER_NOT_MATCHING_PARAM, Response.Status.BAD_REQUEST);
         } else {
             try {
                 Customer customer = customerService.findCustomer(nr);
-                applyUpdates(customer, customerDTO);
+                applyUpdates(customer, body);
                 customerService.updateCustomer(customer);
                 return Response.status(Response.Status.NO_CONTENT).entity(UPDATE_SUCCESSFUL).build();
             } catch (CustomerNotFoundException e) {

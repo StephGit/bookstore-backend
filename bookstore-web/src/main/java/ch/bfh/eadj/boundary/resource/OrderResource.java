@@ -31,18 +31,25 @@ public class OrderResource {
     @Inject
     private CustomerService customerService;
 
+    /**
+     * Places an order on the bookstore and returns the data of the placed order.
+     * @param body the data of the order to be placed
+     * @responseMessage 201 the order was successful
+     * @responseMessage 402 a payment error occurs
+     * @responseMessage 404 the order references a non-existent customer or book
+     */
     @POST
-    public Order placeOrder(OrderDTO orderDTO) {
+    public Order placeOrder(OrderDTO body) {
 
 
         Customer c;
         try {
-            c = customerService.findCustomer(orderDTO.getCustomerNr());
+            c = customerService.findCustomer(body.getCustomerNr());
         } catch (CustomerNotFoundException e) {
             throw new WebApplicationException(Status.NOT_FOUND);
         }
 
-        List<OrderItem> orderItems = extractOrderItems(orderDTO);
+        List<OrderItem> orderItems = extractOrderItems(body);
 
         try {
             return orderService.placeOrder(c, orderItems);
@@ -71,6 +78,12 @@ public class OrderResource {
         return orderItems;
     }
 
+    /**
+     * Finds an order by number and returns the data of the found order.
+     * @param nr the number of the order
+     * @responseMessage 200 the retrieval was successful
+     * @responseMessage 404 no order with the specified number exists
+     */
     @GET
     @Path("{nr}")
     public Order findOrder(@PathParam("nr") long nr) {
@@ -80,6 +93,14 @@ public class OrderResource {
             throw new WebApplicationException(Status.NOT_FOUND);        }
     }
 
+    /**
+     * Searches for orders by customer and year and returns a list of matching orders.
+     * @param customerNr the number of the customer
+     * @param year the year of the orders
+     * @responseMessage 200 the search was successful
+     * @responseMessage 404 no customer with the specified email address exists
+     *
+     */
     @GET
     public List<OrderInfo> searchOrders(@QueryParam("customerNr") long customerNr, @QueryParam("year") int year) {
         Customer customer;
@@ -92,6 +113,13 @@ public class OrderResource {
         return orderService.searchOrders(customer, year);
     }
 
+    /**
+     * Cancels an order.
+     * @param nr the number of the order
+     * @responseMessage 204 the cancellation was successful
+     * @responseMessage 404 no order with the specified number exists
+     * @responseMessage 409 the order has already been shipped
+     */
     @DELETE
     @Path("{nr}")
     public Response updateBook(@PathParam("nr") long nr) {
