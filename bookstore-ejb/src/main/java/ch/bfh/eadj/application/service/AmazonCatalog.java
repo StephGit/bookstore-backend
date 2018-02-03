@@ -37,17 +37,13 @@ public class AmazonCatalog {
         lookup.setShared(request);
         ItemLookupResponse itemLookupResponse = this.port.itemLookup(lookup);
 
-        validateFindResult(itemLookupResponse.getItems());
-        Book book = extractResult(itemLookupResponse.getItems());
+        Book book = extractResult(validateFindResult(itemLookupResponse.getItems()));
         logger.info("result from book lookup with isbn: " + isbn + " : " + book.toString());
         return book;
     }
 
-    private Book extractResult(List<Items> items) {
 
-        //TODO wenn mehrere bücher zurück kommen das erst beste mit der ISBN --> siehe fischli testcase
-
-        Item item = items.get(0).getItem().get(0);
+    private Book extractResult(Item item) {
         ItemAttributes itemAttributes = item.getItemAttributes();
         Book book = new Book();
         book.setIsbn(itemAttributes.getISBN());
@@ -61,13 +57,20 @@ public class AmazonCatalog {
         book.setImageUrl(item.getMediumImage().getURL());
         book.setNumberOfPages(itemAttributes.getNumberOfPages().intValue());
         return book;
-
     }
 
-    private void validateFindResult(List<Items> items) throws BookNotFoundException {
+    private Item validateFindResult(List<Items> itemsList) throws BookNotFoundException {
         //TODO extract and log Errors properly.. i.e missing associate tag
         //TODO test for each error
-        if (items == null || items.isEmpty() || items.get(0).getItem().isEmpty()) {
+        if (itemsList == null || itemsList.isEmpty() || itemsList.get(0).getItem().isEmpty()) {
+            throw new BookNotFoundException();
+        } else {
+            for (Items items : itemsList) {
+                Item item = items.getItem().get(0);
+                if (item.getItemAttributes().getISBN() != null) {
+                    return item;
+                }
+            }
             throw new BookNotFoundException();
         }
     }
