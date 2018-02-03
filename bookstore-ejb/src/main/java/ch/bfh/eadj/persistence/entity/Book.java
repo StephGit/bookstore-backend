@@ -47,7 +47,8 @@ public class Book extends BaseEntity {
 
     private String imageUrl;
 
-    public Book() {}
+    public Book() {
+    }
 
     public String getIsbn() {
         return isbn;
@@ -127,5 +128,42 @@ public class Book extends BaseEntity {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Book book = (Book) o;
+
+        if (!isbn.equals(book.isbn)) return false;
+        if (authors != null ? !authors.equals(book.authors) : book.authors != null) return false;
+        if (!title.equals(book.title)) return false;
+        if (price != null ? !price.equals(book.price) : book.price != null) return false;
+        if (publisher != null ? !publisher.equals(book.publisher) : book.publisher != null) return false;
+        if (publicationYear != null ? !publicationYear.equals(book.publicationYear) : book.publicationYear != null)
+            return false;
+        if (binding != book.binding) return false;
+        if (numberOfPages != null ? !numberOfPages.equals(book.numberOfPages) : book.numberOfPages != null)
+            return false;
+        if (description != null ? !description.equals(book.description) : book.description != null) return false;
+        return imageUrl != null ? imageUrl.equals(book.imageUrl) : book.imageUrl == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = isbn.hashCode();
+        result = 31 * result + (authors != null ? authors.hashCode() : 0);
+        result = 31 * result + title.hashCode();
+        result = 31 * result + (price != null ? price.hashCode() : 0);
+        result = 31 * result + (publisher != null ? publisher.hashCode() : 0);
+        result = 31 * result + (publicationYear != null ? publicationYear.hashCode() : 0);
+        result = 31 * result + (binding != null ? binding.hashCode() : 0);
+        result = 31 * result + (numberOfPages != null ? numberOfPages.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (imageUrl != null ? imageUrl.hashCode() : 0);
+        return result;
     }
 }

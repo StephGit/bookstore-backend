@@ -44,6 +44,25 @@ public class CatalogResourceST {
     }
 
     @Test
+    public void shouldFindOnlyOneBookWithAmbiguousISBN() {
+
+        String isbn = "0596009208";
+        when().get("/"+isbn)
+                .then()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .body("isbn", equalTo(isbn))
+                .body("binding", equalTo(BookBinding.PAPERBACK.toString()))
+                .body("numberOfPages", notNullValue())
+                .body("title", notNullValue())
+                .body("description", notNullValue())
+                .body("authors", notNullValue())
+                .body("price", notNullValue())
+                .body("imageUrl", notNullValue())
+                .body("publisher", notNullValue());
+
+    }
+
+    @Test
     public void shouldNotFindBookByIsbn() {
 
         String isbn = "0000000001";

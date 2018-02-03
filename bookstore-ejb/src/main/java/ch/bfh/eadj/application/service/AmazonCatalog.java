@@ -44,9 +44,6 @@ public class AmazonCatalog {
     }
 
     private Book extractResult(List<Items> items) {
-
-        //TODO wenn mehrere bücher zurück kommen das erst beste mit der ISBN --> siehe fischli testcase
-
         Item item = items.get(0).getItem().get(0);
         ItemAttributes itemAttributes = item.getItemAttributes();
         Book book = new Book();
@@ -65,8 +62,6 @@ public class AmazonCatalog {
     }
 
     private void validateFindResult(List<Items> items) throws BookNotFoundException {
-        //TODO extract and log Errors properly.. i.e missing associate tag
-        //TODO test for each error
         if (items == null || items.isEmpty() || items.get(0).getItem().isEmpty()) {
             throw new BookNotFoundException();
         }
@@ -94,7 +89,6 @@ public class AmazonCatalog {
         shared.getResponseGroup().add("ItemAttributes");
 
         ItemSearchResponse itemSearchResponse = port.itemSearch(search);
-        //TODO validate
         List<BookInfo> results = new ArrayList<>();
         extractSearchResult(itemSearchResponse, results);
         int totalPages = itemSearchResponse.getItems().get(0).getTotalPages().intValue();
