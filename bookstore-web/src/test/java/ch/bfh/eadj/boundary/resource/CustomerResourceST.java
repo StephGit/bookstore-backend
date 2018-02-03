@@ -28,7 +28,7 @@ public class CustomerResourceST {
     private String password = "asdfkjl";
 
     @BeforeAll
-    public void setUp() throws Exception {
+    static void setUp() throws Exception {
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = 8080;
         RestAssured.basePath = "/bookstore/api/customers";
