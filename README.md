@@ -7,24 +7,48 @@ This main goal of this project is to create a reference implementation of a stat
 ## Technologies
 JavaEE 7, Glassfish, Angular, REST
 
-### Releasenotes
+
+## Releasenotes
+
+
+### Sprint - Goal
+
+The goal of this sprint was to integrate the Amazon catalog into the bookstore application and to provide a RESTful interface.
+
+### Project Architectur
+
+Changed ejb-application to a JAVA EE-Application.
+
+[EE-Architecture](/doc/bookstore/architecture/ee-application.png)
+
+### Amazon Catalog Integration
+
+Resolved Features:
+
+- Generating the client artifacts from the Amazon WSDL-File.
+- Implementation of the session bean AmazonCatalog to lookup or search books.
+- Implementation of an outbound message handler which adds the required Amazon request authentication to the soap-message-header.
+The credentials for the Amazon request authentication are stored in the ejb-jar.xml.
+- In the catalog service the queries to the local database were replaced by invocations of the AmazonCatalog session bean.
+- Modification of the order service to store books in the local database if they are not present yet.
+- Replaced ngTest-framework with junit5
+
+
+### RESTful Web Service
+
+Resolved Features:
+
+- Implemented the catalog-, customer- and order-resources according to the specification.
+- Swagger-Documentation of the Interface -> [localhost:8080/bookstore/apidocs/](localhost:8080/bookstore/apidocs/)
+
+
+### Testing
+
+Testing happens mainly by remote calls. For fast tests of the business logic we use a local h2-database and a WELD CDI Containert.
 
 
 
-### TODO
-- [ ]  Correct error handling (More than one book with same ISBN --> Fischlis sample?) - S
-- [?]  Handle empty results -> Tests - S
-- [x]  When placing an order -> save book to db if not present yet - A
-- [x]  Catalog Resource - A
-- [x]  Order Resource - A
-- [x]  Customers Resource - S
-- [x]  REST Assured sample including dependency - A
-- [x]  Make integration tests great again! - A
-- [x]  Swagger - S
-- [x]  Handle names with blanks (?name=von+Gruenigen)
-- [x]  REMOVE TEST DEPENDENCIES - A & S
-
-### Prerequisites
+## Prerequisites
 
 This project is based on a [Glassfish-Server 4.1.1.](https://javaee.github.io/glassfish/download)
 
