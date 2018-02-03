@@ -60,9 +60,13 @@ public class AmazonCatalog {
     }
 
     private Item validateFindResult(List<Items> itemsList) throws BookNotFoundException {
-        //TODO extract and log Errors properly.. i.e missing associate tag
         //TODO test for each error
         if (itemsList == null || itemsList.isEmpty() || itemsList.get(0).getItem().isEmpty()) {
+            if (!itemsList.get(0).getRequest().getErrors().getError().isEmpty()) {
+                itemsList.get(0).getRequest().getErrors().getError().forEach(error ->
+                    logger.warning(error.getCode() + ":" + error.getMessage())
+                );
+            }
             throw new BookNotFoundException();
         } else {
             for (Items items : itemsList) {
