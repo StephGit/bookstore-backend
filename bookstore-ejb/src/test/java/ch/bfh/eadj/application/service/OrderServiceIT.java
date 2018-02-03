@@ -27,6 +27,7 @@ public class OrderServiceIT extends AbstractServiceIT {
     private static final String ORDER_SERVICE_NAME = "java:global/bookstore-app-1.0-SNAPSHOT/bookstore/OrderService!ch.bfh.eadj.application.service.OrderServiceRemote";
     private static final String CATALOG_SERVICE_NAME = "java:global/bookstore-app-1.0-SNAPSHOT/bookstore/CatalogService!ch.bfh.eadj.application.service.CatalogServiceRemote";
     private static final String CUSTOMER_SERVICE_NAME = "java:global/bookstore-app-1.0-SNAPSHOT/bookstore/CustomerService!ch.bfh.eadj.application.service.CustomerServiceRemote";
+    public static final String ISBN = "0099590085";
 
     private static CustomerServiceRemote customerService;
     private static CatalogServiceRemote catalogService;
@@ -50,7 +51,7 @@ public class OrderServiceIT extends AbstractServiceIT {
 
     @BeforeEach
     void prepare() throws BookNotFoundException, EmailAlreadyUsedException, CustomerNotFoundException {
-        String isbn = "0099590085";
+        String isbn = ISBN;
         book = catalogService.findBookOnAmazon(isbn);
         items = createOrderItems(3, book);
         customer = createCustomer();
@@ -127,6 +128,27 @@ public class OrderServiceIT extends AbstractServiceIT {
         //then
         assertThat(order.getStatus(), is(OrderStatus.ACCEPTED));
         assertEquals(order.getCustomer().getEmail(), customer.getEmail());
+    }
+
+    @Test
+    public void shouldPlaceOrderAndUpdateBookInDb() throws Exception {
+
+        //when
+        order = orderService.placeOrder(customer, items);
+
+        Book book = catalogService.findBook(ISBN);
+        assertNotNull(book);
+
+
+        book.setDescription("The description has changed in the mean time!");
+        items = createOrderItems(1, book);
+
+
+        orderService.placeOrder(customer, items);
+
+        Book bookAfterChange = catalogService.findBook(ISBN);
+        assertEquals("The description has changed in the mean time!", bookAfterChange.getDescription());
+
     }
 
     @Test

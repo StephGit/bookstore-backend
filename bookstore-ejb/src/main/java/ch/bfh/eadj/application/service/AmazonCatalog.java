@@ -101,7 +101,6 @@ public class AmazonCatalog {
         shared.getResponseGroup().add("ItemAttributes");
 
         ItemSearchResponse itemSearchResponse = port.itemSearch(search);
-        //TODO validate
         List<BookInfo> results = new ArrayList<>();
         extractSearchResult(itemSearchResponse, results);
         int totalPages = itemSearchResponse.getItems().get(0).getTotalPages().intValue();

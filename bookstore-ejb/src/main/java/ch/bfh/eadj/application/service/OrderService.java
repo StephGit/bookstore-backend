@@ -103,7 +103,7 @@ public class OrderService implements OrderServiceRemote {
         return order;
     }
 
-    private void storeBooksIfNotPresent(List<OrderItem> items) throws BookNotFoundException {
+    void storeBooksIfNotPresent(List<OrderItem> items) throws BookNotFoundException {
         for (OrderItem item : items) {
             Book book = item.getBook();
             if (book != null) {
@@ -118,10 +118,19 @@ public class OrderService implements OrderServiceRemote {
                     }
 
                 } else {
+                    bookFromDb = updateBookIfValuesChanged(book, bookFromDb);
                     item.setBook(bookFromDb);
                 }
             }
         }
+    }
+
+    private Book updateBookIfValuesChanged(Book book, Book bookFromDb) throws BookNotFoundException {
+        if (!bookFromDb.equals(book)) {
+            bookFromDb = book;
+            catalogService.updateBook(bookFromDb);
+        }
+        return bookFromDb;
     }
 
     private void sendMessage(Order order) throws OrderProcessingException {
