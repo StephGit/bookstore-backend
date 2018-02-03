@@ -3,8 +3,8 @@ package ch.bfh.eadj.boundary.resource;
 import ch.bfh.eadj.persistence.entity.Book;
 import ch.bfh.eadj.persistence.enumeration.BookBinding;
 import com.jayway.restassured.RestAssured;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
@@ -17,7 +17,7 @@ import static org.hamcrest.Matchers.*;
 public class CatalogResourceST {
 
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() {
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = 8080;

@@ -24,7 +24,7 @@ public class CatalogService implements CatalogServiceRemote{
     private AmazonCatalog amazonCatalog;
 
     @Override
-    public Book findBook(String isbn) throws BookNotFoundException {
+    public Book findBookOnAmazon(String isbn) throws BookNotFoundException {
         Book bookByIsbn = amazonCatalog.findBook(isbn);
         if (bookByIsbn == null) {
             throw new BookNotFoundException();
@@ -32,7 +32,7 @@ public class CatalogService implements CatalogServiceRemote{
         return bookByIsbn;
     }
 
-    public Book findBookFromDb(String isbn) {
+    public Book findBook(String isbn) {
         List<Book> bookByIsbn = bookRepo.findByIsbn(isbn);
         if (bookByIsbn != null && !bookByIsbn.isEmpty()) {
             return bookByIsbn.get(0);

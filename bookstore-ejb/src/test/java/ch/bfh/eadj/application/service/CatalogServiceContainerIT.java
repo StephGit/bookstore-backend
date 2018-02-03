@@ -6,21 +6,24 @@ import ch.bfh.eadj.application.exception.BookAlreadyExistsException;
 import ch.bfh.eadj.application.exception.BookNotFoundException;
 import ch.bfh.eadj.persistence.entity.Book;
 import ch.bfh.eadj.persistence.repository.BookRepository;
-import org.jboss.weld.junit4.WeldInitiator;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.jboss.weld.junit5.WeldInitiator;
+import org.jboss.weld.junit5.WeldJunit5Extension;
+import org.jboss.weld.junit5.WeldSetup;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@ExtendWith(WeldJunit5Extension.class)
 public class CatalogServiceContainerIT {
 
-    @Rule
-    public WeldInitiator weld = WeldInitiator.from(CatalogService.class, BookRepository.class, TestCDISetup.class).inject(this).build();
+    @WeldSetup
+    public WeldInitiator weld = WeldInitiator.from(CatalogService.class, BookRepository.class, TestCDISetup.class, AmazonCatalog.class).inject(this).build();
 
     @BookstorePersistenceUnit
     @Inject
@@ -30,7 +33,7 @@ public class CatalogServiceContainerIT {
     private CatalogService catalogService;
 
 
-    @Before
+    @BeforeEach
     public void setup() {
         catalogService.bookRepo.em = em;
     }

@@ -5,32 +5,32 @@ import ch.bfh.eadj.application.exception.EmailAlreadyUsedException;
 import ch.bfh.eadj.application.exception.InvalidPasswordException;
 import ch.bfh.eadj.persistence.dto.CustomerInfo;
 import ch.bfh.eadj.persistence.entity.Customer;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.resource.spi.IllegalStateException;
-
 import java.util.List;
 import java.util.Random;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class CustomerServiceIT extends AbstractServiceIT {
 
     private static final String CUSTOMER_SERVICE_NAME = "java:global/bookstore-app-1.0-SNAPSHOT/bookstore/CustomerService!ch.bfh.eadj.application.service.CustomerServiceRemote";
 
-    private CustomerServiceRemote customerService;
+    private static CustomerServiceRemote customerService;
 
     private Customer customer;
     private String password = "1234asdf";
     private Long userId;
     private Long userId2;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeAll
+    static void setUp() throws Exception {
         Context jndiContext = new InitialContext();
         customerService = (CustomerServiceRemote) jndiContext.lookup(CUSTOMER_SERVICE_NAME);
     }
@@ -47,14 +47,16 @@ public class CustomerServiceIT extends AbstractServiceIT {
         assertNotNull(userId);
     }
 
-    @Test(expected = EmailAlreadyUsedException.class)
+    @Test
     public void shouldFailRegisterCustomer() throws EmailAlreadyUsedException {
         //given
         customer = createCustomer();
 
         //when
         customerService.registerCustomer(customer, password);
-        customerService.registerCustomer(customer, password);
+
+        Executable registerCustomer = () -> customerService.registerCustomer(customer, password);
+        assertThrows(EmailAlreadyUsedException.class, registerCustomer);
     }
 
     @Test
@@ -70,23 +72,26 @@ public class CustomerServiceIT extends AbstractServiceIT {
         assertNotNull(userId);
     }
 
-    @Test(expected = InvalidPasswordException.class)
+    @Test
     public void shouldFailAuthenticateCustomer() throws CustomerNotFoundException, InvalidPasswordException, EmailAlreadyUsedException {
         //given
         customer = createCustomer();
         customerService.registerCustomer(customer, password);
 
         //when
-        userId = customerService.authenticateCustomer(customer.getEmail(), "qwer");
+        Executable executable = () -> customerService.authenticateCustomer(customer.getEmail(), "qwer");
+        assertThrows(InvalidPasswordException.class, executable);
     }
 
-    @Test(expected = CustomerNotFoundException.class)
+    @Test
     public void shouldFailAuthenticateUnknownUser() throws InvalidPasswordException, CustomerNotFoundException {
         //given
         customer = createCustomer();
 
         //when
-        userId = customerService.authenticateCustomer(customer.getEmail(), "qwer");
+        Executable cancelOrder = () -> customerService.authenticateCustomer(customer.getEmail(), "qwer");
+        assertThrows(CustomerNotFoundException.class, cancelOrder);
+
     }
 
     @Test
@@ -104,13 +109,15 @@ public class CustomerServiceIT extends AbstractServiceIT {
 
     }
 
-    @Test(expected = CustomerNotFoundException.class)
+    @Test
     public void shouldFailFindCustomer() throws CustomerNotFoundException {
         //given
         Long unknownId = 2321L;
 
         //when
-        customerService.findCustomer(unknownId);
+        Executable findCustomer = () -> customerService.findCustomer(unknownId);
+        assertThrows(CustomerNotFoundException.class, findCustomer);
+        ;
     }
 
     @Test
@@ -174,7 +181,7 @@ public class CustomerServiceIT extends AbstractServiceIT {
         assertEquals(updatedCustomer.getFirstName(), customer.getFirstName());
     }
 
-    @Test(expected = EmailAlreadyUsedException.class)
+    @Test
     public void shouldFailUpdateCustomer() throws CustomerNotFoundException, EmailAlreadyUsedException, IllegalStateException {
         //given
         customer = createCustomer();
@@ -182,13 +189,14 @@ public class CustomerServiceIT extends AbstractServiceIT {
         Customer newCustomer = createCustomer();
         newCustomer.setLastName("Neuer");
         newCustomer.setFirstName("Max");
-        newCustomer.setEmail("some@mail.com");
+        newCustomer.setEmail("hans" + Integer.toString(new Random().nextInt(10000)) + "@dampf.ch");
         userId2 = customerService.registerCustomer(newCustomer, password);
         customer = customerService.findCustomer(userId);
         customer.setEmail(newCustomer.getEmail());
 
         //when
-        customerService.updateCustomer(customer);
+        Executable executable = () -> customerService.updateCustomer(customer);
+        assertThrows(EmailAlreadyUsedException.class, executable);
     }
 
     @Test
@@ -207,12 +215,10 @@ public class CustomerServiceIT extends AbstractServiceIT {
         assertEquals(loginId, resultLoginId);
     }
 
-    @Test(expected = CustomerNotFoundException.class)
+    @Test
     public void shouldFailChangePassword() throws CustomerNotFoundException {
         //when
-        customerService.changePassword("new@some.org", password);
-
-        //then
-        fail("CustomerNotFoundException exception");
+        Executable executable = () -> customerService.changePassword("new@some.org", password);
+        assertThrows(CustomerNotFoundException.class, executable);
     }
 }

@@ -6,8 +6,8 @@ import ch.bfh.eadj.persistence.entity.CreditCard;
 import ch.bfh.eadj.persistence.enumeration.Country;
 import ch.bfh.eadj.persistence.enumeration.CreditCardType;
 import com.jayway.restassured.RestAssured;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.core.Response;
 import java.time.LocalDate;
@@ -20,15 +20,14 @@ import static com.jayway.restassured.path.json.JsonPath.from;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
 public class CustomerResourceST {
 
     private String password = "asdfkjl";
 
-    @Before
+    @BeforeAll
     public void setUp() throws Exception {
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = 8080;

@@ -7,20 +7,19 @@ import ch.bfh.eadj.persistence.entity.Customer;
 import ch.bfh.eadj.persistence.entity.Order;
 import ch.bfh.eadj.persistence.entity.OrderItem;
 import ch.bfh.eadj.persistence.enumeration.OrderStatus;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Random;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class OrderServiceIT extends AbstractServiceIT {
@@ -29,26 +28,30 @@ public class OrderServiceIT extends AbstractServiceIT {
     private static final String CATALOG_SERVICE_NAME = "java:global/bookstore-app-1.0-SNAPSHOT/bookstore/CatalogService!ch.bfh.eadj.application.service.CatalogServiceRemote";
     private static final String CUSTOMER_SERVICE_NAME = "java:global/bookstore-app-1.0-SNAPSHOT/bookstore/CustomerService!ch.bfh.eadj.application.service.CustomerServiceRemote";
 
-    private CustomerServiceRemote customerService;
-    private CatalogServiceRemote catalogService;
-    private OrderServiceRemote orderService;
+    private static CustomerServiceRemote customerService;
+    private static CatalogServiceRemote catalogService;
+    private static OrderServiceRemote orderService;
 
-    private Book book;
-    private Customer customer;
+    private  Book book;
+    private  Customer customer;
     private Order order;
-    private List<OrderItem> items;
+    private  List<OrderItem> items;
 
     private Integer year = LocalDate.now().getYear();
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeAll
+    static void setUp() throws Exception {
         Context jndiContext = new InitialContext();
         orderService = (OrderServiceRemote) jndiContext.lookup(ORDER_SERVICE_NAME);
         catalogService = (CatalogServiceRemote) jndiContext.lookup(CATALOG_SERVICE_NAME);
         customerService = (CustomerServiceRemote) jndiContext.lookup(CUSTOMER_SERVICE_NAME);
 
+    }
+
+    @BeforeEach
+    void prepare() throws BookNotFoundException, EmailAlreadyUsedException, CustomerNotFoundException {
         String isbn = "0099590085";
-        book = catalogService.findBook(isbn);
+        book = catalogService.findBookOnAmazon(isbn);
         items = createOrderItems(3, book);
         customer = createCustomer();
         Long userId = customerService.registerCustomer(customer, "pwd");
@@ -67,7 +70,7 @@ public class OrderServiceIT extends AbstractServiceIT {
     }
 
 
-    @Test(expected = OrderAlreadyCanceledException.class)
+    @Test
     public void shouldFailCancelOrder() throws Exception {
         //given
         order = orderService.placeOrder(customer, items);
@@ -78,10 +81,11 @@ public class OrderServiceIT extends AbstractServiceIT {
         Thread.sleep(300);
 
         //when
-        orderService.cancelOrder(order.getNr());
+        Executable cancelOrder = () -> orderService.cancelOrder(order.getNr());
+        assertThrows(OrderAlreadyCanceledException.class, cancelOrder);
     }
 
-    @Test(expected = OrderAlreadyShippedException.class)
+    @Test
     public void shouldFailCancelShippedOrder() throws Exception {
         //given
         order = orderService.placeOrder(customer, items);
@@ -90,7 +94,8 @@ public class OrderServiceIT extends AbstractServiceIT {
         order = orderService.findOrder(order.getNr());
 
         //when
-        orderService.cancelOrder(order.getNr());
+        Executable cancelOrder = () -> orderService.cancelOrder(order.getNr());
+        assertThrows(OrderAlreadyCanceledException.class, cancelOrder);
     }
 
     @Test
@@ -106,10 +111,11 @@ public class OrderServiceIT extends AbstractServiceIT {
         assertEquals(orderFromDb.getNr(), order.getNr());
     }
 
-    @Test(expected = OrderNotFoundException.class)
+    @Test
     public void shouldFailFindOrder() throws OrderNotFoundException {
             //when
-            orderService.findOrder(222L);
+        Executable findOrder = () -> orderService.findOrder(222L);
+        assertThrows(OrderAlreadyCanceledException.class, findOrder);
     }
 
     @Test

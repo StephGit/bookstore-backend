@@ -3,13 +3,13 @@ package ch.bfh.eadj.persistence;
 import ch.bfh.eadj.AbstractTest;
 import ch.bfh.eadj.persistence.entity.Customer;
 import ch.bfh.eadj.persistence.entity.Order;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.persistence.TypedQuery;
 import java.util.List;
 
-import static junit.framework.TestCase.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RelationshipTest extends AbstractTest {
 

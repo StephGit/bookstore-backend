@@ -5,22 +5,21 @@ import ch.bfh.eadj.persistence.dto.OrderInfo;
 import ch.bfh.eadj.persistence.dto.OrderStatisticInfo;
 import ch.bfh.eadj.persistence.entity.Order;
 import ch.bfh.eadj.persistence.enumeration.OrderStatus;
-
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class OrderRepositoryTest extends AbstractTest {
 
     private OrderRepository orderRepository;
 
-    @Before
+    @BeforeEach
     public void before() {
         orderRepository = new OrderRepository();
         orderRepository.em = em;

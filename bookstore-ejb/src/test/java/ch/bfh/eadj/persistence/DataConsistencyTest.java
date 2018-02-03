@@ -1,13 +1,14 @@
 package ch.bfh.eadj.persistence;
 
 import ch.bfh.eadj.AbstractTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.persistence.Query;
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+
 
 public class DataConsistencyTest extends AbstractTest {
 

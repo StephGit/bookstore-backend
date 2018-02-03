@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class AbstractServiceIT {
 
-    protected Customer createCustomer() {
+    protected static Customer createCustomer() {
         Customer cust  = new Customer();
         cust.setEmail("hans" + Integer.toString(new Random().nextInt(10000)) + "@dampf.ch");
         cust.setFirstName("Hans");
@@ -22,11 +22,11 @@ public class AbstractServiceIT {
         return cust;
     }
 
-    private Address createAdddress() {
+    private static Address createAdddress() {
        return new Address("Bahnstrasse", "Burgdorf", "3400", Country.CH);
     }
 
-    private CreditCard createCreditCard() {
+    private static CreditCard createCreditCard() {
         CreditCard creditCard = new CreditCard();
         creditCard.setExpirationMonth(8);
         creditCard.setExpirationYear(LocalDate.now().getYear()+1);
@@ -44,7 +44,7 @@ public class AbstractServiceIT {
         return b;
     }
 
-    List<OrderItem> createOrderItems(int items, Book book) {
+    static List<OrderItem> createOrderItems(int items, Book book) {
         List<OrderItem> orderItems = new ArrayList<>();
         for ( int i = 0; i < items; i++) {
             OrderItem orderItem = new OrderItem();

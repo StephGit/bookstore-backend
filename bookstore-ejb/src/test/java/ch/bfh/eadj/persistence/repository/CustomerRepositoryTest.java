@@ -2,20 +2,20 @@ package ch.bfh.eadj.persistence.repository;
 
 import ch.bfh.eadj.AbstractTest;
 import ch.bfh.eadj.persistence.dto.CustomerInfo;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static junit.framework.TestCase.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CustomerRepositoryTest extends AbstractTest {
     private CustomerRepository customerRepo;
 
 
-    @Before
+    @BeforeEach
     public void setUpRepo() {
         customerRepo = new CustomerRepository();
         customerRepo.em = em;

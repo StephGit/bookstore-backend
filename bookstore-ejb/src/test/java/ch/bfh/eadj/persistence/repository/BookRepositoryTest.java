@@ -3,23 +3,23 @@ package ch.bfh.eadj.persistence.repository;
 import ch.bfh.eadj.AbstractTest;
 import ch.bfh.eadj.persistence.dto.BookInfo;
 import ch.bfh.eadj.persistence.entity.Book;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static junit.framework.TestCase.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BookRepositoryTest extends AbstractTest {
     private BookRepository bookRepo;
 
 
-    @Before
+    @BeforeEach
     public void setUpRepo() {
         bookRepo = new BookRepository();
         bookRepo.em = em;

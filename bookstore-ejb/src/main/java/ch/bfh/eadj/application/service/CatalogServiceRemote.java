@@ -11,7 +11,7 @@ import java.util.List;
 @Remote
 public interface CatalogServiceRemote {
 
-    Book findBook(String isbn)
+    Book findBookOnAmazon(String isbn)
             throws BookNotFoundException;
 
     void addBook(Book book)
@@ -20,6 +20,8 @@ public interface CatalogServiceRemote {
     void removeBook(Book book);
 
     List<BookInfo> searchBooks(String keywords);
+
+    Book findBook(String isbn);
 
 
     void updateBook(Book book)

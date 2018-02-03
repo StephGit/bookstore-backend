@@ -2,19 +2,20 @@ package ch.bfh.eadj.persistence.repository;
 
 import ch.bfh.eadj.AbstractTest;
 import ch.bfh.eadj.persistence.entity.Book;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 public class AbstractRepositoryTest extends AbstractTest {
 
     private BookRepository bookRepo;
 
-    @Before
+    @BeforeEach
     public void setUpRepo() {
         bookRepo = new BookRepository();
         bookRepo.em = em;

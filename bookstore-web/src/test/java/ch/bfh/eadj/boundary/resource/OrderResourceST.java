@@ -10,8 +10,8 @@ import ch.bfh.eadj.persistence.enumeration.CreditCardType;
 import ch.bfh.eadj.persistence.enumeration.OrderStatus;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Header;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
@@ -22,7 +22,7 @@ import static org.hamcrest.Matchers.*;
 
 public class OrderResourceST {
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() {
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = 8080;

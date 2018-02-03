@@ -37,7 +37,7 @@ public class CatalogResource {
     @Path("{isbn}")
     public Book findBook(@PathParam("isbn") String isbn) {
         try {
-            return catalogService.findBook(isbn);
+            return catalogService.findBookOnAmazon(isbn);
         } catch (BookNotFoundException ex) {
             throw new WebApplicationException(Status.NOT_FOUND);
         }

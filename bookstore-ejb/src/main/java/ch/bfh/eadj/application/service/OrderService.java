@@ -107,10 +107,10 @@ public class OrderService implements OrderServiceRemote {
         for (OrderItem item : items) {
             Book book = item.getBook();
             if (book != null) {
-                Book bookFromDb = catalogService.findBookFromDb(book.getIsbn());
+                Book bookFromDb = catalogService.findBook(book.getIsbn());
                 if (bookFromDb == null) {
                     try {
-                        Book bookFromAmazon = catalogService.findBook(book.getIsbn());
+                        Book bookFromAmazon = catalogService.findBookOnAmazon(book.getIsbn());
                         catalogService.addBook(bookFromAmazon);
                         item.setBook(bookFromAmazon);
                     } catch (BookAlreadyExistsException e1) {

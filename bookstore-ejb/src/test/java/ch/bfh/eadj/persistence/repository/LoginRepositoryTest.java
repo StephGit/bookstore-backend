@@ -3,28 +3,29 @@ package ch.bfh.eadj.persistence.repository;
 import ch.bfh.eadj.AbstractTest;
 import ch.bfh.eadj.persistence.entity.Login;
 import ch.bfh.eadj.persistence.enumeration.UserGroup;
-import ch.bfh.eadj.persistence.repository.LoginRepository;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LoginRepositoryTest extends AbstractTest {
 
     private LoginRepository loginRepository;
 
 
-    @Before
+    @BeforeEach
     public void setUpRepo()  {
         loginRepository = new LoginRepository();
         loginRepository.em = em;
     }
 
     @Test
-    public void shouldFindLoginByUsername()  {
+    void shouldFindLoginByUsername()  {
         //given
         String username = "crasch3";
 
@@ -41,7 +42,7 @@ public class LoginRepositoryTest extends AbstractTest {
     }
 
     @Test
-    public void shouldNotFindLoginByUsername() {
+    void shouldNotFindLoginByUsername() {
         //given
         String username = "Admin123";
 
