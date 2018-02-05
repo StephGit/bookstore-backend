@@ -118,7 +118,8 @@ public class OrderService implements OrderServiceRemote {
                     }
 
                 } else {
-                    bookFromDb = updateBookIfValuesChanged(book, bookFromDb);
+                    Book bookFromAmazon = catalogService.findBookOnAmazon(book.getIsbn());
+                    bookFromDb = updateBookIfValuesChanged(bookFromAmazon, bookFromDb);
                     item.setBook(bookFromDb);
                 }
             }

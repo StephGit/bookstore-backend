@@ -131,27 +131,6 @@ public class OrderServiceIT extends AbstractServiceIT {
     }
 
     @Test
-    public void shouldPlaceOrderAndUpdateBookInDb() throws Exception {
-
-        //when
-        order = orderService.placeOrder(customer, items);
-
-        Book book = catalogService.findBook(ISBN);
-        assertNotNull(book);
-
-
-        book.setDescription("The description has changed in the mean time!");
-        items = createOrderItems(1, book);
-
-
-        orderService.placeOrder(customer, items);
-
-        Book bookAfterChange = catalogService.findBook(ISBN);
-        assertEquals("The description has changed in the mean time!", bookAfterChange.getDescription());
-
-    }
-
-    @Test
     public void shouldFailPlaceOrderLimitExceeded() throws Exception {
         //given
         List<OrderItem> items2 = createOrderItems(30, book);

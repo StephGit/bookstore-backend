@@ -1,1 +1,0 @@
-D:\glassfish\glassfish5\javadb\bin\startNetworkServer -noSecurityManager
