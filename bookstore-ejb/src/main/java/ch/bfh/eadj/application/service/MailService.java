@@ -20,7 +20,7 @@ import java.util.concurrent.Future;
 @Stateless
 public class MailService {
 
-    @Resource(name = "mail/bookstore")
+    @Resource(name = "java:/mail/bookstore")
     private Session mailSession;
 
     @Asynchronous

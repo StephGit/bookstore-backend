@@ -60,6 +60,7 @@
                     <fileNameMapping>no-version</fileNameMapping>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 
