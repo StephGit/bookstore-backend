@@ -11,6 +11,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import java.lang.annotation.Repeatable;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -47,9 +48,10 @@ public class CatalogResource {
      */
     @GET
     @Path("{isbn}")
-    public Book findBook(@PathParam("isbn") String isbn) {
+    public Response findBook(@PathParam("isbn") String isbn) {
         try {
-            return catalogService.findBookOnAmazon(isbn);
+            Book book = catalogService.findBookOnAmazon(isbn);
+            return Response.status(Status.OK).entity(book).build();
         } catch (BookNotFoundException ex) {
             throw new WebApplicationException(Status.NOT_FOUND);
         }

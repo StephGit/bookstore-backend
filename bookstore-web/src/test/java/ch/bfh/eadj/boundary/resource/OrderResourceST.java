@@ -52,7 +52,6 @@ public class OrderResourceST {
                 .then()
                 .statusCode(Response.Status.OK.getStatusCode()).extract().response();
 
-
         Integer orderId = response.jsonPath().get("nr");
 
 

@@ -39,7 +39,7 @@ public class OrderResource {
      * @responseMessage 404 the order references a non-existent customer or book
      */
     @POST
-    public Order placeOrder(OrderDTO body) {
+    public Response placeOrder(OrderDTO body) {
 
 
         Customer c;
@@ -52,7 +52,8 @@ public class OrderResource {
         List<OrderItem> orderItems = extractOrderItems(body);
 
         try {
-            return orderService.placeOrder(c, orderItems);
+            Order order = orderService.placeOrder(c, orderItems);
+            return Response.status(Status.CREATED).entity(order).build();
 
         } catch (PaymentFailedException e) {
             throw new WebApplicationException(Status.PAYMENT_REQUIRED);
@@ -86,9 +87,10 @@ public class OrderResource {
      */
     @GET
     @Path("{nr}")
-    public Order findOrder(@PathParam("nr") long nr) {
+    public Response findOrder(@PathParam("nr") long nr) {
         try {
-            return orderService.findOrder(nr);
+            Order order = orderService.findOrder(nr);
+            return Response.status(Status.OK).entity(order).build();
         } catch (OrderNotFoundException e) {
             throw new WebApplicationException(Status.NOT_FOUND);        }
     }
