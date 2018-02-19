@@ -104,14 +104,6 @@ public class AmazonCatalog {
         extractSearchResult(itemSearchResponse, results);
         int totalPages = itemSearchResponse.getItems().get(0).getTotalPages().intValue();
         int pages = totalPages > 10 ? 10 : totalPages;
-        for (int i = 2; i <= pages; i++) {
-            // request, add to list, next;
-            shared.setItemPage(BigInteger.valueOf(i));
-
-            //leider sind batch requests nicht möglich bzw nur mit zwei searches pro request
-            ItemSearchResponse response = port.itemSearch(search);
-            extractSearchResult(response, results);
-        }
         logger.info("result from book search with keywords: " + keywords + " : " + results.toString());
         return results;
 
