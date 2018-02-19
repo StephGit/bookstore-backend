@@ -3,8 +3,10 @@ package ch.bfh.eadj.boundary.resource;
 import ch.bfh.eadj.application.exception.*;
 import ch.bfh.eadj.application.service.CustomerService;
 import ch.bfh.eadj.application.service.OrderService;
+import ch.bfh.eadj.boundary.dto.CustomerDTO;
 import ch.bfh.eadj.boundary.dto.OrderDTO;
 import ch.bfh.eadj.boundary.dto.OrderItemDTO;
+import ch.bfh.eadj.boundary.dto.SalesOrderDTO;
 import ch.bfh.eadj.persistence.dto.OrderInfo;
 import ch.bfh.eadj.persistence.entity.Book;
 import ch.bfh.eadj.persistence.entity.Customer;
@@ -53,7 +55,7 @@ public class OrderResource {
 
         try {
             Order order = orderService.placeOrder(c, orderItems);
-            return Response.status(Status.CREATED).entity(order).build();
+            return Response.status(Status.CREATED).entity(convertOrder(order)).build();
 
         } catch (PaymentFailedException e) {
             throw new WebApplicationException(Status.PAYMENT_REQUIRED);
@@ -90,7 +92,7 @@ public class OrderResource {
     public Response findOrder(@PathParam("nr") long nr) {
         try {
             Order order = orderService.findOrder(nr);
-            return Response.status(Status.OK).entity(order).build();
+            return Response.status(Status.OK).entity(convertOrder(order)).build();
         } catch (OrderNotFoundException e) {
             throw new WebApplicationException(Status.NOT_FOUND);        }
     }
@@ -137,7 +139,9 @@ public class OrderResource {
         }
     }
 
-
-
+    private SalesOrderDTO convertOrder(Order order) {
+        return new SalesOrderDTO(order.getNr(), order.getStatus(), order.getAddress(), order.getAmount(),
+                order.getCreditCard(), order.getDate(), order.getItems(), order.getCustomer());
+    }
 
 }
