@@ -178,6 +178,10 @@ public class CustomerResource {
     private Customer convertCustomerDTO(CustomerDTO customerDTO) {
         Customer customer = new Customer();
 
+        if ((customerDTO.getNr() != null)) {
+            throw new IllegalStateException();
+        }
+
         if ((customerDTO != null) && (customerDTO.getEmail() != null)) {
             customer.setEmail(customerDTO.getEmail());
         } else {
