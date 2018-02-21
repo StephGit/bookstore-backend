@@ -50,10 +50,9 @@ public class OrderResourceST {
                 .body(b)
                 .when().post("/orders")
                 .then()
-                .statusCode(Response.Status.OK.getStatusCode()).extract().response();
+                .statusCode(Response.Status.CREATED.getStatusCode()).extract().response();
 
         Integer orderId = response.jsonPath().get("nr");
-
 
         //find
         given().
@@ -63,7 +62,6 @@ public class OrderResourceST {
                 .body("nr", equalTo(orderId))
                 .body("items", hasSize(1))
                 .body("items[0].book.isbn", equalTo(isbn))
-                .body("customer.nr", equalTo((int)customerId))
                 .body("status",not(equalTo((OrderStatus.ACCEPTED.toString()))))
                 .body("status",not(equalTo((OrderStatus.CANCELED.toString()))));
 
