@@ -3,6 +3,9 @@ package ch.bfh.eadj.persistence.entity;
 import ch.bfh.eadj.persistence.enumeration.UserGroup;
 
 import javax.persistence.*;
+import javax.xml.bind.DatatypeConverter;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 @Table(name = "T_LOGIN")
 @Entity
@@ -36,7 +39,7 @@ public class Login extends BaseEntity {
 
     public Login(String username, String password, UserGroup group) {
         this.username = username;
-        this.password = password;
+        this.password = getPwdHash(password);
         this.group = group;
     }
 
@@ -53,7 +56,18 @@ public class Login extends BaseEntity {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        String hash = getPwdHash(password);
+        this.password = hash;
+    }
+
+    private String getPwdHash(String password) {
+        byte[] digest = new byte[0];
+        try {
+            digest = MessageDigest.getInstance("SHA-256").digest(password.getBytes());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return DatatypeConverter.printHexBinary(digest);
     }
 
     public UserGroup getGroup() {

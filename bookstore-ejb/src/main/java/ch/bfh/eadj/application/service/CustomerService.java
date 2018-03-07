@@ -10,14 +10,15 @@ import ch.bfh.eadj.persistence.enumeration.UserGroup;
 import ch.bfh.eadj.persistence.repository.CustomerRepository;
 import ch.bfh.eadj.persistence.repository.LoginRepository;
 
+import javax.annotation.Resource;
+import javax.ejb.EJBAccessException;
 import javax.ejb.LocalBean;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.resource.spi.IllegalStateException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 @Stateless(name = "CustomerService")
 @LocalBean
@@ -29,10 +30,14 @@ public class CustomerService implements CustomerServiceRemote {
     @Inject
     private LoginRepository loginRepository;
 
+    @Resource
+    SessionContext context;
+
     @Override
     public Long registerCustomer(Customer customer, String password) throws EmailAlreadyUsedException {
 
-        Set<Login> loginSet = loginRepository.findByUsername(customer.getEmail());
+        List<Login> loginSet = loginRepository.findByUsername(customer.getEmail());
+
 
         if (loginSet.isEmpty()) {
             customerRepository.create(customer);
@@ -49,8 +54,7 @@ public class CustomerService implements CustomerServiceRemote {
 
     @Override
     public Long authenticateCustomer(String email, String password) throws CustomerNotFoundException, InvalidPasswordException {
-
-        Set<Login> loginSet = loginRepository.findByUsername(email);
+        List<Login> loginSet = loginRepository.findByUsername(email);
 
         if (!loginSet.isEmpty()) {
             for (Login login : loginSet) {
@@ -71,7 +75,7 @@ public class CustomerService implements CustomerServiceRemote {
 
         Customer customer = customerRepository.find(nr);
 
-        if (customer!=null) {
+        if (customer != null) {
             return customer;
         } else {
             throw new CustomerNotFoundException();
@@ -95,19 +99,19 @@ public class CustomerService implements CustomerServiceRemote {
 
         Customer customerDb = customerRepository.find(customer.getNr());
 
-        if (customerDb==null) {
+        if (customerDb == null) {
             throw new CustomerNotFoundException();
         }
         if (!customerDb.getEmail().equals(customer.getEmail())) {
             // check if new Email allready is in use
-            Set<Login> loginSet = loginRepository.findByUsername(customer.getEmail());
+            List<Login> loginSet = loginRepository.findByUsername(customer.getEmail());
             if (!loginSet.isEmpty()) {
                 throw new EmailAlreadyUsedException();
             }
         }
         //get db-login-entry
-        Set<Login> loginSet = loginRepository.findByUsername(customerDb.getEmail());
-        if (!loginSet.isEmpty() && loginSet.size()==1) {
+        List<Login> loginSet = loginRepository.findByUsername(customerDb.getEmail());
+        if (!loginSet.isEmpty() && loginSet.size() == 1) {
             Iterator<Login> it = loginSet.iterator();
             Login login = it.next();
             loginRepository.edit(login);
@@ -120,22 +124,34 @@ public class CustomerService implements CustomerServiceRemote {
     @Override
     public void changePassword(String email, String password) throws CustomerNotFoundException {
 
-        Set<Login> loginSet = loginRepository.findByUsername(email);
+        List<Login> loginSet = loginRepository.findByUsername(email);
+
+
 
         if (!loginSet.isEmpty()) {
-            for (Login login : loginSet) {
-                login.setPassword(password);
-                loginRepository.edit(login);
-            }
+            Login login = loginSet.get(0);
+            login.setPassword(password);
+            loginRepository.edit(login);
         } else {
             throw new CustomerNotFoundException();
+        }
+    }
+
+    public void validateCaller(Login login) {
+        String callerName = context.getCallerPrincipal().getName();
+        Boolean isCallerEmployee = context.isCallerInRole(Roles.EMPLOYEE);
+        // 401 not authorized - wenn keine authentisierung möglich war
+        // 403 forbidden - wenn nicht autorisiert
+
+        if (!isCallerEmployee && !login.getUsername().equals(callerName)) {
+            throw new EJBAccessException("Trying to access foreign data");
         }
     }
 
     @Override
     public void removeCustomer(Customer customer) throws CustomerNotFoundException {
         Login login = loginRepository.find(customer.getNr());
-        if (login!=null) {
+        if (login != null) {
             loginRepository.remove(login);
             customerRepository.remove(customer);
         } else {

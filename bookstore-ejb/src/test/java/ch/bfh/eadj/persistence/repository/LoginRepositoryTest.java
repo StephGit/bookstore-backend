@@ -6,7 +6,7 @@ import ch.bfh.eadj.persistence.enumeration.UserGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Set;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -30,7 +30,7 @@ public class LoginRepositoryTest extends AbstractTest {
         String username = "crasch3";
 
         //when
-        Set<Login> loginSet = loginRepository.findByUsername(username);
+        List<Login> loginSet = loginRepository.findByUsername(username);
 
         //then
         assertFalse(loginSet.isEmpty());
@@ -47,7 +47,7 @@ public class LoginRepositoryTest extends AbstractTest {
         String username = "Admin123";
 
         //when
-        Set<Login> login = loginRepository.findByUsername(username);
+        List<Login> login = loginRepository.findByUsername(username);
 
         //then
         assertThat(login.isEmpty(), is(true));
