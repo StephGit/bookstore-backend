@@ -137,7 +137,7 @@ public class CustomerService implements CustomerServiceRemote {
         }
     }
 
-    public void validateCaller(Login login) {
+    public void checkAccess(Login login) {
         String callerName = context.getCallerPrincipal().getName();
         Boolean isCallerEmployee = context.isCallerInRole(Roles.EMPLOYEE);
         // 401 not authorized - wenn keine authentisierung möglich war
