@@ -6,6 +6,7 @@ import ch.bfh.eadj.persistence.dto.BookInfo;
 import ch.bfh.eadj.persistence.entity.Book;
 import ch.bfh.eadj.persistence.repository.BookRepository;
 import org.apache.deltaspike.core.api.config.ConfigProperty;
+import org.apache.deltaspike.core.api.config.ConfigResolver;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -28,9 +29,16 @@ public class CatalogService implements CatalogServiceRemote{
     @ConfigProperty(name = "amazon.security.access.key")
     private String TEST;
 
+    @Inject
+    @ConfigProperty(name = "my.config.key.test")
+    private String TEST2;
+
+
+
     @Override
     public Book findBookOnAmazon(String isbn) throws BookNotFoundException {
         Book bookByIsbn = amazonCatalog.findBook(isbn);
+        String mySampleConfig = ConfigResolver.getPropertyValue("my.config.key.test");
         if (bookByIsbn == null) {
             throw new BookNotFoundException();
         }
