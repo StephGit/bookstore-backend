@@ -22,7 +22,7 @@ import java.util.List;
 public class OrderService implements OrderServiceRemote {
 
     private static final String CONNECTION_FACTORY_NAME = "jms/connectionFactory";
-    private static final String QUEUE_NAME = "jms/orderQueue";
+    private static final String QUEUE_NAME = "java:/jms/orderQueue";
 
     @Inject
     OrderRepository orderRepo;
