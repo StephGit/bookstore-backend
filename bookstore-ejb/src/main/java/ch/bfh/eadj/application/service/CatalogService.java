@@ -5,6 +5,7 @@ import ch.bfh.eadj.application.exception.BookNotFoundException;
 import ch.bfh.eadj.persistence.dto.BookInfo;
 import ch.bfh.eadj.persistence.entity.Book;
 import ch.bfh.eadj.persistence.repository.BookRepository;
+import org.apache.deltaspike.core.api.config.ConfigProperty;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -22,6 +23,10 @@ public class CatalogService implements CatalogServiceRemote{
 
     @Inject
     private AmazonCatalog amazonCatalog;
+
+    @Inject
+    @ConfigProperty(name = "amazon.security.access.key")
+    private String TEST;
 
     @Override
     public Book findBookOnAmazon(String isbn) throws BookNotFoundException {
