@@ -21,8 +21,8 @@ import java.util.List;
 @Stateless(name = "OrderService")
 public class OrderService implements OrderServiceRemote {
 
-    private static final String CONNECTION_FACTORY_NAME = "jms/connectionFactory";
-    private static final String QUEUE_NAME = "java:/jms/orderQueue";
+    private static final String CONNECTION_FACTORY_NAME = "java:jboss/exported/jms/RemoteConnectionFactory";
+    private static final String QUEUE_NAME = "java:/jboss/exported/jms/queue/orderQueue";
 
     @Inject
     OrderRepository orderRepo;

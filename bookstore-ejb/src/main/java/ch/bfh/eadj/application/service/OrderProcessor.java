@@ -17,7 +17,7 @@ import java.util.Date;
 @MessageDriven(
         activationConfig = {
                 @ActivationConfigProperty(propertyName = "destinationLookup",
-                        propertyValue = "java:/jms/orderQueue"),
+                        propertyValue = "java:/jboss/exported/jms/queue/orderQueue"),
                 @ActivationConfigProperty(
                         propertyName = "destinationType", propertyValue = "javax.jms.Queue")
         })
