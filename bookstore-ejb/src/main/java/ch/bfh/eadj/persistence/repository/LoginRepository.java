@@ -7,8 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import static ch.bfh.eadj.persistence.entity.Login.FIND_BY_USERNAME_QUERY.PARAM_USERNAME;
 
@@ -23,10 +22,10 @@ public class LoginRepository extends AbstractRepository<Login>{
         super(Login.class);
     }
 
-    public Set<Login> findByUsername(String username ) {
+    public List<Login> findByUsername(String username ) {
         TypedQuery<Login> query = em.createNamedQuery(Login.FIND_BY_USERNAME_QUERY.QUERY_NAME, Login.class);
         query.setParameter(PARAM_USERNAME, username);
-        return new HashSet<>(query.getResultList());
+        return query.getResultList();
     }
 
 

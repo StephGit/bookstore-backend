@@ -7,10 +7,10 @@ import ch.bfh.eadj.persistence.dto.BookInfo;
 import ch.bfh.eadj.persistence.entity.Book;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -30,7 +30,7 @@ public class CatalogResource {
      * @responseMessage 409 a book with the same ISBN number already exists
      */
     @POST
-    public Response addBook(Book body) {
+    public Response addBook(@Valid Book body) {
         try {
             catalogService.addBook(body);
             return Response.status(Status.CREATED).build();
@@ -47,9 +47,10 @@ public class CatalogResource {
      */
     @GET
     @Path("{isbn}")
-    public Book findBook(@PathParam("isbn") String isbn) {
+    public Response findBook(@PathParam("isbn") String isbn) {
         try {
-            return catalogService.findBookOnAmazon(isbn);
+            Book book = catalogService.findBookOnAmazon(isbn);
+            return Response.status(Status.OK).entity(book).build();
         } catch (BookNotFoundException ex) {
             throw new WebApplicationException(Status.NOT_FOUND);
         }

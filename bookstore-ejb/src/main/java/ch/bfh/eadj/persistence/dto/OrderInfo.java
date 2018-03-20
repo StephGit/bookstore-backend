@@ -9,9 +9,9 @@ import java.util.Date;
 public class OrderInfo implements Serializable {
 
     private Long nr;
-    private final Date date;
-    private final BigDecimal amount;
-    private final OrderStatus status;
+    private Date date;
+    private BigDecimal amount;
+    private OrderStatus status;
 
     public OrderInfo(Long nr, Date date, BigDecimal amount, OrderStatus status) {
         this.nr = nr;
@@ -19,13 +19,12 @@ public class OrderInfo implements Serializable {
         this.amount = amount;
         this.status = status;
     }
+    //Constructor for JSON-Parsing in REST-Interface
+    public OrderInfo() {
+    }
 
     public Long getNr() {
         return nr;
-    }
-
-    public void setNr(Long nr) {
-        this.nr = nr;
     }
 
     public Date getDate() {
@@ -38,5 +37,22 @@ public class OrderInfo implements Serializable {
 
     public OrderStatus getStatus() {
         return status;
+    }
+
+    //Setter for JSON-Parsing in REST-Interface
+    public void setNr(Long nr) {
+        this.nr = nr;
+    }
+    //Setter for JSON-Parsing in REST-Interface
+    public void setDate(Date date) {
+        this.date = date;
+    }
+    //Setter for JSON-Parsing in REST-Interface
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+    //Setter for JSON-Parsing in REST-Interface
+    public void setStatus(OrderStatus status) {
+        this.status = status;
     }
 }

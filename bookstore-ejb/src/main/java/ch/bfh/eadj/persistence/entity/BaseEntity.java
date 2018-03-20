@@ -22,6 +22,10 @@ public abstract class BaseEntity implements Serializable{
         return nr;
     }
 
+    public void setNr(Long nr) {
+        this.nr = nr;
+    }
+
     public int getVersion() {
         return version;
     }

@@ -3,8 +3,10 @@ package ch.bfh.eadj.boundary.resource;
 import ch.bfh.eadj.application.exception.*;
 import ch.bfh.eadj.application.service.CustomerService;
 import ch.bfh.eadj.application.service.OrderService;
+import ch.bfh.eadj.boundary.dto.CustomerDTO;
 import ch.bfh.eadj.boundary.dto.OrderDTO;
 import ch.bfh.eadj.boundary.dto.OrderItemDTO;
+import ch.bfh.eadj.boundary.dto.SalesOrderDTO;
 import ch.bfh.eadj.persistence.dto.OrderInfo;
 import ch.bfh.eadj.persistence.entity.Book;
 import ch.bfh.eadj.persistence.entity.Customer;
@@ -39,7 +41,7 @@ public class OrderResource {
      * @responseMessage 404 the order references a non-existent customer or book
      */
     @POST
-    public Order placeOrder(OrderDTO body) {
+    public Response placeOrder(OrderDTO body) {
 
 
         Customer c;
@@ -52,7 +54,8 @@ public class OrderResource {
         List<OrderItem> orderItems = extractOrderItems(body);
 
         try {
-            return orderService.placeOrder(c, orderItems);
+            Order order = orderService.placeOrder(c, orderItems);
+            return Response.status(Status.CREATED).entity(convertOrder(order)).build();
 
         } catch (PaymentFailedException e) {
             throw new WebApplicationException(Status.PAYMENT_REQUIRED);
@@ -86,9 +89,10 @@ public class OrderResource {
      */
     @GET
     @Path("{nr}")
-    public Order findOrder(@PathParam("nr") long nr) {
+    public Response findOrder(@PathParam("nr") long nr) {
         try {
-            return orderService.findOrder(nr);
+            Order order = orderService.findOrder(nr);
+            return Response.status(Status.OK).entity(convertOrder(order)).build();
         } catch (OrderNotFoundException e) {
             throw new WebApplicationException(Status.NOT_FOUND);        }
     }
@@ -135,7 +139,9 @@ public class OrderResource {
         }
     }
 
-
-
+    private SalesOrderDTO convertOrder(Order order) {
+        return new SalesOrderDTO(order.getNr(), order.getStatus(), order.getAddress(), order.getAmount(),
+                order.getCreditCard(), order.getDate(), order.getItems(), order.getCustomer());
+    }
 
 }

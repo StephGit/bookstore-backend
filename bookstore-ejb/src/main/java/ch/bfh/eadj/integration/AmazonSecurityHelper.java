@@ -1,10 +1,13 @@
 package ch.bfh.eadj.integration;
 
+import org.apache.deltaspike.core.api.config.ConfigProperty;
+
 import javax.annotation.Resource;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.xml.bind.DatatypeConverter;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -24,6 +27,10 @@ public class AmazonSecurityHelper {
 
 	@Resource(name="AmazonSecretKey")
 	private String SECRET_KEY;
+
+	@Inject
+	@ConfigProperty(name = "amazon.security.access.key")
+	private String TEST;
 
 	private static final String TIMESTAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 	private static final String MAC_ALGORITHM = "HmacSHA256";
