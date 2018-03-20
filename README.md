@@ -5,7 +5,7 @@ JEE Book Store Project
 This main goal of this project is to create a reference implementation of a state of the art enterprise application.
 
 ## Technologies
-JavaEE 7, Glassfish, Angular, REST
+JavaEE 7, Wildfly 10.1, REST
 
 
 ## Releasenotes
@@ -50,61 +50,27 @@ Testing happens mainly by remote calls. For fast tests of the business logic we 
 
 ## Prerequisites
 
-This project is based on a [Glassfish-Server 4.1.1.](https://javaee.github.io/glassfish/download)
+This project is based on [Wildfly 10.1.0.Final](http://wildfly.org/news/2016/08/19/WildFly10-1-Released/)
 
 - You need to generate the java artifacts from the amazon wsdl by running: `mvn generate-sources`
 
-- Setup the GlassFish domain for the bookstore application with the following commands:
+Setup JMS-Queue (Source from [MiddlewareMagic](http://middlewaremagic.com/jboss/?p=2739) ):
+ 
+1. Start the WildFly 10 “full” profile (which has messaging) as following
 
-1. create domain
-```
-asadmin create-domain --savelogin=true bookstore
-```
-2. start server
-```
-asadmin start-domain --verbose bookstore
-```
-3. create JDBC connection pool
-```
-asadmin create-jdbc-connection-pool ^
---datasourceclassname org.apache.derby.jdbc.ClientDataSource ^
---restype javax.sql.DataSource ^
---property ServerName=localhost:Port=1527:^
-DatabaseName=bookstore:User=YourUser:Password=YourPassword:^
-ConnectionAttributes='create=true' ^
-ConnectionPool
-```
-4. create JDBC datasource
-```
-asadmin create-jdbc-resource ^
---connectionpoolid ConnectionPool ^
-jdbc/bookstore
-```
-5. create JMS connection factory
-```
-asadmin create-jms-resource ^
---restype javax.jms.ConnectionFactory ^
-jms/connectionFactory
-```
-6. create JMS queue
-```
-asadmin create-jms-resource ^
---restype javax.jms.Queue ^
---property Name=PhysicalQueue ^
-jms/orderQueue
-```
-7. Create Java mail session
-```
-asadmin create-javamail-resource ^
---mailhost YourMailhost ^
---mailuser YouUser ^
---fromaddress YourMailaddress ^
---property mail.smtp.port=25:mail.smtp.auth=true:^
-mail.smtp.password=password:mail.smtp.starttls.enable=true ^
-mail/bookstore
-```
-8. Stop server
-```
-asadmin stop-domain bookstore
-```````
+`$ cd /PATH/TO/wildfly-10.0.0.CR3-SNAPSHOT/bin`
+`$ ./standalone.sh -c standalone-full.xml`
+
+2. Create a simple JMS user on WildFly 10 side and this user must belong to “guest” role. Please see the “messaging subsystem” configuration of “standalone-full.xml” to know more about “guest” role.
+username: jmsuser
+password: jmsuser@123
+user role: guest
+Realm: ApplicationRealm
+
+3.  Creating a simple JMS Queue using the WildFly CLI command line utility. NOTE the JNDI name should contain “java:/jboss/exported” prefix or else the JMS queue will can not be looked up remotely
+
+ `$ cd /PATH/TO/wildfly-10.0.0.CR3-SNAPSHOT/bin`
+ `$ ./jboss-cli.sh -c`
+ 
+`[standalone@localhost:9990 /] /subsystem=messaging-activemq/server=default/jms-queue=orderQueue:add(entries=["java:/jboss/exported/jms/queue/orderQueue"])`
 
