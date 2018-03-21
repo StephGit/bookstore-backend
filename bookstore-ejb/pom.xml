@@ -21,7 +21,7 @@
         <hibernate.version>5.2.1.Final</hibernate.version>
         <wildfly.version>10.1.0.Final</wildfly.version>
 
-        <jboss.home>C:/Program Files/wildfly-${wildfly.version}/</jboss.home>
+        <jboss.home>${project.build.directory}/wildfly-${wildfly.version}/</jboss.home>
     </properties>
     <build>
         <defaultGoal>clean install</defaultGoal>
